@@ -5,7 +5,7 @@ class User < ApplicationRecord
   has_many :articles, dependent: :destroy
   has_many :galleries, dependent: :destroy
   has_many :registrations, dependent: :destroy
-  
+
   # Offre la possibilté à l'user d'ajouter un avatar
   has_one_attached :avatar
 
