@@ -9,4 +9,17 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
+
+  # Méthodes personnalisées pour pouvoir accéder aux objet -> current_user.trainings
+  def trainings
+    registrations.where(registerable_type: "Training").map(&:registerable)
+  end
+
+  def events
+    registrations.where(registerable_type: "Events").map(&:registerable)
+  end
+
+  def races
+    registrations.where(registerable_type: "Races").map(&:registerable)
+  end
 end
