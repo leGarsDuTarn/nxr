@@ -1,4 +1,11 @@
 class Event < ApplicationRecord
   belongs_to :user
   has_many :registrations, as: :registerable, dependent: :destroy
+
+  # Offre à l'admin la possibilté d'ajouter une image pour la création d'un événement
+  has_one_attached :image
+  # Validation obligatoire pour pouvoir créer un événement
+  validates :name, presence: { message: "Vous devez renseigner un nom" }
+  validates :date, presence: true
+  validates :hour, presence: true
 end
