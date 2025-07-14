@@ -5,6 +5,10 @@ class User < ApplicationRecord
   has_many :articles, dependent: :destroy
   has_many :galleries, dependent: :destroy
   has_many :registrations, dependent: :destroy
+  
+  # Offre la possibilté à l'user d'ajouter un avatar
+  has_one_attached :avatar
+
   # J'ai mis un validate afin que les users n'aient pas le même username
   # Je l'ai renforcé avec case_sensitive donc Benji et benji sont egaux
   # J'ai également mis un message pour une UX plus propre
