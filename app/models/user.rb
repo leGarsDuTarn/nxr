@@ -20,6 +20,25 @@ class User < ApplicationRecord
   validates :phone_number, presence: { message: "Vous devez renseigner un numéro de téléphone" }, format:
   { with: /\A0\d{9}\z/, message: "format invalide - 10 chiffres sans espace (ex: 0612345678)" }
 
+  VALID_PASSWORD_REGEX = /\A
+  (?=.{8,})              # Au moins 8 caractères
+  (?=.*\d)              # Au moins un chiffre
+  (?=.*[a-z])           # Au moins une minuscule
+  (?=.*[A-Z])           # Au moins une majuscule
+  (?=.*[[:^alnum:]])    # Au moins un caractère spécial
+  /x
+  validates :password, format: { with: VALID_PASSWORD_REGEX, message:
+  "Doit contenir au moins 8 caractères, une majuscule, une minuscule,
+  un chiffre et un caractère spécial" }, if: :password_required?
+
+  # Permet à l'utilisateur de modifier son user_name ou son email
+  # sans être obligé de retaper ou de changer son mot de passe.
+  # La validation du mot de passe ne s'applique que lors de la création du compte
+  # ou lorsque le mot de passe est explicitement modifié.
+  def password_required?
+    !persisted? || !password.nil? || !password_confirmation.nil?
+  end
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
