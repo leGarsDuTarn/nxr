@@ -6,6 +6,6 @@ class Event < ApplicationRecord
   has_one_attached :image
   # Validation obligatoire pour pouvoir créer un événement
   validates :name, presence: { message: "Vous devez renseigner un nom" }
-  validates :date, presence: true
-  validates :hour, presence: true
+  validates :date, presence: { message: "Vous devez renseigner une date" }
+  validates :hour, presence: { message: "Vous devez renseigner une heure" }
 end
