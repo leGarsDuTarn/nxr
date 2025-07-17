@@ -31,7 +31,7 @@ class User < ApplicationRecord
   { with: /\A0\d{9}\z/, message: "format invalide - 10 chiffres sans espace (ex: 0612345678)" }
 
   VALID_PASSWORD_REGEX = /\A
-  (?=.{8,})              # Au moins 8 caractères
+  (?=.{8,})             # Au moins 8 caractères
   (?=.*\d)              # Au moins un chiffre
   (?=.*[a-z])           # Au moins une minuscule
   (?=.*[A-Z])           # Au moins une majuscule
