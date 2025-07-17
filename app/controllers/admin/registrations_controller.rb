@@ -1,2 +1,4 @@
-class Admin::RegistrationsController < ApplicationController
+module Admin
+  class RegistrationsController < BaseController
+  end
 end

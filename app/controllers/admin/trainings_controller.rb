@@ -1,2 +1,4 @@
-class Admin::TrainingsController < ApplicationController
+module Admin
+  class TrainingsController < BaseController
+  end
 end
