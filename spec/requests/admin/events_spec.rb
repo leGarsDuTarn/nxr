@@ -56,4 +56,24 @@ RSpec.describe "Admin::Events", type: :request do
       end
     end
   end
+
+  describe "POST /admin/events" do
+    context "Quand un admin connecté poste un nouveau formulaire" do
+      it "crée un nouvel événement, redirige l'user (302) et valide le test" do
+        event_params = {
+          name: "test",
+          description: "testdescription",
+          date: Date.new(2025, 6, 3),
+          hour: Time.now
+        }
+        # expect {...} permet de tester un changement d'état, test les créations et suppressions
+        expect {
+          post admin_events_path, params: { event: event_params }
+        }.to change(Event, :count).by(1) # Ici permet de vérifier que l'événement est bien créé en DB
+
+        expect(response).to have_http_status(:redirect) # Vérifie que l'user est bien redirigé (302)
+        expect(Event.last.name).to eq("test") # Vérifie que 'test' est bien le nom attribué à l'event posté
+      end
+    end
+  end
 end
