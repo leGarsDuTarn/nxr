@@ -28,6 +28,19 @@ module Admin
       # @event est déjà défini par set_admin_event
     end
 
+    def update
+      if @event.update(event_params)
+        redirect_to admin_event_path(@event), notice: "Modification réussie"
+      else
+        render :edit, status: :unprocessable_entity, alert: "Erreur lors de la modification"
+      end
+    end
+
+    def destroy
+      @event.destroy
+      redirect_to admin_events_path, status: :see_other
+    end
+
     private
 
     def set_admin_event
