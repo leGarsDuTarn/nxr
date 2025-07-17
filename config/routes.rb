@@ -24,8 +24,9 @@ Rails.application.routes.draw do
 
     resources :articles
     resources :galleries
+    # Pour pouvoir avoir une gestion des membres et pouvoir se conformer au RGPD
+    resources :users, only: [:index, :show, :edit, :update, :destroy]
   end
-end
 
   namespace :members do
     resources :events do
@@ -42,4 +43,5 @@ end
 
     resources :articles, only: [:index, :show]
     resources :galleries, only: [:index, :show]
+  end
 end
