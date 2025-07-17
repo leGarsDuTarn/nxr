@@ -6,6 +6,15 @@ class User < ApplicationRecord
   has_many :galleries, dependent: :destroy
   has_many :registrations, dependent: :destroy
 
+  # Permet que chaque inscription soit uniquement en role members
+  enum role: { member: "member", admin: "admin" }
+
+  after_initialize :set_default_role, if: :new_record?
+
+  def set_default_role
+    self.role ||= "member"
+  end
+
   # Offre la possibilté à l'user d'ajouter un avatar
   has_one_attached :avatar
 
