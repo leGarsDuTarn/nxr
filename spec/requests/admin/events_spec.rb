@@ -46,4 +46,14 @@ RSpec.describe "Admin::Events", type: :request do
       end
     end
   end
+
+  describe "GET/admin/events/new" do
+    context "Quand un admin est connecté et crée un nouvel event" do
+      it "retourne un status 200 et valide le test" do
+        get new_admin_event_path
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("événement")
+      end
+    end
+  end
 end
