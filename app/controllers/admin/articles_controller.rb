@@ -1,2 +1,4 @@
-class Admin::ArticlesController < ApplicationController
+module Admin
+  class ArticlesController < BaseController
+  end
 end
