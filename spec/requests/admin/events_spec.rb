@@ -68,18 +68,21 @@ RSpec.describe "Admin::Events", type: :request do
 
   describe "POST /admin/events" do # Méthode create
     context "Quand un admin connecté poste un nouveau formulaire" do
-      it "crée un nouvel événement, redirige l'user (302) et valide le test" do
+      it "crée un nouvel événement avec une image liée, redirige l'user (302) et valide le test" do
+        # Permet de charger une iamge depuis le fichier de test fixtures
+        file = fixture_file_upload(Rails.root.join("spec", "fixtures", "files", "event.jpg"), "image/jpeg")
         event_params = {
           name: "test",
           description: "testdescription",
           date: Date.new(2025, 6, 3),
-          hour: Time.now
+          hour: Time.now,
+          image: file
         }
         # expect {...} permet de tester un changement d'état, test les créations et suppressions
         expect {
           post admin_events_path, params: { event: event_params }
         }.to change(Event, :count).by(1) # Ici permet de vérifier que l'événement est bien créé en DB
-
+        expect(Event.last.image).to be_attached # Ici verifie que l'image est bien attaché
         expect(response).to have_http_status(:redirect) # Vérifie que l'user est bien redirigé (302)
         expect(Event.last.name).to eq("test") # Vérifie que 'test' est bien le nom attribué à l'event posté
       end
@@ -105,7 +108,7 @@ RSpec.describe "Admin::Events", type: :request do
 
   describe "PATCH/admin/events/:id" do # Méthode update
     context " Quand un admin poste un événement modifier" do
-      it " poste un événement modifié, redirige l'user (302) et valide le test" do
+      it " poste un événement modifié avec image, redirige l'user (302) et valide le test" do
         event = Event.create!(
           name: "oldname",
           description: "olddes",
@@ -113,15 +116,20 @@ RSpec.describe "Admin::Events", type: :request do
           hour: Time.now,
           user: admin
         )
+        # Permet de charger une iamge depuis le fichier de test fixtures
+        file = fixture_file_upload(Rails.root.join("spec", "fixtures", "files", "event.jpg"), "image/jpeg")
+
         updated_params = {
           name: "testupdate",
           description: "testuptodate",
           date: Date.new(2025, 6, 3),
-          hour: Time.now
+          hour: Time.now,
+          image: file
         }
         patch admin_event_path(event), params: { event: updated_params }
         event.reload # Recharge les données depuis la DB
         expect(response).to have_http_status(:redirect)
+        expect(event.image).to be_attached
         expect(event.name).to eq("testupdate")
       end
     end

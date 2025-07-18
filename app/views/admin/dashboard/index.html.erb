@@ -2,11 +2,22 @@
 <h2>Bienvenue sur votre tableau de bord administrateur</h2>
 
 <h3>Les événements</h3>
-<% @events.each do |event| %>
-<ul>
-  <li><%= event.name %></li>
-</ul>
+
+  <% if @events.empty? %>
+    <p>Vous n'avez pas d'événement enregistré pour le moment</p>
+  <% else %>
+    <ul>
+      <% @events.each do |event| %>
+        <li><%= event.name %>
+          <%= link_to admin_event_path(event), class: "btn btn-primary", aria: { label: "Voir l'événement #{event.name}" } do %>
+            <i class="fas fa-search"></i>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
 <% end %>
+
+
 <%= link_to new_admin_event_path, class: "btn btn-primary", aria: { label: "Créer un nouvel événement" } do %>
 <i class="fas fa-plus"></i>
 <% end %>
