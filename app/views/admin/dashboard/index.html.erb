@@ -9,8 +9,20 @@
     <ul>
       <% @events.each do |event| %>
         <li><%= event.name %>
+
           <%= link_to admin_event_path(event), class: "btn btn-primary", aria: { label: "Voir l'événement #{event.name}" } do %>
             <i class="fas fa-search"></i>
+          <% end %>
+
+          <%= link_to edit_admin_event_path(event),class: "btn btn-primary", aria: { label: "Modifier l'événement #{event.name}" } do %>
+            <i class="fas fa-edit"></i>
+          <% end %>
+
+          <%= link_to admin_event_path(event),
+            data: { turbo_method: :delete, turbo_confirm: "Es-tu sûr de vouloir supprimer cet événement ?" },
+            class: "btn btn-danger",
+            aria: { label: "Supprimer l'événement #{event.name}" } do %>
+            <i class="fas fa-trash"></i>
           <% end %>
         </li>
       <% end %>

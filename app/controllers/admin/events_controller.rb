@@ -39,7 +39,7 @@ module Admin
 
     def destroy
       @event.destroy
-      redirect_to admin_events_path, status: :see_other
+      redirect_to admin_dashboard_path, status: :see_other
     end
 
     private
