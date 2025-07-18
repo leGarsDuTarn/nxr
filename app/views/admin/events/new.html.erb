@@ -1,1 +1,13 @@
-<h1>Nouvel événement</h1>
+<h1>Créer un nouvel événement</h1>
+
+<%= simple_form_for [:admin, @event] do |f| %>
+  <%= f.input :name, label: "Nom de l'événement" %>
+  <%= f.input :description, label: "Description de l'événement" %>
+  <%= f.input :date, as: :date, label: "Date de l'événement" %>
+  <%= f.input :hour, as: :time, label: "heure de l'événement" %>
+  <%= f.button :submit, "Créer l'événement" %>
+<% end %>
+
+<%= link_to admin_dashboard_path, aria: { label: "Retour au tableau de bord"} do %>
+<i class="fas fa-home"></i>
+<% end %>
