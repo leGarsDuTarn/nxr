@@ -19,15 +19,24 @@ RSpec.describe "Admin::Events", type: :request do
     sign_in admin
   end
 
-  describe "GET/admin/events" do
+  describe "GET/admin/events" do # Métode index
     context "Quand un admin est connecté" do
       it "retourne un status 200 et valide le test" do
+        event = Event.create!(
+          name: "testname",
+          description: "testdes",
+          date: Date.today,
+          hour: Time.now,
+          user: admin
+        )
+        # Requête GET avec forcage pour format HTML attendu par le controller évite une erreur 406
         get admin_events_path(format: :html)
         expect(response).to have_http_status(:ok)
+        expect(response.body).to include(event.name)
       end
     end
   end
-  describe "Get/admin/events/:id" do
+  describe "Get/admin/events/:id" do # Méthode show
     context "Quand un admin est connecté et affiche les détails d'un événement" do
       it "retourne un status 200 et valide le test" do
         event = Event.create!(
@@ -47,7 +56,7 @@ RSpec.describe "Admin::Events", type: :request do
     end
   end
 
-  describe "GET/admin/events/new" do
+  describe "GET/admin/events/new" do # Méthode new
     context "Quand un admin est connecté et crée un nouvel event" do
       it "retourne un status 200 et valide le test" do
         get new_admin_event_path
@@ -57,7 +66,7 @@ RSpec.describe "Admin::Events", type: :request do
     end
   end
 
-  describe "POST /admin/events" do
+  describe "POST /admin/events" do # Méthode create
     context "Quand un admin connecté poste un nouveau formulaire" do
       it "crée un nouvel événement, redirige l'user (302) et valide le test" do
         event_params = {
@@ -73,6 +82,65 @@ RSpec.describe "Admin::Events", type: :request do
 
         expect(response).to have_http_status(:redirect) # Vérifie que l'user est bien redirigé (302)
         expect(Event.last.name).to eq("test") # Vérifie que 'test' est bien le nom attribué à l'event posté
+      end
+    end
+  end
+
+  describe "GET/admin/events/:id/edit" do # Méthode edit
+    context "Quand un admin connecté modifie un événement existant" do
+      it "modifie un événement existant, retourne un status 200 et valide le test" do
+        event = Event.create!(
+          name: "testedit",
+          description: "testdedit",
+          date: Date.today,
+          hour: Time.now,
+          user: admin
+        )
+        get edit_admin_event_path(event)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("modifier")
+      end
+    end
+  end
+
+  describe "PATCH/admin/events/:id" do # Méthode update
+    context " Quand un admin poste un événement modifier" do
+      it " poste un événement modifié, redirige l'user (302) et valide le test" do
+        event = Event.create!(
+          name: "oldname",
+          description: "olddes",
+          date: Date.new(2025, 6, 3),
+          hour: Time.now,
+          user: admin
+        )
+        updated_params = {
+          name: "testupdate",
+          description: "testuptodate",
+          date: Date.new(2025, 6, 3),
+          hour: Time.now
+        }
+        patch admin_event_path(event), params: { event: updated_params }
+        event.reload # Recharge les données depuis la DB
+        expect(response).to have_http_status(:redirect)
+        expect(event.name).to eq("testupdate")
+      end
+    end
+  end
+
+  describe "DELETE/admin/events/:id" do
+    context "Quand l'admin delete un événement" do
+      it "delete un événement, redirige l'user (302) et valide le test" do
+        event = Event.create!(
+          name: "testdelete",
+          description: "delete",
+          date: Date.new(2025, 6, 3),
+          hour: Time.now,
+          user: admin
+        )
+        expect {
+          delete admin_event_path(event)
+        }.to change(Event, :count).by(-1) # Ici permet de vérifier que l'événement est bien supprimé en DB
+        expect(response).to have_http_status(:redirect) # Redirige l'user après suppression (302)
       end
     end
   end
