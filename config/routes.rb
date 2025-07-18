@@ -26,6 +26,7 @@ Rails.application.routes.draw do
     resources :galleries
     # Pour pouvoir avoir une gestion des membres et pouvoir se conformer au RGPD
     resources :users, only: [:index, :show, :edit, :update, :destroy]
+    get "dashboard", to: "dashboard#index"
   end
 
   namespace :members do
