@@ -1,6 +1,6 @@
 class Race < ApplicationRecord
   belongs_to :user
-  has_many :registrations, as: :registrable, dependent: :destroy
+  has_many :registrations, as: :registerable, dependent: :destroy
 
   # Offre à l'admin la possibilté d'ajouter une image pour la création d'une course
   has_one_attached :image
