@@ -1,0 +1,10 @@
+<div class="banner" style="background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url('<%= banner_image_training_url(@training) %>')">
+    <h1><%= @training.name %></h1>
+    <a class="btn btn-flat" href="#">Je m'inscris</a>
+  </div>
+
+<p><%= @training.description %></p>
+
+<%= link_to admin_dashboard_path, class: "btn btn-primary", aria: { label: "Retour au tableau de bord"} do %>
+  <i class="fas fa-home"></i>
+<% end %>
