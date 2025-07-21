@@ -1,6 +1,8 @@
 <h1>Bonjour <%= current_user.first_name %></h1>
 <h2>Bienvenue sur votre tableau de bord administrateur</h2>
 
+<hr>
+
 <h3>Les événements</h3>
 
   <% if @events.empty? %>
@@ -29,7 +31,42 @@
     </ul>
 <% end %>
 
-
 <%= link_to new_admin_event_path, class: "btn btn-primary", aria: { label: "Créer un nouvel événement" } do %>
 <i class="fas fa-plus"></i>
 <% end %>
+
+<hr>
+
+<h3>Les entraînements</h3>
+
+<% if @trainings.empty? %>
+  <p>Vous n'avez pas d'entraînement crée pour le moment</p>
+<% else %>
+  <ul>
+    <% @trainings.each do |training| %>
+      <li><%= training.name %>
+
+          <%= link_to admin_training_path(training), class: "btn btn-primary", aria: { label: "Voir l'entraînement #{training.name}" } do %>
+            <i class="fas fa-search"></i>
+          <% end %>
+
+          <%= link_to edit_admin_training_path(training),class: "btn btn-primary", aria: { label: "Modifier l'entraînement #{training.name}" } do %>
+            <i class="fas fa-edit"></i>
+          <% end %>
+
+          <%= link_to admin_training_path(training),
+            data: { turbo_method: :delete, turbo_confirm: "Es-tu sûr de vouloir supprimer cet entraînement ?" },
+            class: "btn btn-danger",
+            aria: { label: "Supprimer l'entraînement #{training.name}" } do %>
+            <i class="fas fa-trash"></i>
+          <% end %>
+        </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<%= link_to new_admin_training_path, class: "btn btn-primary", aria: { label: "Créer un nouvel entraînement" } do %>
+<i class="fas fa-plus"></i>
+<% end %>
+
+<hr>
