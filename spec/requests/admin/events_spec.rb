@@ -107,7 +107,7 @@ RSpec.describe "Admin::Events", type: :request do
   end
 
   describe "PATCH/admin/events/:id" do # Méthode update
-    context " Quand un admin poste un événement modifier" do
+    context " Quand un admin poste un événement modifié" do
       it " poste un événement modifié avec image, redirige l'user (302) et valide le test" do
         event = Event.create!(
           name: "oldname",
@@ -135,7 +135,7 @@ RSpec.describe "Admin::Events", type: :request do
     end
   end
 
-  describe "DELETE/admin/events/:id" do
+  describe "DELETE/admin/events/:id" do # Méthode destroy
     context "Quand l'admin delete un événement" do
       it "delete un événement, redirige l'user (302) et valide le test" do
         event = Event.create!(
