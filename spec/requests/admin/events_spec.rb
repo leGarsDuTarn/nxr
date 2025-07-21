@@ -21,7 +21,7 @@ RSpec.describe "Admin::Events", type: :request do
 
   describe "GET/admin/events" do # Métode index
     context "Quand un admin est connecté" do
-      it "retourne un status 200 et valide le test" do
+      it "retourne un status 200, affiche le mon de l'events et valide le test" do
         event = Event.create!(
           name: "testname",
           description: "testdes",
@@ -101,7 +101,7 @@ RSpec.describe "Admin::Events", type: :request do
         )
         get edit_admin_event_path(event)
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("modifier")
+        expect(response.body).to match(/modifier/i) # case insensitive = Modifier ou modifier
       end
     end
   end
