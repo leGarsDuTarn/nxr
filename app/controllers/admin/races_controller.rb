@@ -1,6 +1,6 @@
 module Admin
   class RacesController < BaseController
-    before_action set_admin_race:, only: %i[show edit update destroy]
+    before_action :set_admin_race, only: [:show, :edit, :update, :destroy]
 
     def index
       @races = Race.all
@@ -47,7 +47,7 @@ module Admin
       @race = Race.find(params[:id])
     end
 
-    def training_params
+    def race_params
       params.require(:race).permit(:name, :description, :date, :hour, :image)
     end
   end
