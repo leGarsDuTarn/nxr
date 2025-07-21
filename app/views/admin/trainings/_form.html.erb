@@ -1,0 +1,8 @@
+<%= simple_form_for [:admin, @training], html: { multipart: true } do |f| %>
+  <%= f.input :name, label: "Nom de l'entraînement" %>
+  <%= f.input :description, label: "Description de l'entraînement" %>
+  <%= f.input :date, as: :date, label: "Date de l'entraînement" %>
+  <%= f.input :hour, as: :time, label: "Heure de l'entraînement" %>
+  <%= f.input :image, as: :file, label: "Image de l'entraînement" %>
+  <%= f.button :submit, "Valider", class: "btn btn-primary" %>
+<% end %>
