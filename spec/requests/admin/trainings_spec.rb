@@ -14,21 +14,26 @@ RSpec.describe "Admin::Trainings", type: :request do
     )
   end
 
+  let(:training) do
+    Training.create!(
+      name: "testname",
+      description: "testdes",
+      date: Date.today,
+      hour: Time.now,
+      user: admin
+    )
+  end
+
   before do
+    # Appel training avant chaque test, évite un DRY inutile
+    training
     # Simule une session admin avec Devise
     sign_in admin
   end
 
   describe "GET/admin/trainings" do # Méthode index
     context "Quand un admin est connecté" do
-      it " retourne un status 200, affiche le mon de l'entraînement et valide le test" do
-        training = Training.create!(
-          name: "testname",
-          description: "testdes",
-          date: Date.today,
-          hour: Time.now,
-          user: admin
-        )
+      it " retourne un status 200, affiche le mon des entraînements et valide le test" do
         get admin_trainings_path(format: :html)
         expect(response).to have_http_status(:ok)
         expect(response.body).to include(training.name)
@@ -38,14 +43,44 @@ RSpec.describe "Admin::Trainings", type: :request do
 
   describe "GET/admin/trainings/:id" do # Méthode show
     context "Quand un admin est connecté et affiche les détails d'un entraînement" do
+      it "retourne un status 200, affiche le nom et la description d'un entraînement et valide le test" do
+        get admin_training_path(training)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(training.name)
+        expect(response.body).to include(training.description)
+      end
+    end
+  end
+
+  describe "GET/admin/trainings/new" do # Méthode new
+    context "Quand un admin est connecté et crée un nouvel entraînement" do
       it "retourne un status 200 et valide le test" do
-        training = Training.create!(
-          name: "testname",
-          description: "testdes",
+        get new_admin_training_path
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("entraînement")
+      end
+    end
+  end
+
+  describe "POST /admin/trainings" do # Méthode create
+    context "Quand un admin connecté poste un nouvel entraînement" do
+      it "crée un nouvel entraînement avec une image liée, redirige l'user (302) et valide le test" do
+        # Permet de charger une iamge depuis le fichier de test fixtures
+        file = fixture_file_upload(Rails.root.join("spec", "fixtures", "files", "event.jpg"), "image/jpeg")
+        training_params = {
+          name: "testtraining",
+          description: "testdescription",
           date: Date.today,
           hour: Time.now,
-          user: admin
-        )
+          image: file
+        }
+        # expect {...} permet de tester un changement d'état, test les créations et suppressions
+        expect {
+          post admin_trainings_path, params: { training: training_params }
+        }.to change(Training, :count).by(1) # Ici permet de vérifier que l'entraînement est bien créé en DB
+        expect(Training.last.image).to be_attached # Ici verifie que l'image est bien attaché
+        expect(response).to have_http_status(:redirect) # Vérifie que l'user est bien redirigé (302)
+        expect(Training.last.name).to eq("testtraining") # Vérifie que 'test' est bien le nom attribué à l'entraînement posté
       end
     end
   end

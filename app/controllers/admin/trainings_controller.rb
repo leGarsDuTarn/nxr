@@ -15,7 +15,7 @@ module Admin
     end
 
     def create
-      @training = Training.new
+      @training = Training.new(training_params)
       @training.user = current_user
       if @training.save
         redirect_to admin_training_path(@training), notice: "Entraînement crée avec succès"
