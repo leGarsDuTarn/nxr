@@ -73,17 +73,17 @@ RSpec.describe "Admin::Galleries", type: :request do
         ]
 
         gallery_params = {
-          title: "multiimagegallery",
+          title: "testgallery",
           date: Date.today,
           images: files
         }
         # expect {...} permet de tester un changement d'état, test les créations et suppressions
         expect {
           post admin_galleries_path, params: { gallery: gallery_params }
-        }.to change(Gallery, :count).by(1) # Ici permet de vérifier que l'article est bien créé en DB
-        expect(Gallery.last.images.length).to be > 1 # Ici verifie que l'image est bien attaché
+        }.to change(Gallery, :count).by(1) # Ici permet de vérifier que la galerie est bien créée en DB
+        expect(Gallery.last.images.length).to be > 1 # Ici verifie que la galerie possède plusieurs images attachées
         expect(response).to have_http_status(:redirect) # Vérifie que l'user est bien redirigé (302)
-        expect(Gallery.last.title).to eq("multiimagegallery") # Vérifie que 'test' est le titre attribué à la galerie postée
+        expect(Gallery.last.title).to eq("testgallery") # Vérifie que 'testgallery' est le titre attribué à la galerie postée
       end
     end
   end
@@ -101,7 +101,7 @@ RSpec.describe "Admin::Galleries", type: :request do
   describe "PATCH/admin/galleries/:id" do # Méthode update
     context "Quand un admin poste une galerie modifiée" do
       it "poste une galerie modifiée avec images, redirige l'user (302) et valide le test" do
-        # Permet de charger une iamge depuis le fichier de test fixtures
+        # Permet de charger une image depuis le fichier de test fixtures
         file = fixture_file_upload(Rails.root.join("spec", "fixtures", "files", "event.jpg"), "image/jpeg")
 
         updated_params = {
@@ -124,7 +124,7 @@ RSpec.describe "Admin::Galleries", type: :request do
         # expect {...} permet de tester un changement d'état, test les créations et suppressions
         expect {
           delete admin_gallery_path(gallery)
-        }.to change(Gallery, :count).by(-1) # Ici permet de vérifier que l'article est bien supprimé en DB
+        }.to change(Gallery, :count).by(-1) # Ici permet de vérifier que la galerie est bien supprimé en DB
         expect(response).to have_http_status(:redirect) # Redirige l'user après suppression (302)
       end
     end
