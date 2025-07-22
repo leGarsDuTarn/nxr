@@ -14,7 +14,7 @@ RSpec.describe Gallery, type: :model do
   end
   # Avant chaque test, je crée un faux fichier d'image en mémoire
   before do
-    subject.image.attach(
+    subject.images.attach(
       io: StringIO.new("fake image content"),
       filename: "test_image_gallery.png",
       content_type: "image/png"
@@ -28,7 +28,7 @@ RSpec.describe Gallery, type: :model do
       user: user
     )
     # Je lui attache une fausse image avant de save
-    gallery.image.attach(
+    gallery.images.attach(
       io: StringIO.new("fake image content"),
       filename: "test_image_gallery.png",
       content_type: "image/png"
@@ -49,7 +49,7 @@ RSpec.describe Gallery, type: :model do
   end
 
 
-  context "Quand tout les champs sont correctement remplis et que l'image a correctement été ajoutée" do
+  context "Quand tout les champs sont correctement remplis avec des images" do
     it "Le test est valide" do
       expect(subject).to be_valid
     end
@@ -73,12 +73,12 @@ RSpec.describe Gallery, type: :model do
     end
   end
 
-  context "Quand l'image est absente" do
-    before { subject.image.detach }
+  context "Quand une ou plusieurs images sont absente" do
+    before { subject.images = nil }
 
     it "Le test n'est pas valid" do
       subject.validate
-      expect(subject.errors[:image]).to include("Vous devez ajouter une image")
+      expect(subject.errors[:images]).to include("Vous devez ajouter une ou plusieurs image")
     end
   end
 
@@ -88,6 +88,35 @@ RSpec.describe Gallery, type: :model do
     it "Le test n'est pas valide" do
       subject.validate
       expect(subject.errors[:date]).to include("Vous devez renseigner une date")
+    end
+  end
+
+  context "Quand une image est supprimée manuellement" do
+    before do
+      # Supprime l'image par défaut attachée dans le before global
+      subject.images.purge
+      # Création de deux images pour ce test
+      subject.images.attach([
+        {
+          io: StringIO.new("image 1"),
+          filename: "image1.png",
+          content_type: "image/png"
+        },
+        {
+          io: StringIO.new("image 2"),
+          filename: "image2.png",
+          content_type: "image/png"
+        }
+      ])
+      subject.save! # Sauvegarde les deux images en DB
+    end
+
+    it "La galerie ne contient plus qu'une seule image après suppression" do
+      subject.images.first.purge # Suppression de la première image "image 1"
+      subject.reload # Recharge les données depuis la DB
+
+      expect(subject.images.count).to eq(1)
+      expect(subject.images.first.filename.to_s).to eq("image2.png") # Valide que l'image restante porte bien ce nom
     end
   end
 end
