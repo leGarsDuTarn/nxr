@@ -31,6 +31,10 @@
     </ul>
 <% end %>
 
+<%= link_to admin_events_path, class: "btn btn-primary", aria: { label: "Voir tous les événements" } do %>
+  <i class="fas fa-search-plus"></i>
+<% end %>
+
 <%= link_to new_admin_event_path, class: "btn btn-primary", aria: { label: "Créer un nouvel événement" } do %>
 <i class="fas fa-plus"></i>
 <% end %>
@@ -65,8 +69,48 @@
   </ul>
 <% end %>
 
+<%= link_to admin_trainings_path, class: "btn btn-primary", aria: { label: "Voir tous les entraînements" } do %>
+  <i class="fas fa-search-plus"></i>
+<% end %>
+
 <%= link_to new_admin_training_path, class: "btn btn-primary", aria: { label: "Créer un nouvel entraînement" } do %>
 <i class="fas fa-plus"></i>
 <% end %>
 
 <hr>
+
+<h3>Les courses</h3>
+
+<% if @races.empty? %>
+  <p>Vous n'avez pas de course créée pour le moment</p>
+<% else %>
+  <ul>
+    <% @races.each do |race| %>
+      <li><%= race.name %>
+
+          <%= link_to admin_race_path(race), class: "btn btn-primary", aria: { label: "Voir la course #{race.name}" } do %>
+            <i class="fas fa-search"></i>
+          <% end %>
+
+          <%= link_to edit_admin_race_path(race),class: "btn btn-primary", aria: { label: "Modifier la course #{race.name}" } do %>
+            <i class="fas fa-edit"></i>
+          <% end %>
+
+          <%= link_to admin_race_path(race),
+            data: { turbo_method: :delete, turbo_confirm: "Es-tu sûr de vouloir supprimer cette course ?" },
+            class: "btn btn-danger",
+            aria: { label: "Supprimer la course #{race.name}" } do %>
+            <i class="fas fa-trash"></i>
+          <% end %>
+        </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<%= link_to admin_races_path, class: "btn btn-primary", aria: { label: "Voir toutes les courses" } do %>
+  <i class="fas fa-search-plus"></i>
+<% end %>
+
+<%= link_to new_admin_race_path, class: "btn btn-primary", aria: { label: "Créer une nouvelle course" } do %>
+<i class="fas fa-plus"></i>
+<% end %>
