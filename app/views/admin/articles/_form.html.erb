@@ -1,0 +1,17 @@
+<%= simple_form_for [:admin, @article], html: { multipart: true } do |f| %>
+  <%= f.input :title, label: "Titre de l'article" %>
+  <%= f.input :content, label: "Contenu de l'article" %>
+  <%= f.input :date, as: :date, label: "Date de l'article" %>
+  <%= f.input :image, as: :file, label: "Image de l'article" %>
+
+  <% if f.object.image.attached? %>
+    <div class="mt-2">
+      <p>Image actuelle :</p>
+      <%= image_tag(f.object.image, size: "300x200", class: "img-thumbnail") %><br>
+      <%= f.check_box :remove_image %>
+      <%= f.label :remove_image, "Supprimer l'image actuelle" %>
+    </div>
+  <% end %>
+
+  <%= f.button :submit, "Valider", class: "btn btn-primary" %>
+<% end %>
