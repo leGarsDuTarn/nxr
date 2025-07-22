@@ -24,10 +24,10 @@ RSpec.describe "Admin::Articles", type: :request do
   end
 
   before do
-    # Appel article avant chaque test, évite un DRY inutile
-    article
     # Simule une session admin avec Devise
     sign_in admin
+    # Appel article avant chaque test, évite un DRY inutile
+    article
   end
 
   describe "GET/admin/articles" do # Méthode index

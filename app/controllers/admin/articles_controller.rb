@@ -5,5 +5,50 @@ module Admin
     def index
       @articles = Article.all
     end
+
+    def show
+      # @article - déjà défini par set_admin_article
+    end
+
+    def new
+      @article = Article.new
+    end
+
+    def create
+      @article = Article.new(article_params)
+      @article.user = current_user
+      if @article.save
+        redirect_to admin_article_path(@article), notice: "Article crée avec succès"
+      else
+        render :new, status: :unprocessable_entity, alerte: "Erreur lors de la création de l'article"
+      end
+    end
+
+    def edit
+      # @article - déjà défini par set_admin_article
+    end
+
+    def update
+      if @article.update(article_params)
+        redirect_to admin_article_path(@article), notice: "Modification réussie"
+      else
+        render :edit, status: :unprocessable_entity, alerte: "Erreur lors de la modification"
+      end
+    end
+
+    def destroy
+      @article.destroy
+      redirect_to admin_dashboard_path, status: :see_other
+    end
+
+    private
+
+    def set_admin_article
+      @article = Article.find(params[:id])
+    end
+
+    def article_params
+      params.require(:article).permit(:title, :content, :date, :image)
+    end
   end
 end
