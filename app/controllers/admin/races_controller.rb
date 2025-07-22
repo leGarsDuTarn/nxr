@@ -1,6 +1,6 @@
 module Admin
   class RacesController < BaseController
-    before_action :set_admin_race, only: [:show, :edit, :update, :destroy]
+    before_action :set_admin_race, only: %i[show edit update destroy]
 
     def index
       @races = Race.all
@@ -20,7 +20,7 @@ module Admin
       if @race.save
         redirect_to admin_race_path(@race), notice: "Course crée avec succès"
       else
-        render :new, status: :unprocessable_entity, alerte: "Erreur lors de la création de la course"
+        render :new, status: :unprocessable_entity, alert: "Erreur lors de la création de la course"
       end
     end
 
@@ -32,7 +32,7 @@ module Admin
       if @race.update(race_params)
         redirect_to admin_race_path(@race), notice: "Modification réussie"
       else
-        render :edit, status: :unprocessable_entity, alerte: "Erreur lors de la modification"
+        render :edit, status: :unprocessable_entity, alert: "Erreur lors de la modification"
       end
     end
 

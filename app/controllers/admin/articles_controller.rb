@@ -20,7 +20,7 @@ module Admin
       if @article.save
         redirect_to admin_article_path(@article), notice: "Article crée avec succès"
       else
-        render :new, status: :unprocessable_entity, alerte: "Erreur lors de la création de l'article"
+        render :new, status: :unprocessable_entity, alert: "Erreur lors de la création de l'article"
       end
     end
 
@@ -29,10 +29,13 @@ module Admin
     end
 
     def update
+      # Supprime l'image existante si l'utilisateur coche la case 'Supprimer l'image'
+      @article.image.purge if params[:article][:remove_image] == "1"
+
       if @article.update(article_params)
         redirect_to admin_article_path(@article), notice: "Modification réussie"
       else
-        render :edit, status: :unprocessable_entity, alerte: "Erreur lors de la modification"
+        render :edit, status: :unprocessable_entity, alert: "Erreur lors de la modification"
       end
     end
 
@@ -48,7 +51,7 @@ module Admin
     end
 
     def article_params
-      params.require(:article).permit(:title, :content, :date, :image)
+      params.require(:article).permit(:title, :content, :date, :image, :remove_image)
     end
   end
 end

@@ -1,6 +1,6 @@
 module Admin
   class TrainingsController < BaseController
-    before_action :set_admin_training, only: [:show, :edit, :update, :destroy]
+    before_action :set_admin_training, only: %i[show edit update destroy]
 
     def index
       @trainings = Training.all
@@ -20,7 +20,7 @@ module Admin
       if @training.save
         redirect_to admin_training_path(@training), notice: "Entraînement crée avec succès"
       else
-        render :new, status: :unprocessable_entity, alerte: "Erreur lors de la création de l'entraînement"
+        render :new, status: :unprocessable_entity, alert: "Erreur lors de la création de l'entraînement"
       end
     end
 
@@ -32,7 +32,7 @@ module Admin
       if @training.update(training_params)
         redirect_to admin_training_path(@training), notice: "Modification réussie"
       else
-        render :edit, status: :unprocessable_entity, alerte: "Erreur lors de la modification"
+        render :edit, status: :unprocessable_entity, alert: "Erreur lors de la modification"
       end
     end
 
