@@ -65,21 +65,25 @@ RSpec.describe "Admin::Galleries", type: :request do
 
   describe "POST /admin/galleries" do # Méthode create
     context "Quand un admin connecté poste une nouvelle galerie" do
-      it "crée une nouvelle galerie avec des images, redirige l'user (302) et valide le test" do
-        # Permet de charger une image depuis le fichier de test fixtures
-        file = fixture_file_upload(Rails.root.join("spec", "fixtures", "files", "event.jpg"), "image/jpeg")
+      it "crée une nouvelle galerie avec plusieurs images, redirige l'user (302) et valide le test" do
+        # Permet de charger deux image depuis le fichier de test fixtures
+        files = [
+          fixture_file_upload(Rails.root.join("spec/fixtures/files/event.jpg"), "image/jpeg"),
+          fixture_file_upload(Rails.root.join("spec/fixtures/files/event.jpg"), "image/jpeg")
+        ]
+
         gallery_params = {
-          title: "testgallery",
+          title: "multiimagegallery",
           date: Date.today,
-          images: file
+          images: files
         }
         # expect {...} permet de tester un changement d'état, test les créations et suppressions
         expect {
           post admin_galleries_path, params: { gallery: gallery_params }
         }.to change(Gallery, :count).by(1) # Ici permet de vérifier que l'article est bien créé en DB
-        expect(Gallery.last.images).to be_attached # Ici verifie que l'image est bien attaché
+        expect(Gallery.last.images.length).to be > 1 # Ici verifie que l'image est bien attaché
         expect(response).to have_http_status(:redirect) # Vérifie que l'user est bien redirigé (302)
-        expect(Gallery.last.title).to eq("testgallery") # Vérifie que 'test' est le titre attribué à l'article posté
+        expect(Gallery.last.title).to eq("multiimagegallery") # Vérifie que 'test' est le titre attribué à la galerie postée
       end
     end
   end
