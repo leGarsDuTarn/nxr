@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describes "Admin::Articles", type: :request do
+RSpec.describe "Admin::Articles", type: :request do
   let(:admin) do
     User.create!(
       user_name: "leGarsDuTarn",
@@ -24,15 +24,15 @@ RSpec.describes "Admin::Articles", type: :request do
   end
 
   before do
-    # Appel article avant chaque test, évite un DRY inutile
-    article
     # Simule une session admin avec Devise
     sign_in admin
+    # Appel article avant chaque test, évite un DRY inutile
+    article
   end
 
   describe "GET/admin/articles" do # Méthode index
     context "Quand un admin est connecté" do
-      it " retourne un status 200, affiche le mon des articles et valide le test" do
+      it " retourne un status 200, affiche le titre des articles et valide le test" do
         get admin_articles_path(format: :html)
         expect(response).to have_http_status(:ok)
         expect(response.body).to include(article.title)
