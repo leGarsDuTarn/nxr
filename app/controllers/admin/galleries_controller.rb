@@ -15,7 +15,7 @@ module Admin
     end
 
     def create
-      @gallery = Gallery.new
+      @gallery = Gallery.new(gallery_params)
       @gallery.user = current_user
 
       if @gallery.save
@@ -30,6 +30,8 @@ module Admin
     end
 
     def update
+      # Permet de supprimer les images sélectionnées (voir méthode private)
+      purge_selected_images if params[:gallery][:remove_images].present?
       if @gallery.update(gallery_params)
         redirect_to admin_gallery_path(@gallery), notice: "Modification réussie"
       else
@@ -49,7 +51,14 @@ module Admin
     end
 
     def gallery_params
-      require(:gallery).permit(:title, :date, :images, :remove_images)
+      params.require(:gallery).permit(:title, :date, images: [], remove_images: [])
+    end
+
+    def purge_selected_images
+      params[:gallery][:remove_images].each do |image_id|
+        # Recherche une image par son ID et la supprime uniquement si elle existe (grâce à l'opérateur &.)
+        @gallery.images.find_by_id(image_id)&.purge
+      end
     end
   end
 end

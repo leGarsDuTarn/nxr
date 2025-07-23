@@ -48,7 +48,7 @@ RSpec.describe "Admin::Galleries", type: :request do
         get admin_gallery_path(gallery)
         expect(response).to have_http_status(:ok)
         expect(response.body).to include(gallery.title)
-        expect(response.body).to include(gallery.date)
+        expect(response.body).to include(gallery.date.strftime("%d %B %Y"))
       end
     end
   end
