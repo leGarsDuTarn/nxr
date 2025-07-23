@@ -12,6 +12,8 @@
 
 <p>Numéro de téléphone : <%= @user.phone_number %></p>
 
+<%# Permet de télécharger en format JSON les données utilisateur - conforme RGPD %>
+<%= link_to "📤 Exporter fiche RGPD (JSON)", admin_user_path(@user, format: :json), class: "btn btn-primary", target: "_blank" %>
 
 <%= link_to admin_dashboard_path, class: "btn btn-primary", aria: { label: "Retour au tableau de bord"} do %>
   <i class="fas fa-home"></i>
