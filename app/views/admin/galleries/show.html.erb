@@ -1,0 +1,16 @@
+<div class="banner" style="background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(https://cdn.pixabay.com/photo/2016/11/29/13/17/coffee-1869772_1280.jpg);">
+  <h1><%= @gallery.title %></h1>
+  <p> Date : <%= @gallery.date.strftime("%d %B %Y") %></p>
+</div>
+
+<% if @gallery.images.attached? %>
+  <% @gallery.images.each do |image| %>
+    <%= image_tag(image, class: "img-fluid", alt: "Images de la galerie") %>
+  <% end %>
+<% else %>
+  <p>Aucune image pour cette galerie</p>
+<% end %>
+
+<%= link_to admin_dashboard_path, class: "btn btn-primary", aria: { label: "Retour au tableau de bord"} do %>
+  <i class="fas fa-home"></i>
+<% end %>
