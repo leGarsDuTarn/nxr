@@ -19,6 +19,6 @@
   <%= f.input :address, label: "Adresse" %>
   <%= f.input :post_code, label: "Code postal" %>
   <%= f.input :town, label: "Ville" %>
-  <%= f.input :country, label: "Pays", as: :country, priority: ["France", "Belgium"], prompt: "Sélectionner un pays" %>
+  <%= f.input :country, label: "Pays", as: :country, priority: ["France"], prompt: "Sélectionner un pays" %>
   <%= f.button :submit, "Valider", class: "btn btn-primary" %>
 <% end %>

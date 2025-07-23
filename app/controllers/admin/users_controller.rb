@@ -1,25 +1,16 @@
 module Admin
   class UsersController < BaseController
     before_action :set_admin_user, only: %i[show edit update destroy]
+    before_action :ensure_admin, only: [:export]
 
     def export
       user = User.find(params[:id])
-
       respond_to do |format|
         format.json do
           render json: {
-            id: user.id,
-            user_name: user.user_name,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            email: user.email,
-            phone_number: user.phone_number,
-            address: user.address,
-            post_code: user.post_code,
-            town: user.town,
-            country: user.country,
-            created_at: user.created_at,
-            updated_at: user.updated_at
+            id: user.id, user_name: user.user_name, first_name: user.first_name, last_name: user.last_name,
+            email: user.email, phone_number: user.phone_number, address: user.address, post_code: user.post_code,
+            town: user.town, country: user.country, created_at: user.created_at, updated_at: user.updated_at
           }, status: :ok
         end
       end
@@ -31,6 +22,14 @@ module Admin
 
     def show
       # @user - déjà défini dans set_admin_user
+      respond_to do |format|
+        format.html # => rend la vue show.html.erb
+        format.json do
+          render json: @user.as_json(
+            only: %i[id first_name last_name email phone_number user_namec address post_code town country created_at]
+          )
+        end
+      end
     end
 
     def edit
@@ -61,19 +60,15 @@ module Admin
 
     def user_params
       params.require(:user).permit(
-        :user_name,
-        :role,
-        :first_name,
-        :last_name,
-        :address,
-        :post_code,
-        :town,
-        :country,
-        :phone_number,
-        :password,
-        :avatar,
-        :remove_avatar
-        )
+        :user_name, :role, :first_name,
+        :last_name, :address, :post_code,
+        :town, :country, :phone_number, :password,
+        :avatar, :remove_avatar
+      )
     end
+  end
+
+  def ensure_admin
+    redirect_to(root_path, alert: "Accès interdit") unless current_user&.admin?
   end
 end
