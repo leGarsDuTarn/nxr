@@ -152,3 +152,41 @@
 <%= link_to new_admin_article_path, class: "btn btn-primary", aria: { label: "Créer un nouvel article" } do %>
 <i class="fas fa-plus"></i>
 <% end %>
+
+<hr>
+
+<h3>Les galeries photos</h3>
+
+<% if @galleries.empty? %>
+  <p>Vous n'avez pas de galerie créée pour le moment</p>
+<% else %>
+  <ul>
+    <% @galleries.each do |gallery| %>
+      <li><%= gallery.title %>
+
+          <%= link_to admin_gallery_path(gallery), class: "btn btn-primary", aria: { label: "Voir la galerie #{gallery.title}" } do %>
+            <i class="fas fa-search"></i>
+          <% end %>
+
+          <%= link_to edit_admin_gallery_path(gallery),class: "btn btn-primary", aria: { label: "Modifier la galerie #{gallery.title}" } do %>
+            <i class="fas fa-edit"></i>
+          <% end %>
+
+          <%= link_to admin_gallery_path(gallery),
+            data: { turbo_method: :delete, turbo_confirm: "Es-tu sûr de vouloir supprimer cette galerie ?" },
+            class: "btn btn-danger",
+            aria: { label: "Supprimer la galerie #{gallery.title}" } do %>
+            <i class="fas fa-trash"></i>
+          <% end %>
+        </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<%= link_to admin_galleries_path, class: "btn btn-primary", aria: { label: "Voir toutes les galeries" } do %>
+  <i class="fas fa-search-plus"></i>
+<% end %>
+
+<%= link_to new_admin_gallery_path, class: "btn btn-primary", aria: { label: "Créer une nouvelle galerie" } do %>
+<i class="fas fa-plus"></i>
+<% end %>

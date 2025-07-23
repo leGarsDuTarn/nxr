@@ -1,0 +1,39 @@
+<%= simple_form_for [:admin, @gallery], html: { multipart: true } do |f| %>
+  <%= f.input :title, label: "Titre de la galerie" %>
+  <%= f.input :date, as: :date, label: "Date de la galerie" %>
+
+  <%# Bloc Stimulus : ajout dynamique de champs fichier pour ajouter des nouvelles images %>
+  <div data-controller="gallery-upload">
+    <div id="file-inputs" data-gallery-upload-target="container">
+      <div class="form-group mb-2">
+        <label>Ajouter une image</label>
+        <input type="file" name="gallery[images][]" accept="image/*" class="form-control">
+      </div>
+    </div>
+
+    <button type="button"
+            class="btn btn-success mb-3"
+            data-action="click->gallery-upload#addInput">
+      Ajouter une autre image
+    </button>
+  </div>
+
+  <%# Affichage des images existantes uniquement si la galerie est save en DB et a des images attachées %>
+  <% if f.object.persisted? && f.object.images.attached? %>
+    <p>Images actuelles :</p>
+    <div class="row">
+      <% f.object.images.each do |image| %>
+        <div class="col-md-4 text-center mb-3">
+          <%# Affiche les images en miniature %>
+          <%= image_tag url_for(image), class: "img-thumbnail mb-2", style: "max-width: 300px;" %>
+
+          <%# Checkbox pour suppression %>
+          <%= check_box_tag "gallery[remove_images][]", image.id, false, id: "remove_image_#{image.id}" %>
+          <%= label_tag "remove_image_#{image.id}", "Supprimer cette image" %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%= f.button :submit, "Valider", class: "btn btn-primary mt-3" %>
+<% end %>
