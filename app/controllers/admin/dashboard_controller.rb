@@ -6,6 +6,7 @@ module Admin
       @races = Race.all.order(date: :asc).limit(5)
       @articles = Article.all.order(date: :asc).limit(3)
       @galleries = Gallery.all.order(date: :asc).limit(3)
+      @users = User.all.order(created_at: :asc).limit(4)
     end
   end
 end
