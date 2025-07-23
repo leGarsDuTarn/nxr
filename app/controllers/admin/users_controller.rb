@@ -38,6 +38,9 @@ module Admin
     end
 
     def update
+      # Supprime l'avatar existant si l'utilisateur coche la case 'Supprimer l'avatar'
+      @user.avatar.purge if params[:user][:remove_avatar] == "1"
+
       if @user.update(user_params)
         redirect_to admin_user_path(@user), notice: "Modification réussie"
       else
@@ -67,7 +70,9 @@ module Admin
         :town,
         :country,
         :phone_number,
-        :password
+        :password,
+        :avatar,
+        :remove_avatar
         )
     end
   end

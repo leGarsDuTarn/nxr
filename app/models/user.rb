@@ -17,6 +17,24 @@ class User < ApplicationRecord
 
   # Offre la possibilté à l'user d'ajouter un avatar
   has_one_attached :avatar
+  validate :limit_size_avatar
+  # Permet de supprimer l'avatar via le questionnaire view/users/_form.html.erb
+  attr_accessor :remove_avatar
+
+  # Méthode permettant de limiter la taille des fichiers des avatars et leur types
+  def limit_size_avatar
+    # Si un utilisateur a ajouté un avatar
+    return unless avatar.attached?
+
+    # Alors le fichier ne doit pas dépasser la taille de 2Mo
+    errors.add(:avatar, "doit être inférieur à 2 Mo") if avatar.byte_size > 2.megabytes
+
+    # Fichier accepté JPEG ou PNG sinon erreur
+    acceptable_types = ["image/jpeg", "image/png"]
+    return if acceptable_types.include?(avatar.content_type)
+
+    errors.add(:avatar, "doit être un fichier de type JPEG ou PNG")
+  end
 
   # J'ai mis un validate afin que les users n'aient pas le même username
   # Je l'ai renforcé avec case_sensitive donc Benji et benji sont egaux

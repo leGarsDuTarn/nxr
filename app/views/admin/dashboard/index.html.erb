@@ -190,3 +190,38 @@
 <%= link_to new_admin_gallery_path, class: "btn btn-primary", aria: { label: "Créer une nouvelle galerie" } do %>
 <i class="fas fa-plus"></i>
 <% end %>
+
+<hr>
+
+<h3>Les membres</h3>
+
+<% if @users.empty? %>
+  <p>Vous n'avez pas de profil de membre inscrit sur le site</p>
+<% else %>
+  <ul>
+    <% @users.each do |user| %>
+      <li><%= user.last_name %> - <%= user.first_name %>
+
+          <%= link_to admin_user_path(user), class: "btn btn-primary", aria: { label: "Voir les données personnelles de #{user.last_name} - #{user.first_name}" } do %>
+            <i class="fas fa-search"></i>
+          <% end %>
+
+          <%= link_to edit_admin_user_path(user),class: "btn btn-primary", aria: { label: "Modifier les données personnelles de #{user.last_name} - #{user.first_name}" } do %>
+            <i class="fas fa-edit"></i>
+          <% end %>
+
+          <%= link_to admin_user_path(user),
+            data: { turbo_method: :delete, turbo_confirm: "Es-tu sûr de vouloir supprimer cet utilisateur ?" },
+            class: "btn btn-danger",
+            aria: { label: "Supprimer l'utilisateur #{user.last_name} - #{user.first_name}" } do %>
+            <i class="fas fa-trash"></i>
+          <% end %>
+        </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<%= link_to admin_users_path, class: "btn btn-primary", aria: { label: "Voir tous les utilisateurs" } do %>
+  <i class="fas fa-search-plus"></i>
+<% end %>
+
