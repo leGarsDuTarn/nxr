@@ -12,7 +12,9 @@ RSpec.describe "Admin::Users", type: :request do
       address: "testaddress",
       post_code: "73000",
       town: "testville",
-      country: "testcountry"
+      country: "testcountry",
+      password: "Exemples1,",
+      password_confirmation: "Exemples1,",
     )
   end
 

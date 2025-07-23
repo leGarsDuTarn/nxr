@@ -1,0 +1,11 @@
+<div class="banner" style="background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(https://cdn.pixabay.com/photo/2017/07/18/23/40/group-2517459_1280.png);">
+  <h1>Les membres</h1>
+</div>
+
+<% @users.each do |user| %>
+  <ul>
+    <li>
+      <%= user.last_name %> - <%= user.first_name %>
+    </li>
+  </ul>
+<% end %>
