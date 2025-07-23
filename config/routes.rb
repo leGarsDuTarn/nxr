@@ -25,9 +25,16 @@ Rails.application.routes.draw do
     resources :articles
     resources :galleries
     # Pour pouvoir avoir une gestion des membres et pouvoir se conformer au RGPD
-    resources :users, only: [:index, :show, :edit, :update, :destroy]
+    resources :users, only: [:index, :show, :edit, :update, :destroy] do
+      # Route qui permet l'export des données personnelles des utilisateurs - conforme RGPD
+      member do
+        get :export
+      end
+    end
+
     get "dashboard", to: "dashboard#index"
   end
+
 
   namespace :members do
     resources :events do
