@@ -1,0 +1,24 @@
+<%= simple_form_for [:admin, @user], html: { multipart: true } do |f| %>
+  <%= f.input :user_name, label: "Pseudo" %>
+  <%= f.input :avatar, as: :file, label: "Avatar" %>
+
+<% if f.object.persisted? && f.object.avatar.attached? %>
+    <div class="mt-2">
+      <p>Avatar actuel :</p>
+      <%= image_tag(f.object.avatar, size: "150x100", class: "img-thumbnail") %><br>
+      <%= f.check_box :remove_avatar %>
+      <%= f.label :remove_avatar, "Supprimer l'image actuelle" %>
+    </div>
+  <% end %>
+
+  <%= f.input :role, collection: User.roles.keys, label: "Rôle", prompt: "Sélectionner un rôle" %>
+  <%= f.input :phone_number, label: "Numéro de téléphone" %>
+  <%= f.input :email, label: "Adresse email" %>
+  <%= f.input :first_name, label: "Prénom" %>
+  <%= f.input :last_name, label: "Nom de famille" %>
+  <%= f.input :address, label: "Adresse" %>
+  <%= f.input :post_code, label: "Code postal" %>
+  <%= f.input :town, label: "Ville" %>
+  <%= f.input :country, label: "Pays", as: :country, priority: ["France", "Belgium"], prompt: "Sélectionner un pays" %>
+  <%= f.button :submit, "Valider", class: "btn btn-primary" %>
+<% end %>
