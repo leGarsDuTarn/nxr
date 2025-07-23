@@ -78,7 +78,7 @@ RSpec.describe Gallery, type: :model do
 
     it "Le test n'est pas valid" do
       subject.validate
-      expect(subject.errors[:images]).to include("Vous devez ajouter une ou plusieurs image")
+      expect(subject.errors[:images]).to include("Vous devez ajouter une ou plusieurs images")
     end
   end
 
