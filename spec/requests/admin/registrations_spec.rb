@@ -14,6 +14,21 @@ RSpec.describe "Admin::Registrations", type: :request do
     )
   end
 
+  let(:user) do
+    User.create!(
+      user_name: "testusername",
+      role: "member",
+      first_name: "testfirst",
+      last_name: "testlast",
+      email: "test@mail.com",
+      phone_number: "0678456123",
+      address: "testaddress",
+      post_code: "73000",
+      town: "testville",
+      country: "testcountry"
+    )
+  end
+
   let(:race) do
     Race.create!(
       name: "testname",
@@ -55,14 +70,71 @@ RSpec.describe "Admin::Registrations", type: :request do
     training
   end
 
-  describe 
-
-  describe "GET/admin/events/:events_id/registrations" do # Méthode Index
-    context "Quand un admin accéde à une inscription d'un événement" do
+  describe "GET/admin/events/:events_id/registrations" do # Méthode Index event
+    context "Quand un admin accéde à une inscription d'une activité de type event" do
       it " retourne un status 200, affiche les inscriptions et valide le test" do
         get admin_event_registrations_path(event, format: :html)
         expect(response).to have_http_status(:ok)
         expect(response.body).to include(event.name)
+      end
+    end
+  end
+
+  describe "GET/admin/races/:races_id/registrations" do # Méthode Index race
+    context "Quand un admin accéde à une inscription d'une activité de type race" do
+      it " retourne un status 200, affiche les inscriptions et valide le test" do
+        get admin_race_registrations_path(race, format: :html)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(race.name)
+      end
+    end
+  end
+
+  describe "GET/admin/trainings/:trainings_id/registrations" do # Méthode Index training
+    context "Quand un admin accéde à une inscription d'une activité de type training" do
+      it " retourne un status 200, affiche les inscriptions et valide le test" do
+        get admin_training_registrations_path(training, format: :html)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(training.name)
+      end
+    end
+  end
+
+  describe "GET/admin/events/:events_id/registrations" do # Méthode show event
+    context "Quand un admin est connecté et affiche les détails des inscriptions à un événement de type event" do
+      it "retourne un status 200, affiche les informations des users inscrit" do
+        # Vérifie que les informations du participant inscrit à l'événement sont bien affichées à l'admin
+        Registration.create!(user: user, registerable: event)
+        get admin_event_registrations_path(event)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(user.last_name)
+        expect(response.body).to include(user.first_name)
+      end
+    end
+  end
+
+  describe "GET/admin/races/:races_id/registrations" do # Méthode show race
+    context "Quand un admin est connecté et affiche les détails des inscriptions à un événement de type race" do
+      it "retourne un status 200, affiche les informations des users inscrit" do
+        # Vérifie que les informations du participant inscrit à l'événement sont bien affichées à l'admin
+        Registration.create!(user: user, registerable: race)
+        get admin_race_registrations_path(race)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(user.last_name)
+        expect(response.body).to include(user.first_name)
+      end
+    end
+  end
+
+  describe "GET/admin/trainings/:trainings_id/registrations" do # Méthode show training
+    context "Quand un admin est connecté et affiche les détails des inscriptions à un événement de type training" do
+      it "retourne un status 200, affiche les informations des users inscrit" do
+        # Vérifie que les informations du participant inscrit à l'événement sont bien affichées à l'admin
+        Registration.create!(user: user, registerable: training)
+        get admin_training_registrations_path(training)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(user.last_name)
+        expect(response.body).to include(user.first_name)
       end
     end
   end
