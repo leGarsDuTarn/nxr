@@ -66,9 +66,10 @@ module Admin
         :avatar, :remove_avatar
       )
     end
-  end
 
-  def ensure_admin
-    redirect_to(root_path, alert: "Accès interdit") unless current_user&.admin?
+    # Couche de sécurité supplémentaire pour rediriger un user qui n'est pas admin
+    def ensure_admin
+      redirect_to(root_path, alert: "Accès interdit") unless current_user&.admin?
+    end
   end
 end
