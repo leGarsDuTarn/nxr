@@ -10,11 +10,11 @@ class Registration < ApplicationRecord
   # Permets ici de limiter l'inscription uniquement aux trois activités lister ci-dessous [Event, Race, Training]
   validates :registerable_type, inclusion: {
     in: %w[Event Race Training],
-    message: "%<value> n’est pas un type d’inscription valide"
+    message: "%{value} n’est pas un type d’inscription valide"
   }
 
   def activity_open
-    return if registerable.respond_to(:date) && registerable.date >= Date.today
+    return if registerable.respond_to?(:date) && registerable.date >= Date.today
 
     errors.add(:registerable, "cet événement n'est plus ouvert aux inscriptions")
   end
