@@ -14,7 +14,7 @@ RSpec.describe "Admin::Users", type: :request do
       town: "testville",
       country: "testcountry",
       password: "Exemples1,",
-      password_confirmation: "Exemples1,",
+      password_confirmation: "Exemples1,"
     )
   end
 
