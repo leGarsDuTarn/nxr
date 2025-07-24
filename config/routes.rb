@@ -37,6 +37,7 @@ Rails.application.routes.draw do
 
 
   namespace :members do
+    get 'dashboard/index'
     resources :events do
         resources :registrations, only: [:create, :new, :destroy]
       end
@@ -51,5 +52,6 @@ Rails.application.routes.draw do
 
     resources :articles, only: [:index, :show]
     resources :galleries, only: [:index, :show]
+    get "dashboard", to: "dashboard#index"
   end
 end

@@ -25,7 +25,9 @@ RSpec.describe "Admin::Registrations", type: :request do
       address: "testaddress",
       post_code: "73000",
       town: "testville",
-      country: "testcountry"
+      country: "testcountry",
+      password: "Password1,",
+      password_confirmation: "Password1,"
     )
   end
 
