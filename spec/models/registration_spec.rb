@@ -61,12 +61,11 @@ RSpec.describe Registration, type: :model do
     end
   end
 
-  # Fausse class créée uniquement pour les tests
+  # Fausse class créée uniquement pour le test
   class Cooking < ApplicationRecord
     self.table_name = 'events' # réutilise une table existante pour éviter les erreurs
     belongs_to :user
   end
-  
   context "Quand l'inscription ne concerne pas un événement de type Race, Training ou Event" do
     it "Le test n'est pas valide avec un autre type d'événement" do
 
