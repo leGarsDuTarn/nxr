@@ -1,0 +1,6 @@
+<h1>Inscriptions à <%= @registerable.name %></h1>
+<h2>Liste des inscrits</h2>
+<% @registrations.each do |registration| %>
+  <p><%= registration.registerable.name %></p>
+  <p><%= registration.user.first_name %> <%= registration.user.last_name %></p>
+<% end %>

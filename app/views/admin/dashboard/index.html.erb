@@ -225,3 +225,39 @@
   <i class="fas fa-search-plus"></i>
 <% end %>
 
+<hr>
+
+<h3>Les inscriptions en cours</h3>
+
+<% if @recent_registrations.empty? %>
+  <p>Aucune inscription récente</p>
+<% else %>
+  <ul>
+    <% @recent_registrations.each do |registration| %>
+      <li>
+        <%= registration.user.last_name %> - <%= registration.user.first_name %>
+        inscrit à
+        <strong><%= registration.registerable.name %></strong>
+        (<%= registration.registerable.class.name %>)
+        le <%= l(registration.created_at, format: :short) %>
+
+        <%= link_to polymorphic_path([:admin, registration.registerable, registration]),
+                    class: "btn btn-sm btn-info",
+                    aria: { label: "Voir l'inscription de #{registration.user.full_name}" } do %>
+          <i class="fas fa-search"></i>
+        <% end %>
+
+        <%= link_to polymorphic_path([:admin, registration.registerable, registration]),
+                    data: { turbo_method: :delete, turbo_confirm: "Supprimer cette inscription ?" },
+                    class: "btn btn-sm btn-danger",
+                    aria: { label: "Supprimer l'inscription de #{registration.user.full_name}" } do %>
+          <i class="fas fa-trash"></i>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<%= link_to admin_users_path, class: "btn btn-primary", aria: { label: "Voir tous les utilisateurs" } do %>
+  <i class="fas fa-search-plus"></i>
+<% end %>
