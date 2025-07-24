@@ -138,4 +138,18 @@ RSpec.describe "Admin::Registrations", type: :request do
       end
     end
   end
+
+  describe "DELETE/admin/events/:events_id/registrations" do # Méthode destroy event
+    context "Quand l'admin delete une inscription lié à événement de type course" do
+      it "supprime l'inscription, redirige l'user (302), et valide le test" do
+        # Vérifie que les informations du participant inscrit à l'événement sont bien affichées à l'admin
+        registration = Registration.create!(user: user, registerable: event)
+        # expect {...} permet de tester un changement d'état, test les créations et suppressions
+        expect {
+          delete admin_event_registration_path(event, registration)
+        }.to change(Registration, :count).by(-1) # Ici permet de vérifier que l'inscription est bien supprimé en DB
+        expect(response).to have_http_status(:redirect) # Redirige l'user après suppression (302)
+      end
+    end
+  end
 end
