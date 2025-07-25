@@ -41,8 +41,10 @@ class User < ApplicationRecord
   # J'ai également mis un message pour une UX plus propre
   validates :user_name, presence: { message: "Vous devez renseigner un nom d'utilisateur" }, uniqueness:
   { case_sensitive: false, message: "Ce nom d'utilisateur est déjà pris" }
+  validates :club_member, presence: { message: "vous devez sélectionner 'oui' ou 'non'" }
   validates :first_name, presence: { message: "Vous devez renseigner un prénom" }
   validates :last_name, presence: { message: "Vous devez renseigner un nom" }
+  validates :birth_date, presence: { message: "Vous devez renseigner une date de naissance" }
   validates :email, presence: { message: "Vous devez renseigner un email" }, format:
   { with: URI::MailTo::EMAIL_REGEXP, message: "exemple : john@gmail.com" }
   validates :phone_number, presence: { message: "Vous devez renseigner un numéro de téléphone" }, format:
@@ -65,6 +67,21 @@ class User < ApplicationRecord
   def password_required?
     !persisted? || !password.nil? || !password_confirmation.nil?
   end
+
+  validates :license_code, inclusion: {
+    in: %w[NCO NCP NGM NTR NVE MAT MAT2 NET ETR ETJ LDI OFF OML OFS NJ1 NJ2 NJ3 NJ3C NPH NEH LAP LES TIM NTO],
+    allow_blank: true, # Permet de laisser le champlibre si le membre inscrit n'à pas encore de licence
+    message: "%{value} n'est pas un code de licemce FFM valide"
+  }
+
+  # Permet de pas enregister en DB deux plaques identiques pour 2 motos.
+  validates :plate_number, uniqueness: true, allow_blank: true
+  # Conditionne le format des plaques d'immatriculations
+  validates :plate_number, format: {
+    with: /\A[A-Z]{2}-\d{3}-[A-Z]{2}\z/,
+    allow_blank: true, # Permet de laisser le champ libre si la moto n'est pas homologuée route
+    message: "Format de plaque invalide (ex: AB-123-CD)"
+  }
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
