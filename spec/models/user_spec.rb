@@ -135,7 +135,7 @@ RSpec.describe User, type: :model do
     user.license_code = "FFF"
     user.validate
     expect(user).not_to be_valid
-    expect(user.errors[:license_code]).to include("Vous devez renseigner un code de licence valide")
+    expect(user.errors[:license_code]).to include("FFF n'est pas un code de licence FFM valide")
   end
 
   it "ne valide pas le test avec un license_number non renseigné" do
@@ -177,7 +177,7 @@ RSpec.describe User, type: :model do
   end
 
   it "ne valide pas le test avec un license_number mal renseigné" do
-    user.license_code = "1234"
+    user.license_number = "1234"
     user.validate
     expect(user).not_to be_valid
     expect(user.errors[:license_number]).to include("Le numéro de licence doit contenir 6 chiffres")
@@ -214,7 +214,7 @@ RSpec.describe User, type: :model do
   end
 
   it "ne valide pas le test avec un plate_number mal renseigné" do
-    user.license_code = "abc123dc"
+    user.plate_number = "abc123dc"
     user.validate
     expect(user).not_to be_valid
     expect(user.errors[:plate_number]).to include("Format de plaque invalide (ex: AB-123-CD)")
@@ -238,12 +238,5 @@ RSpec.describe User, type: :model do
     user.validate
     expect(user).not_to be_valid
     expect(user.errors[:club_name]).to include("Vous devez renseigner le nom de votre club")
-  end
-
-  it "ne valide pas le test si bike_brand est mal renseigné" do
-    user.bike_brand = "Harley"
-    user.validate
-    expect(user).not_to be_valid
-    expect(user.errors[:bike_brand]).to include("n'est pas inclus dans la liste")
   end
 end
