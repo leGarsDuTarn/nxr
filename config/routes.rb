@@ -37,16 +37,15 @@ Rails.application.routes.draw do
 
 
   namespace :members do
-    get 'dashboard/index'
-    resources :events do
+    resources :events, only: [:index, :show] do
         resources :registrations, only: [:create, :new, :destroy]
       end
 
-   resources :races do
+   resources :races, only: [:index, :show] do
         resources :registrations, only: [:create, :new, :destroy]
       end
 
-    resources :trainings do
+    resources :trainings, only: [:index, :show] do
         resources :registrations, only: [:create, :new, :destroy]
       end
 
