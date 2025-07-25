@@ -1,4 +1,7 @@
 class User < ApplicationRecord
+  # Callback pour nettoyer le champ license_number avant validation
+  before_validation :normalize_license_number
+
   has_many :events, dependent: :destroy
   has_many :trainings, dependent: :destroy
   has_many :races, dependent: :destroy
@@ -41,10 +44,20 @@ class User < ApplicationRecord
   # J'ai également mis un message pour une UX plus propre
   validates :user_name, presence: { message: "Vous devez renseigner un nom d'utilisateur" }, uniqueness:
   { case_sensitive: false, message: "Ce nom d'utilisateur est déjà pris" }
+
+  validates :club_member, presence: { message: "vous devez sélectionner 'oui' ou 'non'" }
+
   validates :first_name, presence: { message: "Vous devez renseigner un prénom" }
+
   validates :last_name, presence: { message: "Vous devez renseigner un nom" }
+
+  validates :birth_date, presence: { message: "Vous devez renseigner une date de naissance" }
+
   validates :email, presence: { message: "Vous devez renseigner un email" }, format:
   { with: URI::MailTo::EMAIL_REGEXP, message: "exemple : john@gmail.com" }
+
+  validates :club_name, presence: { message: "Vous devez renseigner le nom de votre club" }
+
   validates :phone_number, presence: { message: "Vous devez renseigner un numéro de téléphone" }, format:
   { with: /\A0\d{9}\z/, message: "format invalide - 10 chiffres sans espace (ex: 0612345678)" }
 
@@ -66,6 +79,46 @@ class User < ApplicationRecord
     !persisted? || !password.nil? || !password_confirmation.nil?
   end
 
+  # Permet de controler que le champ 'code licence soit bien rempli'
+  # Évite que l'utilisateur ne renseigne un mauvais code licence qui n'existerais pas chez la FFM
+  validates :license_code, presence: { message: "Vous devez renseigner un code de licence valide" }
+  validates :license_code, inclusion: {
+    in: %w[NCO NCP NGM NTR NVE MAT MAT2 NET ETR ETJ LDI OFF OML OFS NJ1 NJ2 NJ3 NJ3C NPH NEH LAP LES TIM NTO],
+    message: "%{value} n'est pas un code de licence FFM valide"
+  }
+
+  # Permet de controler que le champ 'Nunméro de licence soit bien rempli'
+  # Oblige l'utilisateur à remplir exactement 6 chiffres.
+  validates :license_number, presence: { message: "Vous devez renseigner un numéro de licence valide" }, uniqueness:
+  { case_sensitive: false, message: "Ce numéro de licence existe déjà" }
+  validates :license_number, format: {
+    with: /\A\d{6}\z/,
+    message: "Le numéro de licence doit contenir 6 chiffres"
+  }
+
+  # Permet de pas enregister en DB deux plaques identiques pour 2 motos.
+  validates :plate_number, uniqueness:
+  {
+    case_sensitive: false,
+    message: "Ce numéro de plaque d'imatriculation existe déjà"
+  }, allow_blank: true
+  # Conditionne le format des plaques d'immatriculations
+  validates :plate_number, format: {
+    with: /\A[A-Z]{2}-\d{3}-[A-Z]{2}\z/,
+    allow_blank: true, # Permet de laisser le champ libre si la moto n'est pas homologuée route
+    message: "Format de plaque invalide (ex: AB-123-CD)"
+  }
+  # Creation d'une constante avec une liste exhaustive de plusieurs marques de motocross
+  VALID_BRANDS = %w[
+    KTM Yamaha Honda Suzuki Kawasaki Husqvarna GasGas Beta
+    TM_Racing CRZ_ERZ BASTOS Mini_MX KAYO_Motors Gunshot Apollo GPX BHR Autre
+  ]
+  # Permet de créer une liste déroulante dans le form
+  validates :bike_brand, inclusion: { in: VALID_BRANDS }, allow_blank: true
+  # La cylindré ne peut être inferieure a 50cc
+  validates :cylinder_capacity, numericality: { greater_than: 49, message: "La cylindrée doit-être supérieure à 50cc" }
+  # Permet d'avoir une liste déroulante dans le forme avec 2Temps ou 4Temps
+  enum stroke_type: { two_stroke: "2T", four_stroke: "4T" }
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -77,10 +130,16 @@ class User < ApplicationRecord
   end
 
   def events
-    registrations.where(registerable_type: "Events").map(&:registerable)
+    registrations.where(registerable_type: "Event").map(&:registerable)
   end
 
   def races
     registrations.where(registerable_type: "Races").map(&:registerable)
+  end
+
+  private
+
+  def normalize_license_number
+    self.license_number = license_number.strip if license_number.present?
   end
 end

@@ -3,31 +3,51 @@ require 'rails_helper'
 RSpec.describe "Admin::Users", type: :request do
   let(:user) do
     User.create!(
-      user_name: "testusername",
+    user_name: "name",
       role: "member",
-      first_name: "testfirst",
-      last_name: "testlast",
-      email: "test@mail.com",
-      phone_number: "0678456123",
-      address: "testaddress",
-      post_code: "73000",
-      town: "testville",
-      country: "testcountry",
-      password: "Password1,",
-      password_confirmation: "Password1,"
+      first_name: "fname",
+      last_name: "lname",
+      email: "test1@gmail.com",
+      phone_number: "0678451203",
+      birth_date: Date.new(1992, 6, 5),
+      address: "adress",
+      post_code: "74000",
+      country: "France",
+      license_code: "NCP",
+      license_number: "654123",
+      club_member: true,
+      club_name: "clubname",
+      bike_brand: "KTM",
+      cylinder_capacity: 85,
+      stroke_type: "4T",
+      plate_number: "AC-123-CA",
+      password: "Exemples1,",
+      password_confirmation: "Exemples1,"
     )
   end
 
   let(:admin) do
     User.create!(
-      user_name: "leGarsDuTarn",
-      first_name: "Benjamin",
-      last_name: "Grassiano",
-      email: "ben@gmail.com",
-      phone_number: "0678456123",
+      user_name: "testuser_name",
+      role: "admin",
+      first_name: "test_fname",
+      last_name: "test_lname",
+      email: "test@mail.com",
+      phone_number: "0600000000",
+      birth_date: Date.new(1992, 6, 5),
+      address: "testadress",
+      post_code: "73000",
+      country: "France",
+      license_code: "NCO",
+      license_number: "123456",
+      club_member: true,
+      club_name: "testclubname",
+      bike_brand: "KTM",
+      cylinder_capacity: 50,
+      stroke_type: "2T",
+      plate_number: "AN-123-CD",
       password: "Exemples1,",
-      password_confirmation: "Exemples1,",
-      role: "admin"
+      password_confirmation: "Exemples1,"
     )
   end
 
