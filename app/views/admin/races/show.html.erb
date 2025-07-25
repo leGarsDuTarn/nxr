@@ -1,6 +1,6 @@
 <div class="banner" style="background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url('<%= banner_image_race_url(@race) %>')">
     <h1><%= @race.name %></h1>
-    <a class="btn btn-flat" href="#">Je m'inscris</a>
+    <%= registration_link(@race) %>
   </div>
 
 <p><%= @race.description %></p>
