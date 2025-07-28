@@ -1,3 +1,32 @@
 <h1>Bienvenue <%= current_user.first_name %> !</h1>
 <p>Voici ton tableau de bord membre. Tu pourras retrouver ici tes prochaines activités, inscriptions et actualités !</p>
 
+<h2>Mes inscriptions</h2>
+
+<% if @registrations.any? %>
+  <ul>
+    <% @registrations.each do |registration| %>
+      <li>
+        <strong><%= registration.registerable_type %> :</strong>
+        <% registerable = registration.registerable %>
+
+        <%# Lien vers l’activité selon son type %>
+        <% case registration.registerable_type %>
+        <% when 'Event' %>
+          <%= link_to registerable.name, members_event_path(registerable) %>
+        <% when 'Race' %>
+          <%= link_to registerable.name, members_race_path(registerable) %>
+        <% when 'Training' %>
+          <%= link_to registerable.name, members_training_path(registerable) %>
+        <% end %>
+
+        <br>
+        <em>Inscrit le <%= l(registration.created_at, format: :short) %></em>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>Vous n’êtes inscrit à aucune activité pour le moment.</p>
+<% end %>
+
+<hr>
