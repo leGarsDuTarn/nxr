@@ -21,12 +21,38 @@
         <% end %>
 
         <br>
-        <em>Inscrit le <%= l(registration.created_at, format: :short) %></em>
+        <em>Inscrit le <%= (registration.created_at, format: :short) %></em>
+            <%= link_to members_registration_path(registration),
+            data: { turbo_method: :delete, turbo_confirm: "Es-tu sûr de vouloir supprimer ton inscription ?" },
+            class: "btn btn-danger",
+            aria: { label: "Supprimer l'inscription #{@race.name}" } do %>
+            <i class="fas fa-trash"></i>
+          <% end %>
+
       </li>
     <% end %>
   </ul>
 <% else %>
   <p>Vous n’êtes inscrit à aucune activité pour le moment.</p>
+<% end %>
+
+
+<hr>
+
+<h3>Les courses</h3>
+
+<% if @races.empty? %>
+  <p>Il n'y a pas de course pour l'instant</p>
+<% else %>
+  <ul>
+    <% @races.each do |race| %>
+      <li><%= race.name %>
+          <%= link_to members_race_path(race), class: "btn btn-primary", aria: { label: "Voir la course #{race.name}" } do %>
+            <i class="fas fa-search"></i>
+          <% end %>
+        </li>
+    <% end %>
+  </ul>
 <% end %>
 
 <hr>

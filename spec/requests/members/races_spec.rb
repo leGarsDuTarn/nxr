@@ -36,6 +36,13 @@ RSpec.describe 'Members::Races', type: :request do
     )
   end
 
+  let!(:registration) do
+    Registration.create!(
+      user: member,
+      registerable: race
+    )
+  end
+
   before do
     # Appel race avant chaque test, évite un DRY inutile
     race
@@ -63,4 +70,17 @@ RSpec.describe 'Members::Races', type: :request do
       end
     end
   end
+
+  describe "DELETE/members/races/:race_id/registrations/:id" do # Méthode destroy
+    context "Quand un membre supprime son inscription d'une course" do
+      it "delete une inscription à une course, redirige l'user (302) et valide le test" do
+        # expect {...} permet de tester un changement d'état, test les créations et suppressions
+        expect {
+          delete members_race_registration_path(race, registration)
+        }.to change(Registration, :count).by(-1) # Ici permet de vérifier que la course est bien supprimé en DB
+        expect(response).to have_http_status(:redirect) # Redirige l'user après suppression (302)
+      end
+    end
+  end
+
 end
