@@ -113,7 +113,7 @@ RSpec.describe "Members::Registrations", type: :request do
         expect(response.body).to include('name="user[last_name]"')
         expect(response.body).to include('name="user[birth_date]"')
         expect(response.body).to include('name="user[phone_number]"')
-        # expect(response.body).to include('name="user[race_number]"')
+        expect(response.body).to include('name="user[race_number]"')
         expect(response.body).to include('name="user[address]"')
         expect(response.body).to include('name="user[post_code]"')
         expect(response.body).to include('name="user[town]"')

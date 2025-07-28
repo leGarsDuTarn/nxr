@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_25_124301) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_28_092754) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -131,7 +131,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_25_124301) do
     t.string "stroke_type"
     t.string "plate_number"
     t.string "club_name"
+    t.string "race_number"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["license_number"], name: "index_users_on_license_number", unique: true
+    t.index ["plate_number"], name: "index_users_on_plate_number", unique: true
+    t.index ["race_number"], name: "index_users_on_race_number", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 

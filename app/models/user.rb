@@ -121,6 +121,11 @@ class User < ApplicationRecord
   enum stroke_type: { two_stroke: "2T", four_stroke: "4T" }
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+
+  validates :race_number, uniqueness:
+  {
+    message: "Ce numéro de plaque d'imatriculation existe déjà"
+  }, allow_blank: true
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
