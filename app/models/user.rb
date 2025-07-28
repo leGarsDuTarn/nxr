@@ -9,6 +9,11 @@ class User < ApplicationRecord
   has_many :galleries, dependent: :destroy
   has_many :registrations, dependent: :destroy
 
+  # Associations pour les activités auxquelles l'utilisateur est INSCRIT
+  has_many :registered_events, through: :registrations, source: :registerable, source_type: 'Event'
+  has_many :registered_races, through: :registrations, source: :registerable, source_type: 'Race'
+  has_many :registered_trainings, through: :registrations, source: :registerable, source_type: 'Training'
+
   # Permet que chaque inscription soit uniquement en role members
   enum role: { member: "member", admin: "admin" }
 
@@ -121,6 +126,11 @@ class User < ApplicationRecord
   enum stroke_type: { two_stroke: "2T", four_stroke: "4T" }
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+
+  validates :race_number, uniqueness:
+  {
+    message: "Ce numéro de plaque d'imatriculation existe déjà"
+  }, allow_blank: true
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
