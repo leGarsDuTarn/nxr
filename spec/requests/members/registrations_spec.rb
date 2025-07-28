@@ -75,7 +75,7 @@ RSpec.describe "Members::Registrations", type: :request do
         expect(response).to have_http_status(:ok)
         expect(response.body).to match(/inscription/i) # case insensitive = Inscription ou inscription
         expect(response.body).to include(event.name)
-        #expect(response.body).to include('<form') # Vérifie qu'un formulaire est bien affiché
+        expect(response.body).to include('<form') # Vérifie qu'un formulaire est bien affiché
         # vérifie ici que le formulaire HTML contient bien les champs cachés nécessaires
         # pour que l'inscription soit correctement reliée à un événement (comme une course).
         # Ces champs sont indispensables à cause de l'association polymorphe `registerable`
@@ -169,7 +169,7 @@ RSpec.describe "Members::Registrations", type: :request do
           }
         }.to change(Registration, :count).by(1) # Ici permet de vérifier que l'inscription à un event est bien créé en DB
         expect(response).to have_http_status(:redirect) # Vérifie que l'user est bien redirigé (302)
-        expect(member.events).to include(event) # Vérifie que l'user est bien inscrit à l'event
+        expect(member.registered_events).to include(event) # Vérifie que l'user est bien inscrit à l'event
       end
     end
   end
@@ -185,7 +185,7 @@ RSpec.describe "Members::Registrations", type: :request do
         }.to change(Registration, :count).by(1) # Ici permet de vérifier que l'inscription à une race est bien créé en DB
         expect(response).to have_http_status(:redirect) # Vérifie que l'user est bien redirigé (302)
         member.reload # recharge depuis la DB
-        expect(member.events).to include(race) # Vérifie que l'user est bien inscrit à la race
+        expect(member.registered_races).to include(race) # Vérifie que l'user est bien inscrit à la race
       end
     end
   end
@@ -201,7 +201,7 @@ RSpec.describe "Members::Registrations", type: :request do
         }.to change(Registration, :count).by(1) # Ici permet de vérifier que l'inscription à un training est bien créé en DB
         expect(response).to have_http_status(:redirect) # Vérifie que l'user est bien redirigé (302)
         member.reload # recharge depuis la DB
-        expect(member.events).to include(training) # Vérifie que l'user est bien inscrit à l'event
+        expect(member.registered_trainings).to include(training) # Vérifie que l'user est bien inscrit au training
       end
     end
   end

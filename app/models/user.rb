@@ -9,6 +9,11 @@ class User < ApplicationRecord
   has_many :galleries, dependent: :destroy
   has_many :registrations, dependent: :destroy
 
+  # Associations pour les activités auxquelles l'utilisateur est INSCRIT
+  has_many :registered_events, through: :registrations, source: :registerable, source_type: 'Event'
+  has_many :registered_races, through: :registrations, source: :registerable, source_type: 'Race'
+  has_many :registered_trainings, through: :registrations, source: :registerable, source_type: 'Training'
+
   # Permet que chaque inscription soit uniquement en role members
   enum role: { member: "member", admin: "admin" }
 

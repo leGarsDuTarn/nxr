@@ -1,6 +1,7 @@
 class Event < ApplicationRecord
   belongs_to :user
   has_many :registrations, as: :registerable, dependent: :destroy
+  has_many :users, through: :registrations
 
   # Offre à l'admin la possibilté d'ajouter une image pour la création d'un événement
   has_one_attached :image
