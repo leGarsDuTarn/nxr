@@ -1,0 +1,36 @@
+<h1>Inscription</h1>
+
+<% if @training %>
+<p>Événement : <%= @training.name %></p>
+<% end %>
+
+<%= simple_form_for @registration, url: polymorphic_path([:members, @registration.registerable, :registrations]) do |f| %>
+  <%= f.hidden_field :registerable_id, value: @registration.registerable_id %>
+  <%= f.hidden_field :registerable_type, value: @registration.registerable_type %>
+
+  <%= label_tag 'user_first_name', 'Prénom' %>
+  <%= text_field_tag 'user[first_name]', current_user.first_name, required: true %>
+
+  <%= label_tag 'user_last_name', 'Nom' %>
+  <%= text_field_tag 'user[last_name]', current_user.last_name, required: true %>
+
+  <%= label_tag 'user_birth_date', 'Date de naissance' %>
+  <%= text_field_tag 'user[birth_date]', current_user.birth_date, required: true %>
+
+  <%= label_tag 'user_phone_number', 'Téléphone' %>
+  <%= text_field_tag 'user[phone_number]', current_user.phone_number, required: true %>
+
+  <%= label_tag 'user_license_code', 'Licence Code' %>
+  <%= text_field_tag 'user[license_code]', current_user.license_code, required: true %>
+
+  <%= label_tag 'user_license_number', 'Numéro de licence' %>
+  <%= text_field_tag 'user[license_number]', current_user.license_number, required: true  %>
+
+  <%= label_tag 'user_club_name', 'Nom de votre club' %>
+  <%= text_field_tag 'user[club_name]', current_user.club_name, required: true %>
+
+  <%= label_tag 'user_plate_number', "Plaque d'immatriculation" %>
+  <%= text_field_tag 'user[plate_number]', current_user.plate_number, required: true %>
+
+  <%= f.button :submit, "S'inscrire" %>
+<% end %>

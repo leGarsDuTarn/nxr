@@ -1,0 +1,25 @@
+<h1>Inscription</h1>
+
+<% if @event %>
+<p>Événement : <%= @event.name %></p>
+<% end %>
+
+<%= simple_form_for @registration, url: polymorphic_path([:members, @registration.registerable, :registrations]) do |f| %>
+  <%= f.hidden_field :registerable_id, value: @registration.registerable_id %>
+  <%= f.hidden_field :registerable_type, value: @registration.registerable_type %>
+
+  <!-- Champs utilisateur hors de la form registration, avec noms adaptés -->
+  <%= label_tag 'user_first_name', 'Prénom' %>
+  <%= text_field_tag 'user[first_name]', current_user.first_name %>
+
+  <%= label_tag 'user_last_name', 'Nom' %>
+  <%= text_field_tag 'user[last_name]', current_user.last_name %>
+
+  <%= label_tag 'user_phone_number', 'Téléphone' %>
+  <%= text_field_tag 'user[phone_number]', current_user.phone_number %>
+
+  <%= label_tag 'user_club_name', 'Nom de votre club' %>
+  <%= text_field_tag 'user[club_name]', current_user.club_name %>
+
+  <%= f.button :submit, "S'inscrire" %>
+<% end %>

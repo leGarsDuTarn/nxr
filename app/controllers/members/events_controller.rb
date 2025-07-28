@@ -1,2 +1,5 @@
-class Members::EventsController < ApplicationController
+module Members
+  class EventsController < BaseController
+    
+  end
 end

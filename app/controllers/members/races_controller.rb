@@ -1,2 +1,4 @@
-class Members::RacesController < ApplicationController
+module Members
+  class RacesController < BaseController
+  end
 end
