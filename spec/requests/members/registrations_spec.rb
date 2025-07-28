@@ -201,7 +201,45 @@ RSpec.describe "Members::Registrations", type: :request do
       end
     end
   end
+  describe "DELETE /members/event/:event_id/registration/:id" do # Méthode destroy event
+    context "Quand le membre supprime son inscription lié à événement de type event" do
+      it "supprime l'inscription, redirige l'user (302), et valide le test" do
+        # Crée une inscription qui sera supprimée pour le test
+        registration = Registration.create!(user: member, registerable: event)
+        # expect {...} permet de tester un changement d'état, test les créations et suppressions
+        expect {
+          delete member_event_registration_path(event, registration)
+        }.to change(Registration, :count).by(-1) # Ici permet de vérifier que l'inscription est bien supprimé en DB
+        expect(response).to have_http_status(:redirect) # Redirige l'user après suppression (302)
+      end
+    end
+  end
 
-  
+  describe "DELETE /member/race/:race_id/registration/:id" do # Méthode destroy race
+    context "Quand le membre supprime son inscription lié à événement de type race" do
+      it "supprime l'inscription, redirige l'user (302), et valide le test" do
+        # Crée une inscription qui sera supprimée pour le test
+        registration = Registration.create!(user: member, registerable: race)
+        # expect {...} permet de tester un changement d'état, test les créations et suppressions
+        expect {
+          delete member_race_registration_path(race, registration)
+        }.to change(Registration, :count).by(-1) # Ici permet de vérifier que l'inscription est bien supprimé en DB
+        expect(response).to have_http_status(:redirect) # Redirige l'user après suppression (302)
+      end
+    end
+  end
 
+  describe "DELETE /member/training/:training_id/registration/:id" do # Méthode destroy training
+    context "Quand le membre supprime son inscription lié à événement de type training" do
+      it "supprime l'inscription, redirige l'user (302), et valide le test" do
+        # Crée une inscription qui sera supprimée pour le test
+        registration = Registration.create!(user: member, registerable: training)
+        # expect {...} permet de tester un changement d'état, test les créations et suppressions
+        expect {
+          delete member_training_registration_path(training, registration)
+        }.to change(Registration, :count).by(-1) # Ici permet de vérifier que l'inscription est bien supprimé en DB
+        expect(response).to have_http_status(:redirect) # Redirige l'user après suppression (302)
+      end
+    end
+  end
 end
