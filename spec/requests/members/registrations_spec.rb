@@ -184,6 +184,7 @@ RSpec.describe "Members::Registrations", type: :request do
           }
         }.to change(Registration, :count).by(1) # Ici permet de vérifier que l'inscription à une race est bien créé en DB
         expect(response).to have_http_status(:redirect) # Vérifie que l'user est bien redirigé (302)
+        member.reload # recharge depuis la DB
         expect(member.events).to include(race) # Vérifie que l'user est bien inscrit à la race
       end
     end
@@ -199,6 +200,7 @@ RSpec.describe "Members::Registrations", type: :request do
           }
         }.to change(Registration, :count).by(1) # Ici permet de vérifier que l'inscription à un training est bien créé en DB
         expect(response).to have_http_status(:redirect) # Vérifie que l'user est bien redirigé (302)
+        member.reload # recharge depuis la DB
         expect(member.events).to include(training) # Vérifie que l'user est bien inscrit à l'event
       end
     end

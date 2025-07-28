@@ -21,5 +21,41 @@ module Members
         render :new_training
       end
     end
+
+    def create
+      @registration = Registration.new(registration_params)
+      # Associe l'inscription à l'utilisateur actuellement connecté
+      @registration.user = current_user
+      # Grâce à l'association polymorphe 'registerable', cette ligne retourne la ressource (Event, Race ou Training)
+      # à laquelle l'utilisateur s'est inscrit -> ce qui permet de faire : @registerable.name
+      @registerable = @registration.registerable
+
+      if @registration.save
+        # Récupère le type de la ressource (Event Race ou Training)
+        type = @registerable.class.model_name.human
+        # Récupère le nom de la ressource (ex : Course de Noël)
+        name = @registerable.name
+        # Redirige vers le tableau de bord avec un message personnalisé
+        redirect_to members_dashboard_path, notice: "Inscription à #{type} « #{name} » réussie"
+      else
+        # Affiche dynamiquement la vue d'inscription correspondant au type de ressource (new_event, new_race, etc.)
+        render "new_#{@registerable.class.name.downcase}"
+      end
+    end
+
+    def destroy
+      @registration = Registration.find(params[:id])
+      # Grâce à l'association polymorphe 'registerable', cette ligne retourne la ressource (Event, Race ou Training)
+      # à laquelle l'utilisateur s'est inscrit -> ce qui permet de faire : @registerable.name
+      @registerable = @registration.registerable
+      @registration.destroy
+      redirect_to members_dashboard_path, notice: "Inscription de #{@registerable.name} supprimée avec succès."
+    end
+
+    private
+
+    def registration_params
+      params.require(:registration).permit(:registerable_id, :registerable_type)
+    end
   end
 end
