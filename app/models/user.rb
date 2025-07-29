@@ -1,8 +1,10 @@
 class User < ApplicationRecord
-  
+
 
   # Callback pour nettoyer le champ license_number avant validation
   before_validation :normalize_license_number
+  # Callback qui permet la validation insensible à la casse
+  before_validation :normalize_license_code
 
   has_many :events, dependent: :destroy
   has_many :trainings, dependent: :destroy
@@ -153,5 +155,9 @@ class User < ApplicationRecord
 
   def normalize_license_number
     self.license_number = license_number.strip if license_number.present?
+  end
+
+  def normalize_license_code
+    self.license_code = license_code&.upcase&.strip
   end
 end
