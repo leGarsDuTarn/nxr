@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  
+
   # Callback pour nettoyer le champ license_number avant validation
   before_validation :normalize_license_number
 

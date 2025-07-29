@@ -1,0 +1,99 @@
+# Permet de traduire en langue Française
+fr:
+  activerecord:
+    models:
+      user: "Utilisateur"
+    attributes:
+      user:
+        user_name: "Nom d'utilisateur"
+        first_name: "Prénom"
+        last_name: "Nom de famille"
+        birth_date: "Date de naissance"
+        club_name: "Nom du club"
+        club_member: "Licencié du club de Navès ?"
+        address: "Adresse"
+        post_code: "Code Postal"
+        town: "Ville"
+        country: "Pays"
+        phone_number: "Numéro de téléphone"
+        license_code: "Code de licence"
+        license_number: "Numéro de licence"
+        cylinder_capacity: "Cylindrée (cc)"
+        bike_brand: "Marque de moto"
+        stroke_type: "Type de moteur"
+        plate_number: "Numéro de plaque"
+        race_number: "Numéro de course"
+        avatar: "Avatar"
+  simple_form:
+    labels:
+      user:
+        user_name: "Nom d'utilisateur"
+        first_name: "Prénom"
+        last_name: "Nom de famille"
+        birth_date: "Date de naissance"
+        club_name: "Nom du club"
+        club_member: "Licencié du club de Navès ?"
+        address: "Adresse"
+        post_code: "Code Postal"
+        town: "Ville"
+        country: "Pays"
+        phone_number: "Numéro de téléphone"
+        license_code: "Code de licence"
+        license_number: "Numéro de licence"
+        cylinder_capacity: "Cylindrée (cc)"
+        bike_brand: "Marque de moto"
+        stroke_type: "Type de moteur"
+        plate_number: "Numéro de plaque"
+        race_number: "Numéro de course"
+        avatar: "Avatar"
+
+        fr:
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      short: "%e %b"
+      long: "%e %B %Y"
+    day_names:
+      - dimanche
+      - lundi
+      - mardi
+      - mercredi
+      - jeudi
+      - vendredi
+      - samedi
+    abbr_day_names:
+      - dim
+      - lun
+      - mar
+      - mer
+      - jeu
+      - ven
+      - sam
+    month_names:
+      - ~
+      - janvier
+      - février
+      - mars
+      - avril
+      - mai
+      - juin
+      - juillet
+      - août
+      - septembre
+      - octobre
+      - novembre
+      - décembre
+    abbr_month_names:
+      - ~
+      - jan.
+      - fév.
+      - mar.
+      - avr.
+      - mai
+      - juin
+      - juil.
+      - août
+      - sept.
+      - oct.
+      - nov.
+      - déc.
