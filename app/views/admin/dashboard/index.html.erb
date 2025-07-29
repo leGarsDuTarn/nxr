@@ -243,14 +243,14 @@
 
         <%= link_to polymorphic_path([:admin, registration.registerable, registration]),
                     class: "btn btn-sm btn-info",
-                    aria: { label: "Voir l'inscription de #{registration.user.full_name}" } do %>
+                    aria: { label: "Voir l'inscription de #{registration.user.first_name} - #{registration.user.last_name}" } do %>
           <i class="fas fa-search"></i>
         <% end %>
 
         <%= link_to polymorphic_path([:admin, registration.registerable, registration]),
                     data: { turbo_method: :delete, turbo_confirm: "Supprimer cette inscription ?" },
                     class: "btn btn-sm btn-danger",
-                    aria: { label: "Supprimer l'inscription de #{registration.user.full_name}" } do %>
+                    aria: { label: "Supprimer l'inscription de #{registration.user.first_name} - #{registration.user.last_name}" } do %>
           <i class="fas fa-trash"></i>
         <% end %>
       </li>
