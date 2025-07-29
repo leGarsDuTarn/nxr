@@ -21,14 +21,17 @@
         <% end %>
 
         <br>
-        <em>Inscrit le <%= (registration.created_at, format: :short) %></em>
-            <%= link_to members_registration_path(registration),
-            data: { turbo_method: :delete, turbo_confirm: "Es-tu sûr de vouloir supprimer ton inscription ?" },
+        <%# Attention ici ne pas enlever le 'l' avant(registration.created_at)
+        <%# car le 'l' est un allias pour localize(...) -> donc erreur syntaxe %>
+        <em>Inscrit le <%= l(registration.created_at, format: :short) %></em>
+            <%# registration.registerable -> L'événement auquel members est inscrit soit l'objet lié à l'inscription %>
+            <%# Donc (registration.registerable, registration) %>
+            <%# ==> Je passe en premier l’événement auquel le membre est inscrit, puis l’inscription elle-même %>
+            <%# Ainsi Rails peut construire la bonne route imbriquée %>
+            <%= link_to "Annuler mon inscription", members_race_registration_path(registration.registerable, registration),
+            data: { turbo_method: :delete, turbo_confirm: "Es-tu sûr de vouloir d'annuler ton inscription ?" },
             class: "btn btn-danger",
-            aria: { label: "Supprimer l'inscription #{@race.name}" } do %>
-            <i class="fas fa-trash"></i>
-          <% end %>
-
+            aria: { label: "Annuler l'inscription #{registration.registerable.name}" }%>
       </li>
     <% end %>
   </ul>
