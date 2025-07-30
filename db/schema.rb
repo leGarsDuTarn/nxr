@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_30_200652) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_30_211137) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -93,6 +93,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_30_200652) do
     t.integer "cylinder_capacity"
     t.string "stroke_type"
     t.string "race_number"
+    t.index ["race_number", "registerable_id", "registerable_type"], name: "index_registrations_on_race_number_and_registerable", unique: true
     t.index ["registerable_type", "registerable_id"], name: "index_registrations_on_registerable"
     t.index ["user_id", "registerable_type", "registerable_id"], name: "idx_on_user_id_registerable_type_registerable_id_88e34dcfbb", unique: true
     t.index ["user_id"], name: "index_registrations_on_user_id"

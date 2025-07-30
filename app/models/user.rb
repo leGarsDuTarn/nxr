@@ -95,9 +95,12 @@ class User < ApplicationRecord
 
   # Permet de controler que le champ 'code licence soit bien rempli'
   # Évite que l'utilisateur ne renseigne un mauvais code licence qui n'existerais pas chez la FFM
+  LICENCE_CODES = %w[NCO NCP NGM NTR NVE MAT MAT2 NET ETR ETJ LDI OFF OML OFS
+  NJ1 NJ2 NJ3 NJ3C NPH NEH LAP LES TIM NTO].freeze
+  # .freeze -> empêche toute modification du tableau en mémoire -> sécurise le code
   validates :license_code, presence: { message: "Veuillez renseigner un code de licence valide." }
   validates :license_code, inclusion: {
-    in: %w[NCO NCP NGM NTR NVE MAT MAT2 NET ETR ETJ LDI OFF OML OFS NJ1 NJ2 NJ3 NJ3C NPH NEH LAP LES TIM NTO],
+    in: LICENCE_CODES,
     message: "%{value} n’est pas un code de licence FFM valide."
   }
 

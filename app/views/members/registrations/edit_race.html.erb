@@ -21,17 +21,32 @@
 
   <fieldset>
     <legend>Informations sur la course (non modifiables)</legend>
-    <%= f.input :race_number, label: 'Numéro de course', input_html: { value: @registration.user.race_number, readonly: true } %>
     <%= f.input :license_code, label: 'Code licence', input_html: { value: @registration.user.license_code, readonly: true } %>
     <%= f.input :license_number, label: 'Numéro de licence', input_html: { value: @registration.user.license_number, readonly: true } %>
     <%= f.input :club_name, label: 'Nom du club', input_html: { value: @registration.user.club_name, readonly: true } %>
+    <%= f.input :race_number, label: 'Numéro de course', placeholder: "Veuillez renseigner un numéro de course", required: true %>
   </fieldset>
 
   <fieldset>
     <legend>Informations sur le véhicule (modifiables)</legend>
-    <%= f.input :bike_brand, label: 'Marque de moto', required: true, as: :string, input_html: { value: @registration.bike_brand } %>
-    <%= f.input :cylinder_capacity, label: 'Cylindrée', required: true, input_html: { value: @registration.cylinder_capacity } %>
-    <%= f.input :stroke_type, label: 'Type de moteur (2T/4T)', required: true, input_html: { value: @registration.stroke_type } %>
+    <%= f.input :bike_brand,
+    as: :select,
+    collection: Registration::VALID_BRANDS,
+    label: 'Marque de moto',
+    prompt: "Sélectionner une marque",
+    required: true %>
+
+   <%= f.input :cylinder_capacity,
+            as: :select,
+            collection: Registration::BIKE_CYLINDER_CAPACITY,
+            label: 'Cylindrée (cc)',
+            prompt: "Sélectionner la cylindrée",
+            required: true %>
+
+    <%= f.input :stroke_type,
+            label: "Type de moteur",
+            collection: [['2 temps', 'two_stroke'], ['4 temps', 'four_stroke']],
+            prompt: "Sélectionner le type" %>
   </fieldset>
 
   <div class="mt-3">
