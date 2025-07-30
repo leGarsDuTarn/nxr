@@ -46,8 +46,11 @@ fr:
         plate_number: "Numéro de plaque"
         race_number: "Numéro de course"
         avatar: "Avatar"
-
-        fr:
+  time:
+    formats:
+      default: "%d/%m/%Y %H:%M:%S"
+      short: "%d/%m/%Y %H:%M"
+      long: "%A %d %B %Y %H:%M"
   date:
     formats:
       default: "%d/%m/%Y"
@@ -97,3 +100,4 @@ fr:
       - oct.
       - nov.
       - déc.
+

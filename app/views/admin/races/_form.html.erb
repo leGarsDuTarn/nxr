@@ -1,7 +1,9 @@
 <%= simple_form_for [:admin, @race], html: { multipart: true } do |f| %>
   <%= f.input :name, label: "Nom de la course" %>
   <%= f.input :description, label: "Description de la course" %>
-  <%= f.input :date, as: :date, label: "Date de la course" %>
+  <%= f.input :date, label: "Date de la course" do %>
+    <%= f.date_field :date, class: "form-control" %>
+  <% end %>
   <%= f.input :hour, as: :time, label: "Heure de la course" %>
   <%= f.input :image, as: :file, label: "Image de la course" %>
   <%= f.button :submit, "Valider", class: "btn btn-primary" %>

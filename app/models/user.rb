@@ -54,8 +54,9 @@ class User < ApplicationRecord
   # J'ai également mis un message pour une UX plus propre
   validates :user_name, presence: { message: "Veuillez renseigner un nom d’utilisateur." }, uniqueness:
   { case_sensitive: false, message: "Oups ! Ce nom d’utilisateur est déjà pris." }
-
-  validates :club_member, presence: { message: "Veuillez sélectionner 'Oui' ou 'Non'." }
+  # Valide que :club_member est true ou false
+  # Message personnalisé si aucune des deux valeurs n’est sélectionnée
+  validates :club_member, inclusion: { in: [true, false], message: "Veuillez sélectionner 'Oui' ou 'Non'." }
 
   validates :first_name, presence: { message: "Veuillez renseigner un prénom." }
 
@@ -126,7 +127,9 @@ class User < ApplicationRecord
   # Permet de créer une liste déroulante dans le form
   validates :bike_brand, inclusion: { in: VALID_BRANDS }, allow_blank: true
   # La cylindré ne peut être inferieure a 50cc
-  validates :cylinder_capacity, numericality: { greater_than: 49, message: "La cylindrée doit-être supérieure à 50cc." }
+  validates :cylinder_capacity, numericality: {
+    greater_than: 49, message: "La cylindrée doit-être supérieure à 50cc."
+   }, allow_blank: true
   # Permet d'avoir une liste déroulante dans le forme avec 2Temps ou 4Temps
   enum stroke_type: { two_stroke: "2T", four_stroke: "4T" }
   # Include default devise modules. Others available are:
