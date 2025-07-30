@@ -1,6 +1,11 @@
 module Members
   class RegistrationsController < BaseController
     before_action :set_registration
+
+    def show
+      render :show_race
+      # @registration
+    end
     def new
       # Si l'URL contient un paramètre event_id, alors on veut s'inscrire à un Event
       if params[:event_id]

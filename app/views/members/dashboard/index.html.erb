@@ -27,6 +27,9 @@
             <%# Donc (registration.registerable, registration) %>
             <%# ==> Je passe en premier l’événement auquel le membre est inscrit, puis l’inscription elle-même %>
             <%# Ainsi Rails peut construire la bonne route imbriquée %>
+            <%= link_to "voir mon inscription",
+            polymorphic_path([:members, registration.registerable, registration]),
+            class: "btn btn-primary" %>
             <%= link_to "modifier mon inscription", edit_members_race_registration_path(registration.registerable, registration),
             class: "btn btn-primary" %>
             <%= link_to "Annuler mon inscription", members_race_registration_path(registration.registerable, registration),
