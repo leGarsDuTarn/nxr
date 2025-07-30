@@ -7,7 +7,6 @@
   <ul>
     <% @registrations.each do |registration| %>
       <li>
-        <strong><%= registration.registerable_type %> :</strong>
         <% registerable = registration.registerable %>
 
         <%# Lien vers l’activité selon son type %>

@@ -29,7 +29,7 @@
 
   <fieldset>
     <legend>Informations véhicule</legend>
-    <%= f.input :bike_brand, label: 'Marque de votre moto', required: true, input_html: { value: current_user.bike_brand } %>
+    <%= f.input :bike_brand, as: :string, input_html: { value: current_user.bike_brand } %>
     <%= f.input :cylinder_capacity, label: 'Cylindrée', required: true, input_html: { value: current_user.cylinder_capacity } %>
     <%= f.input :stroke_type,
               required: true,

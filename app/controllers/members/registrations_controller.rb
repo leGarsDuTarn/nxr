@@ -55,7 +55,10 @@ module Members
     private
 
     def registration_params
-      params.require(:registration).permit(:registerable_id, :registerable_type)
+      params.require(:registration).permit(
+        :registerable_id,
+        :registerable_type,
+      )
     end
   end
 end
