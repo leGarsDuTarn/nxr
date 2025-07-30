@@ -56,6 +56,9 @@ class User < ApplicationRecord
   { case_sensitive: false, message: "Oups ! Ce nom d’utilisateur est déjà pris." }
   # Valide que :club_member est true ou false
   # Message personnalisé si aucune des deux valeurs n’est sélectionnée
+  validates :address, presence: { message: "Veuillez renseigner une adresse." }
+  validates :post_code, presence: { message: "Veuillez renseigner un Code Postal." }
+  validates :town, presence: { message: "Veuillez renseigner une Ville." }
   validates :club_member, inclusion: { in: [true, false], message: "Veuillez sélectionner 'Oui' ou 'Non'." }
 
   validates :first_name, presence: { message: "Veuillez renseigner un prénom." }

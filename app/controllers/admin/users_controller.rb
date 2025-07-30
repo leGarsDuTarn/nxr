@@ -26,7 +26,7 @@ module Admin
         format.html # => rend la vue show.html.erb
         format.json do
           render json: @user.as_json(
-            only: %i[id first_name last_name email phone_number user_namec address post_code town country created_at]
+            only: %i[id first_name last_name email phone_number user_name address post_code town country created_at]
           )
         end
       end
