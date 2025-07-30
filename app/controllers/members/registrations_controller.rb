@@ -1,5 +1,6 @@
 module Members
   class RegistrationsController < BaseController
+    before_action :set_registration
     def new
       # Si l'URL contient un paramètre event_id, alors on veut s'inscrire à un Event
       if params[:event_id]
@@ -43,6 +44,19 @@ module Members
       end
     end
 
+    def edit
+      render :edit_race
+      # @registration -> défini dans set_registration
+    end
+
+    def update
+      if @registration.update(registration_params)
+        redirect_to members_dashboard_path, notice: "Inscription mise à jour avec succès"
+      else
+        render :edit_race, status: :unprocessable_entity
+      end
+    end
+
     def destroy
       @registration = Registration.find(params[:id])
       # Grâce à l'association polymorphe 'registerable', cette ligne retourne la ressource (Event, Race ou Training)
@@ -53,6 +67,10 @@ module Members
     end
 
     private
+
+    def set_registration
+      @registration = current_user.registrations.find(params[:id])
+    end
 
     def registration_params
       params.require(:registration).permit(

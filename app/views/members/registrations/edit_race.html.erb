@@ -1,0 +1,52 @@
+<h1>Modification de votre inscription</h1>
+
+<% if @race %>
+  <p>Événement : <%= @race.name %></p>
+<% end %>
+
+<%= simple_form_for @registration, url: polymorphic_path([:members, @registration.registerable, @registration]) do |f| %>
+  <%= f.hidden_field :registerable_id %>
+  <%= f.hidden_field :registerable_type %>
+
+  <fieldset>
+    <legend>Informations personnelles</legend>
+    <%= f.input :first_name, label: 'Prénom', input_html: { value: current_user.first_name, readonly: true } %>
+    <%= f.input :last_name, label: 'Nom', input_html: { value: current_user.last_name, readonly: true } %>
+    <%= f.input :birth_date, label: 'Date de naissance', input_html: { value: current_user.birth_date, readonly: true } %>
+    <%= f.input :phone_number, label: 'Téléphone', input_html: { value: current_user.phone_number, readonly: true } %>
+    <%= f.input :address, label: 'Adresse', input_html: { value: current_user.address, readonly: true  } %>
+    <%= f.input :post_code, label: 'Code Postal', input_html: { value: current_user.post_code, readonly: true  } %>
+    <%= f.input :town, label: 'Ville', input_html: { value: current_user.town, readonly: true  } %>
+  </fieldset>
+
+  <fieldset>
+    <legend>Informations sur la course</legend>
+    <%= f.input :race_number, label: 'Numéro de course', input_html: { value: current_user.race_number, readonly: true  } %>
+    <%= f.input :license_code, label: 'Licence Code', input_html: { value: current_user.license_code, readonly: true  } %>
+    <%= f.input :license_number, label: 'Numéro de licence', input_html: { value: current_user.license_number, readonly: true  } %>
+    <%= f.input :club_name, label: 'Nom de votre club', input_html: { value: current_user.club_name, readonly: true  } %>
+  </fieldset>
+
+  <fieldset>
+    <legend>Informations sur le véhicule</legend>
+
+    <div class="form-group">
+      <label>Marque de la moto</label>
+      <p><%= current_user.bike_brand.presence || "Non renseignée" %></p>
+    </div>
+
+    <div class="form-group">
+      <label>Cylindrée</label>
+      <p><%= current_user.cylinder_capacity %> cc</p>
+    </div>
+
+    <div class="form-group">
+      <label>Type de moteur</label>
+      <p><%= current_user.stroke_type.humanize %></p>
+    </div>
+
+    <%= link_to "Modifier les infos moto", "#", class: "btn btn-warning mb-3" %>
+  </fieldset>
+
+  <%= f.button :submit, "Modifier l'inscription", class: "btn btn-primary" %>
+<% end %>
