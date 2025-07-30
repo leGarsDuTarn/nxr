@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
       :user_name, :first_name, :last_name, :birth_date,
       :club_name, :club_member, :address, :post_code, :town, :country, :phone_number,
       :license_code, :license_number, :cylinder_capacity,
-      :bike_brand, :stroke_type, :plate_number, :race_number, :avatar
+      :bike_brand, :stroke_type, :race_number, :avatar
     ])
   end
 end

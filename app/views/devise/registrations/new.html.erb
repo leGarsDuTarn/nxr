@@ -27,7 +27,6 @@
     <%= f.input :cylinder_capacity %>
     <%= f.input :bike_brand, as: :select, collection: User::VALID_BRANDS, prompt: "Choisir une marque", required: false %>
     <%= f.input :stroke_type, as: :select, collection: User.stroke_types.map { |k, v| [v, k] }, prompt: "Type de moteur", required: false %>
-    <%= f.input :plate_number, required: false %>
     <%= f.input :race_number, required: false %>
 
     <%= f.input :avatar, as: :file, required: false %>
