@@ -235,10 +235,9 @@
   <ul>
     <% @recent_registrations.each do |registration| %>
       <li>
-        <%= registration.user.last_name %> - <%= registration.user.first_name %>
-        inscrit à
+        <%= registration.user.first_name %> - <%= registration.user.last_name %>
+        s'est inscrit à :
         <strong><%= registration.registerable.name %></strong>
-        (<%= registration.registerable.class.name %>)
         le <%= l(registration.created_at, format: :short) %>
 
         <%= link_to polymorphic_path([:admin, registration.registerable, registration]),

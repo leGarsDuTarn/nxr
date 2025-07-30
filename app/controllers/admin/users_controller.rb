@@ -26,7 +26,7 @@ module Admin
         format.html # => rend la vue show.html.erb
         format.json do
           render json: @user.as_json(
-            only: %i[id first_name last_name email phone_number user_namec address post_code town country created_at]
+            only: %i[id first_name last_name email phone_number user_name address post_code town country created_at]
           )
         end
       end
@@ -60,10 +60,11 @@ module Admin
 
     def user_params
       params.require(:user).permit(
-        :user_name, :role, :first_name,
-        :last_name, :address, :post_code,
-        :town, :country, :phone_number, :password,
-        :avatar, :remove_avatar
+        :user_name, :avatar, :remove_avatar, :role, :phone_number,
+        :email, :first_name, :last_name, :address, :post_code,
+        :town, :country, :birth_date, :license_code, :license_number,
+        :club_member, :bike_brand, :cylinder_capacity, :stroke_type,
+        :club_name, :race_number
       )
     end
 

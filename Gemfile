@@ -47,6 +47,8 @@ gem "bootsnap", require: false
 gem "bootstrap", "~> 5.3"
 gem 'country_select'
 gem "devise"
+# Permet de trauire les messages d'interface utilisateur de devise en Français
+gem 'devise-i18n'
 gem "autoprefixer-rails"
 gem "font-awesome-sass", "~> 6.1"
 gem "simple_form", github: "heartcombo/simple_form"
