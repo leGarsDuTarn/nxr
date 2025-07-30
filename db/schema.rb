@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_28_092754) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_30_211137) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -89,6 +89,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_28_092754) do
     t.bigint "registerable_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "bike_brand"
+    t.integer "cylinder_capacity"
+    t.string "stroke_type"
+    t.string "race_number"
+    t.index ["race_number", "registerable_id", "registerable_type"], name: "index_registrations_on_race_number_and_registerable", unique: true
     t.index ["registerable_type", "registerable_id"], name: "index_registrations_on_registerable"
     t.index ["user_id", "registerable_type", "registerable_id"], name: "idx_on_user_id_registerable_type_registerable_id_88e34dcfbb", unique: true
     t.index ["user_id"], name: "index_registrations_on_user_id"
@@ -126,16 +131,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_28_092754) do
     t.string "license_code"
     t.string "license_number"
     t.boolean "club_member"
-    t.string "bike_brand"
-    t.integer "cylinder_capacity"
-    t.string "stroke_type"
-    t.string "plate_number"
     t.string "club_name"
-    t.string "race_number"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["license_number"], name: "index_users_on_license_number", unique: true
-    t.index ["plate_number"], name: "index_users_on_plate_number", unique: true
-    t.index ["race_number"], name: "index_users_on_race_number", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 

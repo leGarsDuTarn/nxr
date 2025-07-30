@@ -10,31 +10,44 @@
 
   <fieldset>
     <legend>Informations personnelles</legend>
-    <%= f.input :first_name, label: 'Prénom', required: true, input_html: { value: current_user.first_name } %>
-    <%= f.input :last_name, label: 'Nom', required: true, input_html: { value: current_user.last_name } %>
-    <%= f.input :birth_date, label: 'Date de naissance', required: true, input_html: { value: current_user.birth_date } %>
-    <%= f.input :phone_number, label: 'Téléphone', required: true, input_html: { value: current_user.phone_number } %>
-    <%= f.input :address, label: 'Adresse', required: true, input_html: { value: current_user.address } %>
-    <%= f.input :post_code, label: 'Code Postal', required: true, input_html: { value: current_user.post_code } %>
-    <%= f.input :town, label: 'Ville', required: true, input_html: { value: current_user.town } %>
+    <%= f.input :first_name, label: 'Prénom', input_html: { value: current_user.first_name, readonly: true } %>
+    <%= f.input :last_name, label: 'Nom', input_html: { value: current_user.last_name, readonly: true  } %>
+    <%= f.input :birth_date, label: 'Date de naissance', input_html: { value: current_user.birth_date, readonly: true  } %>
+    <%= f.input :phone_number, label: 'Téléphone', input_html: { value: current_user.phone_number, readonly: true  } %>
+    <%= f.input :address, label: 'Adresse', input_html: { value: current_user.address, readonly: true  } %>
+    <%= f.input :post_code, label: 'Code Postal', input_html: { value: current_user.post_code, readonly: true  } %>
+    <%= f.input :town, label: 'Ville', input_html: { value: current_user.town, readonly: true  } %>
   </fieldset>
 
   <fieldset>
     <legend>Informations sur la course</legend>
-    <%= f.input :race_number, label: 'Numéro de course', required: true, input_html: { value: current_user.race_number } %>
-    <%= f.input :license_code, label: 'Licence Code', required: true, input_html: { value: current_user.license_code } %>
-    <%= f.input :license_number, label: 'Numéro de licence', required: true, input_html: { value: current_user.license_number } %>
-    <%= f.input :club_name, label: 'Nom de votre club', required: true, input_html: { value: current_user.club_name } %>
+    <%= f.input :license_code, label: 'Licence Code', input_html: { value: current_user.license_code, readonly: true  } %>
+    <%= f.input :license_number, label: 'Numéro de licence', input_html: { value: current_user.license_number, readonly: true  } %>
+    <%= f.input :club_name, label: 'Nom de votre club', input_html: { value: current_user.club_name, readonly: true  } %>
+    <%= f.input :race_number, label: 'Numéro de course', placeholder: "Veuillez renseigner un numéro de course", required: true %>
   </fieldset>
 
   <fieldset>
     <legend>Informations véhicule</legend>
-    <%= f.input :bike_brand, as: :string, input_html: { value: current_user.bike_brand } %>
-    <%= f.input :cylinder_capacity, label: 'Cylindrée', required: true, input_html: { value: current_user.cylinder_capacity } %>
+    <%= f.input :bike_brand,
+    as: :select,
+    collection: Registration::VALID_BRANDS,
+    label: 'Marque de moto',
+    prompt: "Sélectionner une marque",
+    required: true %>
+
+   <%= f.input :cylinder_capacity,
+            as: :select,
+            collection: Registration::BIKE_CYLINDER_CAPACITY,
+            label: 'Cylindrée (cc)',
+            prompt: "Sélectionner la cylindrée",
+            required: true %>
+
     <%= f.input :stroke_type,
-              required: true,
-              input_html: { value: current_user.stroke_type } %>
+            label: "Type de moteur",
+            collection: [['2 temps', 'two_stroke'], ['4 temps', 'four_stroke']],
+            prompt: "Sélectionner le type" %>
   </fieldset>
 
-  <%= f.button :submit, "S'inscrire" %>
+  <%= f.button :submit, "S'inscrire", class: "btn btn-primary" %>
 <% end %>

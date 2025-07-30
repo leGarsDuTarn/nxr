@@ -1,0 +1,60 @@
+<h1>Modification de votre inscription</h1>
+
+<% if @registration.registerable.present? %>
+  <p>Événement : <%= @registration.registerable.name %></p>
+<% end %>
+
+<%= simple_form_for @registration, url: polymorphic_path([:members, @registration.registerable, @registration]) do |f| %>
+  <%= f.hidden_field :registerable_id %>
+  <%= f.hidden_field :registerable_type %>
+
+  <fieldset>
+    <legend>Informations personnelles (non modifiables)</legend>
+    <%= f.input :first_name, label: 'Prénom', input_html: { value: @registration.user.first_name, readonly: true } %>
+    <%= f.input :last_name, label: 'Nom', input_html: { value: @registration.user.last_name, readonly: true } %>
+    <%= f.input :birth_date, label: 'Date de naissance', input_html: { value: @registration.user.birth_date, readonly: true } %>
+    <%= f.input :phone_number, label: 'Téléphone', input_html: { value: @registration.user.phone_number, readonly: true } %>
+    <%= f.input :address, label: 'Adresse', input_html: { value: @registration.user.address, readonly: true } %>
+    <%= f.input :post_code, label: 'Code Postal', input_html: { value: @registration.user.post_code, readonly: true } %>
+    <%= f.input :town, label: 'Ville', input_html: { value: @registration.user.town, readonly: true } %>
+  </fieldset>
+
+  <fieldset>
+    <legend>Informations sur la course (non modifiables)</legend>
+    <%= f.input :license_code, label: 'Code licence', input_html: { value: @registration.user.license_code, readonly: true } %>
+    <%= f.input :license_number, label: 'Numéro de licence', input_html: { value: @registration.user.license_number, readonly: true } %>
+    <%= f.input :club_name, label: 'Nom du club', input_html: { value: @registration.user.club_name, readonly: true } %>
+    <%= f.input :race_number, label: 'Numéro de course', placeholder: "Veuillez renseigner un numéro de course", required: true %>
+  </fieldset>
+
+  <fieldset>
+    <legend>Informations sur le véhicule (modifiables)</legend>
+    <%= f.input :bike_brand,
+    as: :select,
+    collection: Registration::VALID_BRANDS,
+    label: 'Marque de moto',
+    prompt: "Sélectionner une marque",
+    required: true %>
+
+   <%= f.input :cylinder_capacity,
+            as: :select,
+            collection: Registration::BIKE_CYLINDER_CAPACITY,
+            label: 'Cylindrée (cc)',
+            prompt: "Sélectionner la cylindrée",
+            required: true %>
+
+    <%= f.input :stroke_type,
+            label: "Type de moteur",
+            collection: [['2 temps', 'two_stroke'], ['4 temps', 'four_stroke']],
+            prompt: "Sélectionner le type" %>
+  </fieldset>
+
+  <div class="mt-3">
+    <%= f.button :submit, "Modifier l'inscription", class: "btn btn-primary" %>
+  </div>
+<% end %>
+
+<p class="mt-3">
+  ⚠️ Si vous souhaitez modifier vos informations personnelles, merci de passer par
+  <%= link_to "la page de votre profil", edit_user_registration_path, class: "btn btn-warning btn-sm" %>.
+</p>

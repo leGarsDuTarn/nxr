@@ -28,7 +28,10 @@
 
   <fieldset>
     <legend>Informations sur la licence</legend>
-  <%= f.input :license_code, label: "Code de licence" %>
+  <%= f.input :license_code,
+  as: :select,
+  collection: User::LICENCE_CODES,
+  label: "Code de licence" %>
   <%= f.input :license_number, label: "Numéro de licence" %>
   </fieldset>
 
@@ -42,15 +45,8 @@
             input_html: { value_as_boolean: true } %>
 
   <%= f.input :club_name, label: "Nom du club" %>
-  <%= f.input :race_number, label: "Numéro de course" %>
   </fieldset>
 
-  <fieldset>
-    <legend>Informations sur la moto</legend>
-   <%= f.input :bike_brand, as: :select, collection: User::VALID_BRANDS, prompt: "Choisir une marque", required: false %>
-  <%= f.input :cylinder_capacity, label: "Cylindrée (cc)", as: :integer %>
-  <%= f.input :stroke_type, label: "Type de moteur", collection: [['2 temps', 'two_stroke'], ['4 temps', 'four_stroke']], prompt: "Sélectionner le type" %>
-  </fieldset>
 
   <%= f.button :submit, "Valider", class: "btn btn-primary" %>
 <% end %>
