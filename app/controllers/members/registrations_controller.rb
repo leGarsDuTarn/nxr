@@ -1,6 +1,6 @@
 module Members
   class RegistrationsController < BaseController
-    before_action :set_registration
+    before_action :set_registration, only: %i[show edit update destroy]
 
     def show
       render :show_race
@@ -78,9 +78,14 @@ module Members
     end
 
     def registration_params
+      # Attention pour une insscriptions, les données personnelles viennent de current_user (non éditables ici)
       params.require(:registration).permit(
         :registerable_id,
         :registerable_type,
+        :cylinder_capacity,
+        :stroke_type,
+        :bike_brand,
+        :race_number
       )
     end
   end

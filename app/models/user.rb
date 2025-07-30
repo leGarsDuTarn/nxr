@@ -101,7 +101,7 @@ class User < ApplicationRecord
     message: "%{value} n’est pas un code de licence FFM valide."
   }
 
-  # Permet de controler que le champ 'Nunméro de licence soit bien rempli'
+  # Permet de controler que le champ 'Numéro de licence soit bien rempli'
   # Oblige l'utilisateur à remplir exactement 6 chiffres.
   validates :license_number, presence: { message: "Veuillez renseigner un numéro de licence valide." }, uniqueness:
   { case_sensitive: false, message: "Oups ! Ce numéro de licence est déjà attribué." }
@@ -110,38 +110,6 @@ class User < ApplicationRecord
     message: "Le numéro de licence doit contenir 6 chiffres sans espace."
   }
 
-  # Permet de pas enregister en DB deux plaques identiques pour 2 motos.
-  validates :plate_number, uniqueness:
-  {
-    case_sensitive: false,
-    message: "Ce numéro de plaque d'imatriculation existe déjà"
-  }, allow_blank: true
-  # Conditionne le format des plaques d'immatriculations
-  validates :plate_number, format: {
-    with: /\A[A-Z]{2}-\d{3}-[A-Z]{2}\z/,
-    allow_blank: true, # Permet de laisser le champ libre si la moto n'est pas homologuée route
-    message: "Format de plaque invalide (ex: AB-123-CD)"
-  }
-  # Creation d'une constante avec une liste exhaustive de plusieurs marques de motocross
-  VALID_BRANDS = %w[
-    KTM Yamaha Honda Suzuki Kawasaki Husqvarna GasGas Beta
-    TM_Racing CRZ_ERZ BASTOS Mini_MX KAYO_Motors Gunshot Apollo GPX BHR Autre
-  ]
-  # Permet de créer une liste déroulante dans le form
-  validates :bike_brand, inclusion: { in: VALID_BRANDS }, allow_blank: true
-  # La cylindré ne peut être inferieure a 50cc
-  validates :cylinder_capacity, numericality: {
-    greater_than: 49, message: "La cylindrée doit-être supérieure à 50cc."
-   }, allow_blank: true
-  # Permet d'avoir une liste déroulante dans le forme avec 2Temps ou 4Temps
-  enum stroke_type: { two_stroke: "2T", four_stroke: "4T" }
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-
-  validates :race_number, uniqueness:
-  {
-    message: "Oups ! Ce numéro de course est déjà attribué."
-  }, allow_blank: true
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
@@ -155,7 +123,7 @@ class User < ApplicationRecord
   end
 
   def races
-    registrations.where(registerable_type: "Races").map(&:registerable)
+    registrations.where(registerable_type: "Race").map(&:registerable)
   end
 
   private
