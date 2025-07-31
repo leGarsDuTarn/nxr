@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_30_211137) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_31_081019) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -132,6 +132,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_30_211137) do
     t.string "license_number"
     t.boolean "club_member"
     t.string "club_name"
+    t.string "club_affiliation_number"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["license_number"], name: "index_users_on_license_number", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

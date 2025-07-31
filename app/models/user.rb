@@ -5,7 +5,9 @@ class User < ApplicationRecord
   before_validation :normalize_user_name
   before_validation :normalize_first_name
   before_validation :normalize_last_name
+  before_validation :set_club_name_if_member
   before_validation :normalize_club_name
+  before_validation :normalize_club_affiliation_number
 
   has_many :events, dependent: :destroy
   has_many :trainings, dependent: :destroy
@@ -21,7 +23,6 @@ class User < ApplicationRecord
 
   # Permet que chaque inscription soit uniquement en role members
   enum role: { member: "member", admin: "admin" }
-
   after_initialize :set_default_role, if: :new_record?
 
   def set_default_role
@@ -70,10 +71,16 @@ class User < ApplicationRecord
   validates :email, presence: { message: "Veuillez renseigner un email." }, format:
   { with: URI::MailTo::EMAIL_REGEXP, message: "exemple : john@gmail.com" }
 
-  validates :club_name, presence: { message: "Veuillez renseigner le nom de votre club." }
+  validates :club_name,
+            presence: { message: "Veuillez renseigner le nom de votre club." },
+            unless: :club_member? # Sauf pour les membres du club de Navès
 
-  validates :phone_number, presence: { message: "Veuillez renseigner un numéro de téléphone." }, format:
-  { with: /\A0\d{9}\z/, message: "Format invalide : 10 chiffres sans espace (ex. : 0612345678)." }
+  validates :phone_number,
+            format:
+           {
+             with: /\A0\d{9}\z/,
+             message: "Format invalide : 10 chiffres sans espace (ex. : 0612345678)."
+           }, allow_blank: true
 
   VALID_PASSWORD_REGEX = /\A
   (?=.{8,})             # Au moins 8 caractères
@@ -92,6 +99,16 @@ class User < ApplicationRecord
   def password_required?
     !persisted? || !password.nil? || !password_confirmation.nil?
   end
+
+  # Numéro d'affiliation officiel du club de Navès (fixe et vérifié lors de l'inscription)
+  VALID_NUMBER_CLUB_AFFILIATION = "C0637".freeze # Empêche toute modification de la constante en mémoire
+  # Numéro d'affiliation obligatoire et contrôlé uniquement
+  # pour les membres du club de Navès (condition club_member?)
+  validates :club_affiliation_number, presence: true, inclusion:
+  {
+    in: [VALID_NUMBER_CLUB_AFFILIATION],
+    message: "Numéro d'affiliation invalide"
+  }, if: :club_member?
 
   # Permet de controler que le champ 'code licence soit bien rempli'
   # Évite que l'utilisateur ne renseigne un mauvais code licence qui n'existerais pas chez la FFM
@@ -135,7 +152,7 @@ class User < ApplicationRecord
     # .to_s : évite les erreurs si nil
     # .upcase : transforme toutes les lettres en majuscule
     # .strip : supprime les espaces
-    self.license_number = license_number&.upcase&.strip
+    self.license_number = license_number.to_s.upcase.strip
   end
 
   def normalize_license_code
@@ -174,5 +191,19 @@ class User < ApplicationRecord
     # .strip : supprime les espaces
     # .gsub(/\s+/, ' ') : remplace les espaces multiples par un seul
     self.club_name = club_name.to_s.upcase.strip.gsub(/\s+/, ' ')
+  end
+
+  def normalize_club_affiliation_number
+    # .to_s : évite les erreurs si nil
+    # .upcase : transforme toutes les lettres en majuscule
+    # .strip : supprime les espaces
+    self.club_affiliation_number = club_affiliation_number.to_s.upcase.strip
+  end
+
+  def set_club_name_if_member
+    return unless club_member?
+
+    # Si l'utilisateur est membre du club de Navès -> Force le nom du club
+    self.club_name = "Navès"
   end
 end
