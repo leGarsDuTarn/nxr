@@ -6,6 +6,28 @@
 
 <p><%= @race.description %></p>
 
+<hr>
+
+<h3>Inscriptions pour cette course</h3>
+
+<% if @race.registrations.empty? %>
+  <p class="text-muted">Aucune inscription pour le moment.</p>
+<% else %>
+  <div>
+    <% @race.registrations.each do |registration| %>
+      <%= link_to [:admin, registration.registerable, registration] do %>
+        <div>
+          <i class="fas fa-user"></i>
+          <span><%= registration.user.first_name %> <%= registration.user.last_name %></span>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
+
+
+<hr>
+
 <%= link_to admin_dashboard_path, class: "btn btn-primary", aria: { label: "Retour au tableau de bord"} do %>
   <i class="fas fa-home"></i>
 <% end %>

@@ -30,8 +30,7 @@
             <%= link_to "voir mon inscription",
             polymorphic_path([:members, registration.registerable, registration]),
             class: "btn btn-primary" %>
-            <%= link_to "modifier mon inscription", edit_members_race_registration_path(registration.registerable, registration),
-            class: "btn btn-primary" %>
+
             <%= link_to "Annuler mon inscription", members_race_registration_path(registration.registerable, registration),
             data: { turbo_method: :delete, turbo_confirm: "Es-tu sûr de vouloir d'annuler ton inscription ?" },
             class: "btn btn-danger",
@@ -63,3 +62,37 @@
 <% end %>
 
 <hr>
+
+<h3>Les entraînements</h3>
+
+<% if @trainings.empty? %>
+  <p>Il n'y a pas d'entraînement pour l'instant</p>
+<% else %>
+  <ul>
+    <% @trainings.each do |training| %>
+      <li><%= training.name %>
+          <%= link_to members_training_path(training), class: "btn btn-primary", aria: { label: "Voir l'entraînement #{training.name}" } do %>
+            <i class="fas fa-search"></i>
+          <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<hr>
+
+<h3>Les événements du club</h3>
+
+<% if @events.empty? %>
+  <p>Il n'y a pas d'événement pour l'instant</p>
+<% else %>
+  <ul>
+    <% @events.each do |event| %>
+      <li><%= event.name %>
+          <%= link_to members_event_path(event), class: "btn btn-primary", aria: { label: "Voir l'événement #{event.name}" } do %>
+            <i class="fas fa-search"></i>
+          <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

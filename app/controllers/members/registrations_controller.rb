@@ -3,9 +3,11 @@ module Members
     before_action :set_registration, only: %i[show edit update destroy]
 
     def show
-      render :show_race
-      # @registration
+      # Sélectionne le template approprié selon le type d'activité (Race, Training, Event)
+      # --> Voir section private
+      render template_for("show")
     end
+
     def new
       # Si l'URL contient un paramètre event_id, alors on veut s'inscrire à un Event
       if params[:event_id]
@@ -44,26 +46,35 @@ module Members
         # Redirige vers le tableau de bord avec un message personnalisé
         redirect_to members_dashboard_path, notice: "Inscription à #{type} « #{name} » réussie"
       else
-        # Affiche dynamiquement la vue d'inscription correspondant au type de ressource (new_event, new_race, etc.)
-        render "new_#{@registerable.class.name.downcase}"
+        # Sélectionne le template approprié selon le type d'activité (Race, Training, Event)
+        # --> Voir section private
+        render template_for("new"), status: :unprocessable_entity
       end
     end
 
     def edit
-      render :edit_race
-      # @registration -> défini dans set_registration
+      if @registration.registerable.is_a?(Race)
+        render :edit_race
+      else
+        redirect_to members_registration_path(@registration), alert: "Les informations de cette inscription ne
+        sont pas modifiables. Vous pouvez modifier votre profil si nécessaire."
+      end
     end
 
     def update
-      if @registration.update(registration_params)
-        redirect_to members_dashboard_path, notice: "Inscription mise à jour avec succès"
+      if @registration.registerable.is_a?(Race)
+        if @registration.update(registration_params)
+          redirect_to members_dashboard_path, notice: "Inscription mise à jour avec succès"
+        else
+          render :edit_race, status: :unprocessable_entity
+        end
       else
-        render :edit_race, status: :unprocessable_entity
+        redirect_to members_registration_path(@registration), alert: "Modification non autorisée."
       end
     end
 
     def destroy
-      @registration = Registration.find(params[:id])
+      @registration = current_user.registrations.find(params[:id])
       # Grâce à l'association polymorphe 'registerable', cette ligne retourne la ressource (Event, Race ou Training)
       # à laquelle l'utilisateur s'est inscrit -> ce qui permet de faire : @registerable.name
       @registerable = @registration.registerable
@@ -77,16 +88,27 @@ module Members
       @registration = current_user.registrations.find(params[:id])
     end
 
+    def template_for(action)
+      case @registration.registerable
+      when Race
+        "#{action}_race"
+      when Training
+        "#{action}_training"
+      when Event
+        "#{action}_event"
+      end
+    end
+
     def registration_params
-      # Attention pour une insscriptions, les données personnelles viennent de current_user (non éditables ici)
-      params.require(:registration).permit(
-        :registerable_id,
-        :registerable_type,
-        :cylinder_capacity,
-        :stroke_type,
-        :bike_brand,
-        :race_number
-      )
+      base = %i[registerable_id registerable_type]
+      case params[:registration][:registerable_type]
+      when "Race"
+        params.require(:registration).permit(
+          base + %i[cylinder_capacity stroke_type bike_brand race_number]
+        )
+      when "Training", "Event"
+        params.require(:registration).permit(base)
+      end
     end
   end
 end

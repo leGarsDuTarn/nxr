@@ -1,6 +1,5 @@
-<h1>Détails de votre inscription</h1>
-
-<h2><%= @registration.registerable.name %></h2>
+<h1>Votre inscription à : <br>
+<%= @registration.registerable.name %></h1>
 
 <fieldset>
   <legend>Informations personnelles</legend>
@@ -33,3 +32,7 @@
     <li><strong>Type de moteur :</strong> <%= @registration.stroke_type %></li>
   </ul>
 </fieldset>
+
+  <%= link_to "Modifier mon inscription",
+  edit_members_race_registration_path(@registration),
+  class: "btn btn-warning" %>
