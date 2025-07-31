@@ -12,18 +12,49 @@
     end_year: Date.current.year - 10, # Permet l'inscription à partir de 10 ans
     order: [:day, :month, :year] %>
 
-    <%= f.input :address %>
-    <%= f.input :post_code %>
-    <%= f.input :town %>
-    <%= f.input :country %>
+    <%= f.input :phone_number,
+                hint: "Nous permet de vous contacter rapidement en cas d'informations importantes (annulation, urgence…)" %>
 
-    <%= f.input :club_name, required: true %>
-    <%= f.input :club_member, as: :select, collection: [['Oui', true], ['Non', false]], required: true %>
+    <%= f.input :address, required: true %>
+    <%= f.input :post_code, required: true %>
+    <%= f.input :town, required: true %>
+    <%= f.input :country, as: :country, priority: ["France"], required: true %>
 
-    <%= f.input :phone_number, required: true %>
-    <%= f.input :license_code, required: true %>
+  <div data-controller="club-member-check">
+    <%= f.input :club_member,
+                label: "Êtes-vous membre du club de Navès ?",
+                as: :select,
+                collection: [['Oui', true], ['Non', false]],
+                include_blank: "Sélectionner",
+                required: true,
+                input_html: {
+                  data: {
+                    "club-member-check-target": "select",
+                    action: "change->club-member-check#toggle"
+                  }
+                } %>
+
+    <%# Champ NOM DU CLUB affiché uniquement si club_member = false %>
+    <div data-club-member-check-target="clubNameWrapper" style="display: none;">
+      <%= f.input :club_name, label: "Nom de votre club" %>
+    </div>
+
+    <%# Champ NUMERO D'AFFILIATION affiché uniquement si club_member = true %>
+    <div data-club-member-check-target="affiliationWrapper" style="display: none;">
+      <%= f.input :club_affiliation_number, label: "Numéro d'affiliation du club de Navès" %>
+    </div>
+  </div>
+
+
+
+    <%= f.input :license_code,
+                required: true,
+                as: :select,
+                collection: User::LICENCE_CODES,
+                include_blank: "Sélectionner un code" %>
+
     <%= f.input :license_number, required: true %>
-    
+
     <%= f.input :avatar, as: :file, required: false %>
 
 
@@ -32,7 +63,7 @@
                 input_html: { autocomplete: "email" }%>
     <%= f.input :password,
                 required: true,
-                hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
+                hint: "Doit contenir au moins 8 caractères, dont une majuscule, une minuscule, un chiffre et un caractère spécial.",
                 input_html: { autocomplete: "new-password" } %>
     <%= f.input :password_confirmation,
                 required: true,

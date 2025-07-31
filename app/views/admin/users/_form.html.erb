@@ -1,52 +1,64 @@
 <%= simple_form_for [:admin, @user], html: { multipart: true } do |f| %>
-
   <fieldset>
     <legend>Informations personnelles</legend>
-  <%= f.input :user_name, label: "Pseudo" %>
-  <%= f.input :avatar, as: :file, label: "Avatar" %>
-  <% if f.object.persisted? && f.object.avatar.attached? %>
-    <div class="mt-2">
-      <p>Avatar actuel :</p>
-      <%= image_tag(f.object.avatar, size: "150x100", class: "img-thumbnail") %><br>
-      <%= f.check_box :remove_avatar %>
-      <%= f.label :remove_avatar, "Supprimer l'image actuelle" %>
-    </div>
-  <% end %>
-  <%= f.input :role, collection: User.roles.keys, label: "Rôle", prompt: "Sélectionner un rôle" %>
-  <%= f.input :email, label: "Adresse email" %>
-  <%= f.input :first_name, label: "Prénom" %>
-  <%= f.input :last_name, label: "Nom de famille" %>
-  <%= f.input :birth_date, label: "Date de naissance" do %>
-    <%= f.date_field :birth_date, class: "form-control" %>
-  <% end %>
-  <%= f.input :phone_number, label: "Numéro de téléphone" %>
-  <%= f.input :address, label: "Adresse" %>
-  <%= f.input :post_code, label: "Code postal" %>
-  <%= f.input :town, label: "Ville" %>
-  <%= f.input :country, label: "Pays", as: :country, priority: ["France"], prompt: "Sélectionner un pays" %>
+    <%= f.input :user_name, label: "Pseudo" %>
+    <%= f.input :avatar, as: :file, label: "Avatar" %>
+    <% if f.object.persisted? && f.object.avatar.attached? %>
+      <div class="mt-2">
+        <p>Avatar actuel :</p>
+        <%= image_tag(f.object.avatar, size: "150x100", class: "img-thumbnail") %><br>
+        <%= f.check_box :remove_avatar %>
+        <%= f.label :remove_avatar, "Supprimer l'image actuelle" %>
+      </div>
+    <% end %>
+    <%= f.input :role, collection: User.roles.keys, label: "Rôle", prompt: "Sélectionner un rôle" %>
+    <%= f.input :email, label: "Adresse email" %>
+    <%= f.input :first_name, label: "Prénom" %>
+    <%= f.input :last_name, label: "Nom de famille" %>
+    <%= f.input :birth_date, label: "Date de naissance" do %>
+      <%= f.date_field :birth_date, class: "form-control" %>
+    <% end %>
+    <%= f.input :phone_number, label: "Numéro de téléphone" %>
+    <%= f.input :address, label: "Adresse" %>
+    <%= f.input :post_code, label: "Code postal" %>
+    <%= f.input :town, label: "Ville" %>
+    <%= f.input :country, label: "Pays", as: :country, priority: ["France"], prompt: "Sélectionner un pays" %>
   </fieldset>
 
   <fieldset>
     <legend>Informations sur la licence</legend>
-  <%= f.input :license_code,
-  as: :select,
-  collection: User::LICENCE_CODES,
-  label: "Code de licence" %>
-  <%= f.input :license_number, label: "Numéro de licence" %>
+    <%= f.input :license_code,
+                as: :select,
+                collection: User::LICENCE_CODES,
+                label: "Code de licence" %>
+    <%= f.input :license_number, label: "Numéro de licence" %>
   </fieldset>
 
-  <fieldset>
+  <fieldset data-controller="club-member-check">
     <legend>Informations sur le club</legend>
-  <%= f.input :club_member,
-            label: "Membre du club ?",
-            as: :select,
-            collection: [["Oui", true], ["Non", false]],
-            include_blank: false,
-            input_html: { value_as_boolean: true } %>
+    <%= f.input :club_member,
+                label: "Licencié du club ?",
+                as: :select,
+                collection: [["Oui", true], ["Non", false]],
+                include_blank: false,
+                input_html: {
+                  value_as_boolean: true,
+                  data: {
+                    "club-member-check-target": "select",
+                    action: "change->club-member-check#toggle"
+                  }
+                } %>
 
-  <%= f.input :club_name, label: "Nom du club" %>
+    <%# Champ caché si membre du club %>
+    <div data-club-member-check-target="affiliationWrapper" style="<%= f.object.club_member? ? '' : 'display: none;' %>">
+      <%= f.hidden_field :club_affiliation_number, value: User::VALID_NUMBER_CLUB_AFFILIATION %>
+    </div>
+
+    <%# Champ nom du club visible uniquement si PAS membre %>
+    <div data-club-member-check-target="clubNameWrapper" style="<%= f.object.club_member? ? 'display: none;' : '' %>">
+      <%= f.input :club_name, label: "Nom du club" %>
+    </div>
   </fieldset>
-
 
   <%= f.button :submit, "Valider", class: "btn btn-primary" %>
 <% end %>
