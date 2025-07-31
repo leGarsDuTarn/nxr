@@ -71,7 +71,25 @@
   <ul>
     <% @trainings.each do |training| %>
       <li><%= training.name %>
-          <%= link_to members_training_path(training), class: "btn btn-primary", aria: { label: "Voir la course #{training.name}" } do %>
+          <%= link_to members_training_path(training), class: "btn btn-primary", aria: { label: "Voir l'entraînement #{training.name}" } do %>
+            <i class="fas fa-search"></i>
+          <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<hr>
+
+<h3>Les événements du club</h3>
+
+<% if @events.empty? %>
+  <p>Il n'y a pas d'événement pour l'instant</p>
+<% else %>
+  <ul>
+    <% @events.each do |event| %>
+      <li><%= event.name %>
+          <%= link_to members_event_path(event), class: "btn btn-primary", aria: { label: "Voir l'événement #{event.name}" } do %>
             <i class="fas fa-search"></i>
           <% end %>
       </li>

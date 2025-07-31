@@ -1,0 +1,10 @@
+<div class="banner" style="background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url('<%= banner_image_race_url(@event) %>')">
+    <h1><%= @event.name %></h1>
+    <%= registration_link(@event) %>
+  </div>
+
+<p><%= @event.description %></p>
+
+<%= link_to members_dashboard_path, class: "btn btn-primary", aria: { label: "Retour au tableau de bord"} do %>
+  <i class="fas fa-home"></i>
+<% end %>
