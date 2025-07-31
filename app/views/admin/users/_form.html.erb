@@ -49,12 +49,12 @@
                   }
                 } %>
 
-    <!-- Champ caché si membre du club -->
+    <%# Champ caché si membre du club %>
     <div data-club-member-check-target="affiliationWrapper" style="<%= f.object.club_member? ? '' : 'display: none;' %>">
       <%= f.hidden_field :club_affiliation_number, value: User::VALID_NUMBER_CLUB_AFFILIATION %>
     </div>
 
-    <!-- Champ nom du club visible uniquement si PAS membre -->
+    <%# Champ nom du club visible uniquement si PAS membre %>
     <div data-club-member-check-target="clubNameWrapper" style="<%= f.object.club_member? ? 'display: none;' : '' %>">
       <%= f.input :club_name, label: "Nom du club" %>
     </div>
