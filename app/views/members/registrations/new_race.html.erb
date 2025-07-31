@@ -13,10 +13,12 @@
     <%= f.input :first_name, label: 'Prénom', input_html: { value: current_user.first_name, readonly: true } %>
     <%= f.input :last_name, label: 'Nom', input_html: { value: current_user.last_name, readonly: true  } %>
     <%= f.input :birth_date, label: 'Date de naissance', input_html: { value: current_user.birth_date, readonly: true  } %>
-    <%= f.input :phone_number, label: 'Téléphone', input_html: { value: current_user.phone_number, readonly: true  } %>
-    <%= f.input :address, label: 'Adresse', input_html: { value: current_user.address, readonly: true  } %>
-    <%= f.input :post_code, label: 'Code Postal', input_html: { value: current_user.post_code, readonly: true  } %>
-    <%= f.input :town, label: 'Ville', input_html: { value: current_user.town, readonly: true  } %>
+    <%= f.input :phone_number, label: 'Téléphone',
+    input_html: { value: current_user.phone_number, readonly: true } %>
+      <small class="text-muted d-block">
+        Pas de numéro de téléphone ou numéro erroné ?
+        <%= link_to "Modifier votre profil", edit_user_registration_path %>
+      </small>
   </fieldset>
 
   <fieldset>
@@ -36,17 +38,17 @@
     prompt: "Sélectionner une marque",
     required: true %>
 
-   <%= f.input :cylinder_capacity,
-            as: :select,
-            collection: Registration::BIKE_CYLINDER_CAPACITY,
-            label: 'Cylindrée (cc)',
-            prompt: "Sélectionner la cylindrée",
-            required: true %>
+    <%= f.input :cylinder_capacity,
+    as: :select,
+    collection: Registration::BIKE_CYLINDER_CAPACITY,
+    label: 'Cylindrée (cc)',
+    prompt: "Sélectionner la cylindrée",
+    equired: true %>
 
     <%= f.input :stroke_type,
-            label: "Type de moteur",
-            collection: [['2 temps', 'two_stroke'], ['4 temps', 'four_stroke']],
-            prompt: "Sélectionner le type" %>
+    label: "Type de moteur",
+    collection: [['2 temps', 'two_stroke'], ['4 temps', 'four_stroke']],
+    prompt: "Sélectionner le type" %>
   </fieldset>
 
   <%= f.button :submit, "S'inscrire", class: "btn btn-primary" %>

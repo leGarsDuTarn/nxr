@@ -3,6 +3,7 @@ module Members
     def index
       @registrations = current_user.registrations.includes(:registerable)
       @races = Race.all
+      @trainings = Training.all
     end
   end
 end

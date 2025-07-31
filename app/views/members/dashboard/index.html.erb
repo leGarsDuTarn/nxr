@@ -63,3 +63,19 @@
 <% end %>
 
 <hr>
+
+<h3>Les entraînements</h3>
+
+<% if @trainings.empty? %>
+  <p>Il n'y a pas d'entraînement pour l'instant</p>
+<% else %>
+  <ul>
+    <% @trainings.each do |training| %>
+      <li><%= training.name %>
+          <%= link_to members_training_path(training), class: "btn btn-primary", aria: { label: "Voir la course #{training.name}" } do %>
+            <i class="fas fa-search"></i>
+          <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

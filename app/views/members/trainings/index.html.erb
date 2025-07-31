@@ -1,0 +1,11 @@
+<div class="banner" style="background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(https://cdn.pixabay.com/photo/2017/03/07/12/25/enduro-2123843_1280.jpg);">
+  <h1>Les entraînement à venir</h1>
+</div>
+
+<% @trainings.each do |training| %>
+  <ul>
+    <li>
+      <%= training.name %>
+    </li>
+  </ul>
+<% end %>

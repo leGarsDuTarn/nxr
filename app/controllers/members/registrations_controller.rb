@@ -95,15 +95,19 @@ module Members
     end
 
     def registration_params
-      # Attention pour une insscriptions, les données personnelles viennent de current_user (non éditables ici)
-      params.require(:registration).permit(
-        :registerable_id,
-        :registerable_type,
-        :cylinder_capacity,
-        :stroke_type,
-        :bike_brand,
-        :race_number
-      )
+      base = [:registerable_id, :registerable_type]
+
+      case params[:registration][:registerable_type]
+      when "Race"
+        params.require(:registration).permit(
+        base + [:cylinder_capacity, :stroke_type, :bike_brand, :race_number]
+        )
+      when "Event"
+        params.require(:registration).permit(base)
+      when "Training"
+      params.require(:registration).permit(base)
+      end
     end
+
   end
 end

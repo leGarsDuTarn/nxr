@@ -1,0 +1,26 @@
+<h1>Détails de votre inscription</h1>
+
+<h2><%= @registration.registerable.name %></h2>
+
+<fieldset>
+  <legend>Informations personnelles</legend>
+  <ul>
+    <li><strong>Prénom :</strong> <%= @registration.user.first_name %></li>
+    <li><strong>Nom :</strong> <%= @registration.user.last_name %></li>
+    <li><strong>Date de naissance :</strong> <%= @registration.user.birth_date %></li>
+    <li><strong>Téléphone :</strong> <%= @registration.user.phone_number %></li>
+    <li><strong>Adresse :</strong> <%= @registration.user.address %></li>
+    <li><strong>Code postal :</strong> <%= @registration.user.post_code %></li>
+    <li><strong>Ville :</strong> <%= @registration.user.town %></li>
+  </ul>
+</fieldset>
+
+<fieldset>
+  <legend>Informations sur la course</legend>
+  <ul>
+    <li><strong>Code licence :</strong> <%= @registration.user.license_code %></li>
+    <li><strong>Numéro licence :</strong> <%= @registration.user.license_number %></li>
+    <li><strong>Nom du club :</strong> <%= @registration.user.club_name %></li>
+  </ul>
+</fieldset>
+
