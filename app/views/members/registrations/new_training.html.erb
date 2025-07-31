@@ -28,15 +28,5 @@
     <%= f.input :club_name, label: 'Nom de votre club', input_html: { value: current_user.club_name, readonly: true  } %>
   </fieldset>
 
-  <fieldset>
-    <legend>Informations véhicule</legend>
-    <%= f.input :bike_brand,
-    as: :select,
-    collection: Registration::VALID_BRANDS,
-    label: 'Marque de moto',
-    prompt: "Sélectionner une marque",
-    required: true %>
-  </fieldset>
-
   <%= f.button :submit, "S'inscrire", class: "btn btn-primary" %>
 <% end %>

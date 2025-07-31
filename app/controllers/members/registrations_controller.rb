@@ -95,8 +95,7 @@ module Members
     end
 
     def registration_params
-      base = [:registerable_id, :registerable_type]
-
+      base = %i[registerable_id registerable_type]
       case params[:registration][:registerable_type]
       when "Race"
         params.require(:registration).permit(
@@ -105,9 +104,8 @@ module Members
       when "Event"
         params.require(:registration).permit(base)
       when "Training"
-      params.require(:registration).permit(base)
+        params.require(:registration).permit(base)
       end
     end
-
   end
 end
