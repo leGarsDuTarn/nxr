@@ -30,8 +30,7 @@
             <%= link_to "voir mon inscription",
             polymorphic_path([:members, registration.registerable, registration]),
             class: "btn btn-primary" %>
-            <%= link_to "modifier mon inscription", edit_members_race_registration_path(registration.registerable, registration),
-            class: "btn btn-primary" %>
+
             <%= link_to "Annuler mon inscription", members_race_registration_path(registration.registerable, registration),
             data: { turbo_method: :delete, turbo_confirm: "Es-tu sûr de vouloir d'annuler ton inscription ?" },
             class: "btn btn-danger",

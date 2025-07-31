@@ -53,18 +53,23 @@ module Members
     end
 
     def edit
-      # Sélectionne le template approprié selon le type d'activité (Race, Training, Event)
-      # --> Voir section private
-      render template_for("edit")
+      if @registration.registerable.is_a?(Race)
+        render :edit_race
+      else
+        redirect_to members_registration_path(@registration), alert: "Les informations de cette inscription ne
+        sont pas modifiables. Vous pouvez modifier votre profil si nécessaire."
+      end
     end
 
     def update
-      if @registration.update(registration_params)
-        redirect_to members_dashboard_path, notice: "Inscription mise à jour avec succès"
+      if @registration.registerable.is_a?(Race)
+        if @registration.update(registration_params)
+          redirect_to members_dashboard_path, notice: "Inscription mise à jour avec succès"
+        else
+          render :edit_race, status: :unprocessable_entity
+        end
       else
-        # Sélectionne le template approprié selon le type d'activité (Race, Training, Event)
-        # --> Voir section private
-        render template_for("edit"), status: :unprocessable_entity
+        redirect_to members_registration_path(@registration), alert: "Modification non autorisée."
       end
     end
 
@@ -99,11 +104,9 @@ module Members
       case params[:registration][:registerable_type]
       when "Race"
         params.require(:registration).permit(
-        base + [:cylinder_capacity, :stroke_type, :bike_brand, :race_number]
+          base + %i[cylinder_capacity stroke_type bike_brand race_number]
         )
-      when "Event"
-        params.require(:registration).permit(base)
-      when "Training"
+      when "Training", "Event"
         params.require(:registration).permit(base)
       end
     end

@@ -21,14 +21,14 @@ class Registration < ApplicationRecord
     TM_Racing CRZ_ERZ BASTOS Mini_MX KAYO_Motors Gunshot Apollo GPX BHR Autre
   ].freeze # .freeze -> empêche toute modification du tableau en mémoire -> sécurise le code
   # Permet de créer une liste déroulante dans le form
-  validates :bike_brand, inclusion: { in: VALID_BRANDS }
+  validates :bike_brand, inclusion: { in: VALID_BRANDS }, if: -> { registerable_type == "Race"}
 
   # Idem mais pour des types de cynlindrées
   BIKE_CYLINDER_CAPACITY = [50, 65, 85, 125, 150, 250, 300, 350, 450, 500].freeze
   validates :cylinder_capacity, inclusion: {
     in: BIKE_CYLINDER_CAPACITY,
     message: "Veuillez indiquer une cylindrée"
-  }
+  }, if: -> { registerable_type == "Race"}
 
   # Permet d'avoir une liste déroulante dans le forme avec 2Temps ou 4Temps
   enum stroke_type: { two_stroke: "2T", four_stroke: "4T" }
@@ -40,7 +40,7 @@ class Registration < ApplicationRecord
   validates :race_number, presence: { message: "Veuillez renseigner un numéro de course" }, uniqueness: {
     scope: %i[registerable_id registerable_type],
     message: "Oups ! Ce numéro de course est déjà attribué."
-  }
+  }, if: -> { registerable_type == "Race" }
 
   private
 

@@ -1,32 +1,23 @@
-<h1>Inscription</h1>
+<h1 class="text-center">Bienvenue sur la page d'inscription pour : <br>
+<%= @training.name %> !</h1>
 
-<% if @training %>
-<p>Événement : <%= @training.name %></p>
-<% end %>
+<p class="lead">
+  Nous serions ravis de vous compter parmi nous pour cet entraînement.
+  Cliquez simplement sur le bouton ci-dessous pour valider votre inscription.
+</p>
 
+<%= simple_form_for @registration,
+    url: polymorphic_path([:members, @registration.registerable, :registrations]) do |f| %>
 
-<%= simple_form_for @registration, url: polymorphic_path([:members, @registration.registerable, :registrations]) do |f| %>
   <%= f.hidden_field :registerable_id %>
   <%= f.hidden_field :registerable_type %>
 
-  <fieldset>
-    <legend>Informations personnelles</legend>
-    <%= f.input :first_name, label: 'Prénom', input_html: { value: current_user.first_name, readonly: true } %>
-    <%= f.input :last_name, label: 'Nom', input_html: { value: current_user.last_name, readonly: true  } %>
-    <%= f.input :birth_date, label: 'Date de naissance', input_html: { value: current_user.birth_date, readonly: true  } %>
-    <%= f.input :phone_number, label: 'Téléphone',
-        input_html: { value: current_user.phone_number, readonly: true } %>
-          <small class="text-muted d-block">
-            Pas de numéro de téléphone ou numéro erroné ?
-            <%= link_to "Modifier votre profil", edit_user_registration_path %>
-          </small>
-
-  <fieldset>
-    <legend>Informations sur la course</legend>
-    <%= f.input :license_code, label: 'Licence Code', input_html: { value: current_user.license_code, readonly: true  } %>
-    <%= f.input :license_number, label: 'Numéro de licence', input_html: { value: current_user.license_number, readonly: true  } %>
-    <%= f.input :club_name, label: 'Nom de votre club', input_html: { value: current_user.club_name, readonly: true  } %>
-  </fieldset>
-
-  <%= f.button :submit, "S'inscrire", class: "btn btn-primary" %>
+  <div class="text-center my-4">
+    <%= f.button :submit, "👉 Je m'inscris maintenant !", class: "btn btn-lg btn-success" %>
+  </div>
 <% end %>
+
+<p class="small text-muted text-center">
+  ⚠️ En cliquant sur "Je m’inscris", vous confirmez votre présence à l’entraînement.
+  Vous pourrez gérer vos inscriptions depuis votre tableau de bord.
+</p>

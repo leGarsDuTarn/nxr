@@ -1,4 +1,6 @@
-<h1>Détail de l'inscription</h1>
+<h1>Détail de l'inscription de <%= @registration.user.first_name %> <%= @registration.user.last_name %> à : <br>
+  <%= @registration.registerable.name %>
+</h1>
 
 <fieldset>
   <legend>Informations personnelles</legend>
@@ -7,6 +9,7 @@
     <li><strong>Nom :</strong> <%= @registration.user.last_name %></li>
     <li><strong>Date de naissance :</strong> <%= @registration.user.birth_date %></li>
     <li><strong>Téléphone :</strong> <%= @registration.user.phone_number %></li>
+    <li><strong>Email :</strong> <%= @registration.user.email %></li>
     <li><strong>Adresse :</strong> <%= @registration.user.address %></li>
     <li><strong>Code postal :</strong> <%= @registration.user.post_code %></li>
     <li><strong>Ville :</strong> <%= @registration.user.town %></li>
@@ -16,18 +19,18 @@
 <fieldset>
   <legend>Informations sur la course</legend>
   <ul>
-    <li><strong>Numéro de course :</strong> <%= @registration.user.race_number %></li>
+    <li><strong>Numéro de course :</strong> <%= @registration.race_number %></li>
     <li><strong>Code licence :</strong> <%= @registration.user.license_code %></li>
     <li><strong>Numéro licence :</strong> <%= @registration.user.license_number %></li>
-    <li><strong>Nom du club :</strong> <%= @registration.user.club_name %></li>
+    <li><strong>Nom du club :</strong> <%= @registration.user.club_name %> <%= @registration.user.club_affiliation_number %></li>
   </ul>
 </fieldset>
 
 <fieldset>
   <legend>Informations véhicule</legend>
   <ul>
-    <li><strong>Marque moto :</strong> <%= @registration.user.bike_brand %></li>
-    <li><strong>Cylindrée :</strong> <%= @registration.user.cylinder_capacity %></li>
-    <li><strong>Type de moteur :</strong> <%= @registration.user.stroke_type %></li>
+    <li><strong>Marque moto :</strong> <%= @registration.bike_brand %></li>
+    <li><strong>Cylindrée :</strong> <%= @registration.cylinder_capacity %></li>
+    <li><strong>Type de moteur :</strong> <%= @registration.stroke_type %></li>
   </ul>
 </fieldset>
