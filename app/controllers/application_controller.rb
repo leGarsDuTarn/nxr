@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
     # Champs supplémentaires autorisés à être envoyé en + des champs par défaut
     authorized_keys = %i[
       user_name first_name last_name birth_date
-      club_name club_member address post_code town country phone_number
+      club_name club_member address post_code town phone_number
       license_code license_number club_affiliation_number avatar remove_avatar
     ]
     # Pour l'inscription -> création de compte
