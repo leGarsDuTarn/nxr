@@ -1,4 +1,4 @@
-module Members
+module Public
   class ArticlesController < BaseController
     def index
       @articles = Article.all.order(created_at: :desc) # :desc -> + récent en premier
