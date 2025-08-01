@@ -63,7 +63,7 @@
 
     <%= f.input :license_number, required: true %>
 
-    <% if resource.persisted? && resource.avatar.attached? %>
+    <% if resource.persisted? && resource.avatar.attached? && resource.avatar.record.persisted? %>
       <div class="mt-2">
         <p>Avatar actuel :</p>
         <%= image_tag(f.object.avatar, size: "150x100", class: "img-thumbnail") %><br>
