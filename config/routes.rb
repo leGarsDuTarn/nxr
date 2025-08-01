@@ -53,4 +53,10 @@ Rails.application.routes.draw do
     resources :galleries, only: [:index, :show]
     get "dashboard", to: "dashboard#index"
   end
+
+  # path: ''  -> supprime le préfixe du namespace dans l’URL
+  namespace :public, path: '' do
+    resources :articles, only: [:index, :show]
+    resources :galleries, only: [:index, :show]
+  end
 end

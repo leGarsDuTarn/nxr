@@ -1,7 +1,11 @@
 <%= simple_form_for [:admin, @article], html: { multipart: true } do |f| %>
   <%= f.input :title, label: "Titre de l'article" %>
   <%= f.input :content, label: "Contenu de l'article" %>
-  <%= f.input :date, as: :date, label: "Date de l'article" %>
+
+  <%= f.input :date, label: "Date de l'article" do %>
+    <%= f.date_field :date, class: "form-control" %>
+  <% end %>
+
   <%= f.input :image, as: :file, label: "Image de l'article" %>
 
   <% if f.object.image.attached? %>

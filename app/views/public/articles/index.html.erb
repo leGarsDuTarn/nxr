@@ -1,0 +1,5 @@
+<h1>Nos actualités</h1>
+
+<% @articles.each do |article| %>
+  <%= render partial: "shared/article_preview", locals: { article: article, path: public_article_path(article) } %>
+<% end %>
