@@ -1,35 +1,105 @@
-<h2>Edit <%= resource_name.to_s.humanize %></h2>
+<h2 class= "text-center">Bonjour <%= resource.first_name %> <%= resource.last_name %> 👋</h2>
+<p class="lead">
+  Bienvenue sur votre espace personnel.
+  Ici, vous pouvez mettre à jour vos informations de profil afin que nous ayons toujours les bonnes données pour vous contacter.
+</p>
 
 <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
   <%= f.error_notification %>
 
   <div class="form-inputs">
-    <%= f.input :email, required: true, autofocus: true %>
-
     <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
       <p>Currently waiting confirmation for: <%= resource.unconfirmed_email %></p>
     <% end %>
 
+   <%= f.input :user_name, autofocus: true, required: true %>
+    <%= f.input :first_name, required: true %>
+    <%= f.input :last_name, required: true %>
+    <%= f.input :birth_date, as: :date, required: true,
+    start_year: Date.current.year - 80, # Permet l'inscription jusqu'à 80 ans
+    end_year: Date.current.year - 10, # Permet l'inscription à partir de 10 ans
+    order: [:day, :month, :year] %>
+
+    <%= f.input :phone_number,
+                hint: "Nous permet de vous contacter rapidement en cas d'informations importantes (annulation, urgence…)" %>
+
+    <%= f.input :address, required: true %>
+    <%= f.input :post_code, required: true %>
+    <%= f.input :town, required: true %>
+    <%= f.input :country, as: :country, priority: ["France"], required: true %>
+
+  <div data-controller="club-member-check">
+    <%= f.input :club_member,
+                label: "Êtes-vous membre du club de Navès ?",
+                as: :select,
+                collection: [['Oui', true], ['Non', false]],
+                include_blank: "Sélectionner",
+                required: true,
+                input_html: {
+                  data: {
+                    "club-member-check-target": "select",
+                    action: "change->club-member-check#toggle"
+                  }
+                } %>
+
+    <%# Champ NOM DU CLUB affiché uniquement si club_member = false %>
+    <div data-club-member-check-target="clubNameWrapper" style="display: none;">
+      <%= f.input :club_name, label: "Nom de votre club" %>
+    </div>
+
+    <%# Champ NUMERO D'AFFILIATION affiché uniquement si club_member = true %>
+    <div data-club-member-check-target="affiliationWrapper" style="display: none;">
+      <%= f.input :club_affiliation_number, label: "Numéro d'affiliation du club de Navès" %>
+    </div>
+  </div>
+
+
+
+    <%= f.input :license_code,
+                required: true,
+                as: :select,
+                collection: User::LICENCE_CODES,
+                include_blank: "Sélectionner un code" %>
+
+    <%= f.input :license_number, required: true %>
+
+    <% if resource.avatar.attached? && resource.persisted? %>
+      <div class="mt-2">
+        <p>Avatar actuel :</p>
+        <%= image_tag(f.object.avatar, size: "150x100", class: "img-thumbnail") %><br>
+        <%= f.check_box :remove_avatar %>
+        <%= f.label :remove_avatar, "Supprimer l'avatar actuel" %>
+      </div>
+    <% end %>
+
+    <%= f.input :avatar, as: :file, required: false %>
+
+
+    <%= f.input :email,
+                required: true,
+                input_html: { autocomplete: "email" }%>
     <%= f.input :password,
-                hint: "leave it blank if you don't want to change it",
                 required: false,
+                hint: "Doit contenir au moins 8 caractères, dont une majuscule, une minuscule, un chiffre et un caractère spécial.",
                 input_html: { autocomplete: "new-password" } %>
     <%= f.input :password_confirmation,
                 required: false,
                 input_html: { autocomplete: "new-password" } %>
     <%= f.input :current_password,
-                hint: "we need your current password to confirm your changes",
                 required: true,
+                hint: "Mot de passe actuel requis pour confirmer vos modifications",
                 input_html: { autocomplete: "current-password" } %>
-  </div>
 
+  </div>
   <div class="form-actions">
-    <%= f.button :submit, "Update" %>
+    <%= f.button :submit, "Modifier mon profil", class: "btn btn-primary" %>
   </div>
 <% end %>
 
-<h3>Cancel my account</h3>
+<hr>
 
-<div>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete %></div>
+<h3>Supprimer mon compte</h3>
+
+<div>Vous souhaitez supprimer votre compte? <%= button_to "Supprimer mon compte", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete, class: "btn btn-danger" %></div>
 
 <%= link_to "Back", :back %>

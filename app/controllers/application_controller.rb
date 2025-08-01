@@ -5,14 +5,15 @@ class ApplicationController < ActionController::Base
   protected
 
   def configure_permitted_parameters
-    # Autorise les champs personnalisés à être acceptés par Devise à l'inscription (Créer un comte)
-    devise_parameter_sanitizer.permit(
-      :sign_up, keys:
-      %i[
-        user_name first_name last_name birth_date
-        club_name club_member address post_code town country phone_number
-        license_code license_number club_affiliation_number avatar
-      ]
-    )
+    # Champs supplémentaires autorisés à être envoyé en + des champs par défaut
+    authorized_keys = %i[
+      user_name first_name last_name birth_date
+      club_name club_member address post_code town country phone_number
+      license_code license_number club_affiliation_number avatar remove_avatar
+    ]
+    # Pour l'inscription -> création de compte
+    devise_parameter_sanitizer.permit(:sign_up, keys: authorized_keys)
+    # Pour l'édit du profil
+    devise_parameter_sanitizer.permit(:account_update, keys: authorized_keys)
   end
 end

@@ -9,6 +9,12 @@ class User < ApplicationRecord
   before_validation :normalize_club_name
   before_validation :normalize_club_affiliation_number
 
+  # Avant chaque sauvegarde de l'utilisateur (create ou update),
+  # on exécute la méthode `purge_avatar` -> en private, uniquement si :
+  # - le champ virtuel `remove_avatar` existe
+  # - et que la case à cocher "Supprimer l'avatar" a été cochée (valeur "1")
+  before_save :purge_avatar, if: -> { remove_avatar == "1" }
+
   has_many :events, dependent: :destroy
   has_many :trainings, dependent: :destroy
   has_many :races, dependent: :destroy
@@ -34,6 +40,7 @@ class User < ApplicationRecord
   validate :limit_size_avatar
   # Permet de supprimer l'avatar via le questionnaire view/users/_form.html.erb
   attr_accessor :remove_avatar
+
 
   # Méthode permettant de limiter la taille des fichiers des avatars et leur types
   def limit_size_avatar
@@ -147,6 +154,10 @@ class User < ApplicationRecord
   end
 
   private
+
+  def purge_avatar
+    avatar.purge_later
+  end
 
   def normalize_license_number
     # .to_s : évite les erreurs si nil
