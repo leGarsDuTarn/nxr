@@ -2,8 +2,8 @@
   <h1><%= @article.title %></h1>
 </div>
 
-<p><%= @article.content %></p>
 <p><%= image_tag(@article.image) if @article.image.attached? %></p>
+<p><%= @article.content %></p>
 
 <%= link_to admin_dashboard_path, class: "btn btn-primary", aria: { label: "Retour au tableau de bord"} do %>
   <i class="fas fa-home"></i>
