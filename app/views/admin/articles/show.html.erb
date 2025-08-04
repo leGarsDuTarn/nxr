@@ -1,10 +1,1 @@
-<div class="banner" style="background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(https://cdn.pixabay.com/photo/2016/11/29/13/17/coffee-1869772_1280.jpg);">
-  <h1><%= @article.title %></h1>
-</div>
-
-<p><%= @article.content %></p>
-<p><%= image_tag(@article.image) if @article.image.attached? %></p>
-
-<%= link_to admin_dashboard_path, class: "btn btn-primary", aria: { label: "Retour au tableau de bord"} do %>
-  <i class="fas fa-home"></i>
-<% end %>
+<%= render partial: "shared/article_show", locals: { article: @article, path: admin_article_path(@article) } %>
