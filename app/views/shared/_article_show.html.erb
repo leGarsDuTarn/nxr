@@ -3,6 +3,6 @@
 <p><%= image_tag(@article.image) if @article.image.attached? %></p>
 <p><%= @article.content %></p>
 
-<%= link_to root_path, class: "btn btn-primary", aria: { label: "Retour à l'accueil"} do %>
-  <i class="fas fa-home"></i>
+<%= link_to :back, class: "btn btn-primary", aria: { label: "Retour à la page précédente"} do %>
+  <i class="fas fa-arrow-left"></i>
 <% end %>
