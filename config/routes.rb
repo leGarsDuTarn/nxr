@@ -32,6 +32,12 @@ Rails.application.routes.draw do
       end
     end
 
+    # Route custom pour pouvoir recupérer la bonne URL pour le status des inscription et le dashboard#
+    # Routes custom pour gérer la validation manuelle des inscriptions par l'admin
+    # Ces routes ne sont pas imbriquées car elles concernent uniquement la logique métier du statutpatch "registrations/:id/validate",
+    # to: "registration_validations#validate", as: :validate_admin_registration
+    patch "registrations/:id/validate", to: "registration_validations#validate", as: :validate_admin_registration
+    patch "registrations/:id/reject",   to: "registration_validations#reject",   as: :reject_admin_registration
     get "dashboard", to: "dashboard#index"
   end
 

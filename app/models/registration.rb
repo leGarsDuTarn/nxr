@@ -42,6 +42,14 @@ class Registration < ApplicationRecord
     message: "Oups ! Ce numéro de course est déjà attribué."
   }, if: -> { registerable_type == "Race" }
 
+  # Permet de gérer le statut d'une inscription (en attente, validée, refusée)
+  # Permet d'afficher une liste déroulante (select) dans les formulaires admin
+  enum status: {
+    pending: "pending",
+    validated: "validated",
+    rejected: "rejected"
+  }
+
   private
 
   def activity_open
