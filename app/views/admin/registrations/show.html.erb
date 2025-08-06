@@ -34,3 +34,26 @@
     <li><strong>Type de moteur :</strong> <%= @registration.stroke_type %></li>
   </ul>
 </fieldset>
+
+<% if @registration.pending? && current_user.admin? %>
+  <div>
+    <p>Statut actuel : <%= @registration.status.capitalize %></p>
+
+    <div class= "btn-group">
+      <%= link_to "Valider l'inscription",  admin_validate_admin_registration_path(@registration),
+        method: :patch,
+        class: "btn btn-success",
+        data: { turbo_confirm: "Valider cette inscription ?" } %>
+
+      <%= link_to "Refuser l'inscription", admin_reject_admin_registration_path(@registration),
+        method: :patch,
+        class: "btn btn-danger",
+        data: { turbo_confirm: "Refuser cette inscription ?" }  %>
+    </div>
+  </div>
+
+  <% elsif @registration.validated? %>
+    <p class= "text-success"> Statut : Inscription validée</p>
+  <% elsif @registration.rejected? %>
+    <p class= "text-danger"> Statut : Inscription rejetée</p>
+<% end %>
