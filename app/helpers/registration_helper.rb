@@ -7,10 +7,19 @@ module RegistrationHelper
     return unless current_user&.member? || current_user&.admin?
 
     # Permet de vérifier si l'utilisateur est déjà inscrit à cette ressource
-    already_registered = current_user.registrations.exists?(registerable: resource)
+    registration = current_user.registrations.find_by(registerable: resource)
 
-    if already_registered
-      content_tag(:span, "Vous êtes déja inscrit", class: "btn btn-secondary disabled")
+    if registration.present?
+      case registration.status
+      when "pending"
+        content_tag(:span, "Inscription enregistrée en attente de validation", class: "btn btn-warning disabled")
+      when "validated"
+        content_tag(:span, "Inscription enregistrée & validée", class: "btn btn-success disabled")
+      when "rejected"
+        content_tag(:span, "Inscription refusée", class: "btn btn-danger disabled")
+      else
+        content_tag(:span, "Inscription enregistrée", class: "btn btn-secondary disabled")
+      end
     else
       path = case resource
              when Race
