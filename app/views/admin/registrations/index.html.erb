@@ -3,5 +3,6 @@
 <% @registrations.each do |registration| %>
   <p><%= registration.registerable.name %></p>
   <p><%= registration.user.first_name %> <%= registration.user.last_name %></p>
-  
+  <p><%= registration.status %></p>
+
 <% end %>
