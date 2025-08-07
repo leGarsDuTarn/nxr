@@ -38,6 +38,7 @@ Rails.application.routes.draw do
     # to: "registration_validations#validate", as: :validate_admin_registration
     patch "registrations/:id/validate", to: "registration_validations#validate", as: :validate_admin_registration
     patch "registrations/:id/reject",   to: "registration_validations#reject",   as: :reject_admin_registration
+    patch "registrations/:id/reset", to: "registration_validations#reset", as: :reset_admin_registration
     get "dashboard", to: "dashboard#index"
   end
 

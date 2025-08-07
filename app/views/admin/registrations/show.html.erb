@@ -35,22 +35,29 @@
   </ul>
 </fieldset>
 
-<% if @registration.pending? && current_user.admin? %>
-  <div>
-    <p>Statut actuel : <%= @registration.status.capitalize %></p>
+<% return unless current_user.admin? %> <%# Vérifie que seul un admin peut voir ces actions %>
+  <p><strong>Statut actuel :</strong> <%= @registration.status.capitalize %></p>
 
-    <%= simple_form_for @registration, url: admin_validate_admin_registration_path(@registration), method: :patch, html: { class: "d-inline" } do |f| %>
-      <%= f.button :submit, "Valider l'inscription", class: "btn btn-success", data: { turbo_confirm: "Valider cette inscription ?" } %>
+  <div class="btn-group mt-2">
+
+    <% unless @registration.validated? %> <!-- Exécute le code sauf si l'inscription est validée -->
+      <%= form_with url: admin_validate_admin_registration_path(@registration), method: :patch, class: "d-inline" do %>
+        <%= submit_tag "Valider", class: "btn btn-success btn-sm", data: { turbo_confirm: "Confirmer la validation ?" } %>
+      <% end %>
     <% end %>
 
-    <%= simple_form_for @registration, url: admin_reject_admin_registration_path(@registration), method: :patch, html: { class: "d-inline" } do |f| %>
-      <%= f.button :submit, "Refuser l'inscription", class: "btn btn-danger", data: { turbo_confirm: "Refuser cette inscription ?" } %>
+    <% unless @registration.rejected? %> <%# Exécute le code sauf si l'inscription est rejetée %>
+      <%= form_with url: admin_reject_admin_registration_path(@registration), method: :patch, class: "d-inline" do %>
+        <%= submit_tag "Refuser", class: "btn btn-danger btn-sm", data: { turbo_confirm: "Confirmer le refus ?" } %>
+      <% end %>
+    <% end %>
+
+    <% unless @registration.pending? %>  <%# Exécute le code sauf si l'inscription est en attente %>
+      <%= form_with url: admin_reset_admin_registration_path(@registration), method: :patch, class: "d-inline" do %>
+        <%#  Crée un formulaire PATCH vers la route de réinitialisation (retour à 'pending') %>
+        <%= submit_tag "Remettre en attente", class: "btn btn-warning btn-sm", data: { turbo_confirm: "Remettre l'inscription en attente ?" } %>
+      <% end %>
     <% end %>
 
   </div>
 
-  <% elsif @registration.validated? %>
-    <p class= "text-success"> Statut : Inscription validée</p>
-  <% elsif @registration.rejected? %>
-    <p class= "text-danger"> Statut : Inscription rejetée</p>
-<% end %>
