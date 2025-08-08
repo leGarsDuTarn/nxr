@@ -1,7 +1,8 @@
 .btn-nxr,
 input[type="submit"].btn-nxr {
   background-color: $color-primary;  // Couleur principale
-  color: $on-primary;                // Couleur du texte
+  color: $on-primary; // Couleur du texte
+  font-weight: 600;
   border: none;                      // Enlève la bordure Bootstrap
   border-radius: 50rem;              // Effet pill
   padding: 0.5rem 1rem;
