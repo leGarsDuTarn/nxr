@@ -1,6 +1,6 @@
 .navbar-lewagon {
   justify-content: space-between;
-  background: white;
+  background: $surface;
 }
 
 .navbar-lewagon .navbar-collapse {
@@ -9,4 +9,34 @@
 
 .navbar-lewagon .navbar-brand img {
   width: 40px;
+}
+
+.nav-link {
+  color: $on-surface;
+}
+
+.nav-link:hover {
+  color: $on-primary;
+  transform: scale(1.05);
+}
+
+.dropdown-item {
+  background-color: $surface;
+  color: $on-surface;
+  transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: $color-primary; // Vert fluo au hover
+  color: $on-primary; // Texte blanc cassé
+}
+
+.dropdown-menu{
+  background-color: $surface;
+  animation: fadeDown 0.3s ease forwards;
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }

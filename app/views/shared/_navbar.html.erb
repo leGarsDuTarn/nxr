@@ -1,7 +1,7 @@
 <div class="navbar navbar-expand-sm navbar-light navbar-lewagon">
   <div class="container-fluid">
-    <%= link_to "#", class: "navbar-brand" do %>
-      <%= image_tag "https://raw.githubusercontent.com/lewagon/fullstack-images/master/uikit/logo.png" %>
+    <%= link_to root_path, class: "navbar-brand" do %>
+      <%= image_tag "logo_nxr.png", alt: "Logo du club de motocross de Navès" %>
     <% end %>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,19 +13,24 @@
         <% if user_signed_in? %>
           <li class="nav-item active">
             <%# Condition ternaire pour la redirection de l'user vers son dashboard en fonction de son role %>
-            <%= link_to "Home", current_user.admin? ? admin_dashboard_path : members_dashboard_path, class: "nav-link" %>
+            <%= link_to "Home", root_path, class: "nav-link" %>
           </li>
           <li class="nav-item">
             <%= link_to "Messages", "#", class: "nav-link" %>
           </li>
           <li class="nav-item dropdown">
+
           <a href="#" class="avatar" id="navbarDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <%= image_tag "https://kitt.lewagon.com/placeholder/users/ssaunier", class: "avatar", alt: "dropdown menu" %>
+            <% if current_user.avatar.attached? %>
+              <%= image_tag current_user.avatar, class: "avatar", alt: "dropdown menu" %>
+            <% else %>
+              <%= image_tag "https://cdn.pixabay.com/photo/2017/08/29/23/49/abstract-background-2695347_1280.jpg", class: "avatar", alt: "Mon avatar" %>
+            <% end %>
+
           </a>
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-              <%= link_to "Action", "#", class: "dropdown-item" %>
-              <%= link_to "Another action", "#", class: "dropdown-item" %>
-              <%= link_to "Log out", destroy_user_session_path, data: {turbo_method: :delete}, class: "dropdown-item" %>
+              <%= link_to "Tableau de bord", current_user.admin? ? admin_dashboard_path : members_dashboard_path, class: "dropdown-item" %>
+              <%= link_to "Se déconnecter", destroy_user_session_path, data: {turbo_method: :delete}, class: "dropdown-item" %>
             </div>
           </li>
         <% else %>
@@ -36,7 +41,7 @@
             <%= link_to "Home", root_path, class: "nav-link" %>
           </li>
           <li class="nav-item">
-            <%= link_to "Login", new_user_session_path, class: "nav-link" %>
+            <%= link_to "Login", new_user_session_path, class: "nav-link btn-rounded-pill " %>
           </li>
         <% end %>
       </ul>
