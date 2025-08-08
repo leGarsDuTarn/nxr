@@ -4,7 +4,7 @@ input[type="submit"].btn-nxr {
   color: $on-primary;                // Couleur du texte
   border: none;                      // Enlève la bordure Bootstrap
   border-radius: 50rem;              // Effet pill
-  padding: 0.4rem 1rem;
+  padding: 0.5rem 1rem;
   font-weight: 500;
   transition: all 0.2s ease;
 
@@ -14,4 +14,3 @@ input[type="submit"].btn-nxr {
     transform: scale(1.05); // Agrandissement
   }
 }
-
