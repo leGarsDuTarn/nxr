@@ -5,7 +5,7 @@
       <% if @user.avatar.attached? %>
        <%= image_tag(@user.avatar, class: "avatar ms-4", alt: "Avatar de #{@user.first_name}") %>
       <% else %>
-        <p>Aucun avatar défini</p>
+        <%= image_tag "https://cdn.pixabay.com/photo/2017/08/29/23/49/abstract-background-2695347_1280.jpg", class: "avatar", alt: "Avatar par défaut" %>
       <% end %>
     </div>
 </div>
