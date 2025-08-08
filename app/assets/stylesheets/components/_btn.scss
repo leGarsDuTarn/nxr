@@ -1,0 +1,13 @@
+.btn-rounded-pill {
+  background-color: $color-primary;
+  color: $on-primary;
+  border-radius: 50rem;
+  padding: 0.4rem 1rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: $on-primary;
+    transform: scale(1.05); // Agrandissement de 5%
+  }
+}
