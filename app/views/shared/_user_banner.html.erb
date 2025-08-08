@@ -1,0 +1,5 @@
+<% banner_url = @user.avatar.attached? ? url_for(@user.avatar) : asset_path("avatar_default.jpeg") %>
+
+<div class="banner" style="background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url('<%= banner_url %>');">
+  <h1><%= @user.last_name %> - <%= @user.first_name %></h1>
+</div>
