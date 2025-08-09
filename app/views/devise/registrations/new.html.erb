@@ -1,6 +1,9 @@
 <div class="container d-flex justify-content-center align-items-start py-5">
   <div class="card-signup shadow p-4 p-md-5 rounded-4 w-100">
-    <h2 class="text-center mb-4">Créer un compte</h2>
+    <div class="d-flex justify-content-center mb-4">
+      <h2 class="title-form-white w-80 text-center">Créer un compte</h2>
+    </div>
+
 
     <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
       <%= f.error_notification %>
@@ -11,7 +14,7 @@
         <div class="row g-3">
           <div class="col-md-6">
             <%= f.input :user_name, autofocus: true, required: true,
-                        placeholder: "motoc_81" %>
+                        placeholder: "Pseudo" %>
           </div>
           <div class="col-md-6">
             <%= f.input :birth_date, as: :date, required: true,
@@ -39,8 +42,7 @@
         <div class="row g-3">
           <div class="col-md-6">
             <%= f.input :phone_number,
-                        placeholder: "06 12 34 56 78",
-                        hint: "Pour vous prévenir rapidement (annulation, urgence…)" %>
+                        hint: "Recommandé - pour vous prévenir rapidement (annulation, urgence…)" %>
           </div>
           <div class="col-md-6">
             <%= f.input :email, required: true,
@@ -85,7 +87,7 @@
 
           <!-- Affiché si Oui -->
           <div class="col-md-6" data-club-member-check-target="affiliationWrapper" style="display:none;">
-            <%= f.input :club_affiliation_number, label: "N° d'affiliation du club de Navès", placeholder: "Ex : 81-XXXX" %>
+            <%= f.input :club_affiliation_number, label: "N° d'affiliation du club de Navès" %>
           </div>
         </div>
       </fieldset>
@@ -122,7 +124,7 @@
       </fieldset>
 
       <div class="d-grid">
-        <%= f.button :submit, "Créer mon compte", class: "btn-nxr" %>
+        <%= f.button :submit, "Créer mon compte", class: "btn-nxr btn-lg" %>
       </div>
     <% end %>
 
