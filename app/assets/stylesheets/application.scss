@@ -10,3 +10,10 @@
 // Your CSS partials
 @import "components/index";
 @import "pages/index";
+
+// Gestion de la couleur de l'ensemble des halo des forms - pour simple form
+.form-control:focus,
+.form-select:focus {
+  border-color: $color-primary;
+  box-shadow: 0 0 0 0.25rem rgba(86, 227, 67, 0.329);
+}
