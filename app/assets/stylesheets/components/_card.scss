@@ -4,3 +4,14 @@
   color: $on-surface;
   background-color: $surface;
 }
+
+.card-signup {
+  max-width: 760px;
+  width: 100%;
+  color: $on-surface;
+  background-color: $surface;
+}
+.card-signup .form-text {
+  color: $color-primary !important;
+  font-size: x-small;
+}
