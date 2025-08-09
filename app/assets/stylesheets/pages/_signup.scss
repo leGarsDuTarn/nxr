@@ -1,0 +1,16 @@
+.style-g-signup {
+  background-color: $background;
+  color: $on-background;
+  height: 100vh;
+}
+
+.nav-link-signup {
+  display: inline-block; // pour que transform fonctionne
+  color: $on-surface;
+  text-decoration: none;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05); // Agrandissement
+  }
+}
