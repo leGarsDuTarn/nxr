@@ -1,30 +1,32 @@
 .btn-nxr,
 input[type="submit"].btn-nxr {
-  background-color: $color-primary;  // Couleur principale
-  color: $on-primary; // Couleur du texte
+  background-color: $color-primary;
+  color: $on-primary;
   font-weight: 700;
-  border: none;                      // Enlève la bordure Bootstrap
-  border-radius: 50rem;              // Effet pill
+  border: none;
+  border-radius: 50rem;
+  text-decoration: none;
   padding: 0.5rem 1rem;
   transition: all 0.2s ease;
 
   &:hover {
     color: $on-primary;
-    transform: scale(1.05); // Agrandissement
+    transform: scale(1.05);
   }
 }
 
 .btn-nxr-orange {
-  background-color: $secondary;  // Couleur principale
-  color: $on-secondary; // Couleur du texte
+  background-color: $secondary;
+  color: $on-secondary;
   font-weight: 700;
-  border: none;                      // Enlève la bordure Bootstrap
-  border-radius: 50rem;              // Effet pill
+  border: none;
+  text-decoration: none;
+  border-radius: 50rem;
   padding: 0.5rem 1rem;
   transition: all 0.2s ease;
 
   &:hover {
     color: $on-secondary;
-    transform: scale(1.05); // Agrandissement
+    transform: scale(1.05);
   }
 }
