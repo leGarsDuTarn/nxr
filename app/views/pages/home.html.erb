@@ -8,14 +8,28 @@
   </div>
 </div>
 
-<div class="container">
-  <h2>Les événements à venir</h2>
-  <% @races.each do |race| %>
-  <ul>
-    <li><%= race.name %></li>
-    <li><%= race.date %></li>
-    <li><%= race.image %></li>
-  </ul>
+<div class="container my-4">
+  <h2 class="mb-4 text-center">Les événements à venir</h2>
 
-  <% end %>
+  <div class="row">
+    <% @races.each do |race| %>
+      <div class="col-md-4 mb-4">
+        <div class="card shadow-sm h-100 rounded-4">
+          <% if race.image.attached? %>
+            <%= image_tag race.image, class: "card-img-top", alt: race.name %>
+          <% else %>
+            <%= image_tag "logo_nxr.png", class: "card-img-top", alt: race.name %>
+          <% end %>
+
+          <div class="card-body">
+            <h5 class="card-title"><%= race.name %></h5>
+            <p class="card-text text-muted">
+              <%= l(race.date, format: "%d %B %Y") %>
+            </p>
+            <%= link_to "Voir l'événement", public_race_path(race), class: "btn btn-nxr" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
 </div>
