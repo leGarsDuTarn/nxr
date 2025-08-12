@@ -19,12 +19,26 @@
 
             <!-- Image -->
             <div class="col-5 d-flex align-items-center justify-content-center p-2">
-              <% if activity.respond_to?(:image) && activity.image.attached? %>
-                <%= image_tag activity.image, class: "img-fluid rounded-start", alt: activity.name, style: "max-height: 120px; object-fit: cover;" %>
-              <% else %>
-                <%= image_tag "logo_nxr.png", class: "img-fluid rounded-start", alt: activity.name, style: "max-height: 120px; object-fit: contain;" %>
-              <% end %>
-            </div>
+  <% if activity.respond_to?(:image) && activity.image.attached? %>
+    <%= image_tag activity.image, class: "img-fluid rounded-start", alt: activity.name, style: "max-height: 120px; object-fit: cover;" %>
+  <% else %>
+    <% default_image =
+      case activity.type
+      when "Race"
+        "race_flag.png"      # image pour les courses
+      when "Training"
+        "training_png.png"  # image pour les entraînements
+      when "Event"
+        "logo_nxr.png"     # image pour les événements
+      else
+        "logo_nxr.png"          # fallback si aucun type reconnu
+      end
+    %>
+
+    <%= image_tag default_image, class: "img-fluid rounded-start", alt: activity.name, style: "max-height: 120px; object-fit: contain;" %>
+  <% end %>
+</div>
+
 
             <!-- Infos -->
             <div class="col-7 mt-2">
