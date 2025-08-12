@@ -32,25 +32,31 @@ module Members
 
     def create
       @registration = Registration.new(registration_params)
-      # Associe l'inscription à l'utilisateur actuellement connecté
       @registration.user = current_user
-      # Grâce à l'association polymorphe 'registerable', cette ligne retourne la ressource (Event, Race ou Training)
-      # à laquelle l'utilisateur s'est inscrit -> ce qui permet de faire : @registerable.name
       @registerable = @registration.registerable
 
-      if @registration.save
-        # Récupère le type de la ressource (Event Race ou Training)
-        type = @registerable.class.model_name.human
-        # Récupère le nom de la ressource (ex : Course de Noël)
-        name = @registerable.name
-        # Redirige vers le tableau de bord avec un message personnalisé
-        redirect_to members_dashboard_path, notice: "Inscription à #{type} « #{name} » réussie"
+    if @registration.save
+      type = @registerable.class.model_name.human
+      name = @registerable.name
+      redirect_to members_dashboard_path, notice: "Inscription à #{type} « #{name} » réussie"
+    else
+      # Réassigne les variables pour que la vue ait les bonnes données
+      case @registerable
+      when Race
+        @race = @registerable
+        render :new_race, status: :unprocessable_entity
+      when Event
+        @event = @registerable
+        render :new_event, status: :unprocessable_entity
+      when Training
+        @training = @registerable
+        render :new_training, status: :unprocessable_entity
       else
-        # Sélectionne le template approprié selon le type d'activité (Race, Training, Event)
-        # --> Voir section private
-        render template_for("new"), status: :unprocessable_entity
+      redirect_to root_path, alert: "Type d'inscription inconnu."
+        end
       end
     end
+
 
     def edit
       if @registration.registerable.is_a?(Race)
