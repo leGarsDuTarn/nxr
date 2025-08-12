@@ -2,6 +2,7 @@
 input[type="submit"].btn-nxr {
   background-color: $color-primary;
   color: $on-primary;
+  display: inline-block;
   font-weight: 700;
   border: none;
   border-radius: 50rem;
@@ -11,13 +12,14 @@ input[type="submit"].btn-nxr {
 
   &:hover {
     color: $on-primary;
-    transform: scale(1.05);
+    transform: scale(1.03);
   }
 }
 
 .btn-nxr-orange {
   background-color: $secondary;
   color: $on-secondary;
+  display: inline-block;
   font-weight: 700;
   border: none;
   text-decoration: none;
@@ -27,6 +29,38 @@ input[type="submit"].btn-nxr {
 
   &:hover {
     color: $on-secondary;
+    transform: scale(1.03);
+  }
+}
+
+.btn-nxr-hp-reverse-green {
+  background-color: $on-background;
+  color: $color-primary;
+  display: inline-block;
+  font-weight: 500;
+  border: $color-primary 2px solid;
+  text-decoration: none;
+  border-radius: 50rem;
+  padding: 0.1rem 0.5rem;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.btn-nxr-hp-reverse-orange {
+  background-color: $on-background;
+  color: $secondary;
+  display: inline-block;
+  font-weight: 500;
+  border: $secondary 2px solid;
+  text-decoration: none;
+  border-radius: 50rem;
+  padding: 0.1rem 0.5rem;
+  transition: all 0.2s ease;
+
+  &:hover {
     transform: scale(1.05);
   }
 }
