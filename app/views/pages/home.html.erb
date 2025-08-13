@@ -1,6 +1,7 @@
 <div class="banner-hp" style="background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(https://cdn.pixabay.com/photo/2023/10/18/22/48/ai-generated-8325216_1280.png);">
   <div class="container">
-    <h1>Rejoignez le <strong>club</strong> de motocross<strong> NXR</strong> </h1>
+    <h1>Rejoignez le <strong>club</strong> MCNC<strong></h1>
+    <p>L'aventure commence ici ...</p>
     <div class= "mt-4">
       <%= link_to "Créer un compte", new_user_registration_path, class: "btn-nxr" %>
       <%= link_to "En savoir plus", new_user_session_path, class: "btn-nxr-orange" %>
@@ -20,7 +21,7 @@
             <!-- Image -->
             <div class="col-5 d-flex align-items-center justify-content-center p-2">
   <% if activity.respond_to?(:image) && activity.image.attached? %>
-    <%= image_tag activity.image, class: "img-fluid rounded-start", alt: activity.name, style: "max-height: 120px; object-fit: cover;" %>
+    <%= image_tag activity.image, class: "img-fluid rounded-start", alt: activity.name, class: "img-card-hp" %>
   <% else %>
     <% default_image =
       case activity.type
