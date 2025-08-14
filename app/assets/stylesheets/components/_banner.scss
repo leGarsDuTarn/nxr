@@ -6,7 +6,7 @@
 
 .banner h1 {
   margin: 0;
-  color: white;
+  color: $on-surface;
   text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
   font-size: 32px;
   font-weight: bold;
@@ -14,7 +14,29 @@
 
 .banner p {
   font-size: 20px;
-  color: white;
+  color: $on-surface;
+  opacity: .7;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+// Banner homepage
+.banner-hp {
+  background-size: cover;
+  background-position: center top;
+  padding: 150px 0;
+}
+
+.banner-hp h1 {
+  margin: 0;
+  color: $on-surface;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.banner-hp p {
+  font-size: 20px;
+  color: $on-surface;
   opacity: .7;
   text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
 }

@@ -65,5 +65,8 @@ Rails.application.routes.draw do
   namespace :public, path: '' do
     resources :articles, only: [:index, :show]
     resources :galleries, only: [:index, :show]
+    resources :races, only: [:index, :show]
+    resources :trainings, only: [:index, :show]
+    resources :events, only: [:index, :show]
   end
 end
