@@ -48,7 +48,7 @@ module Admin
     end
 
     def race_params
-      params.require(:race).permit(:name, :description, :date, :hour, :image)
+      params.require(:race).permit(:name, :description, :date, :hour, :image, :remove_image)
     end
   end
 end
