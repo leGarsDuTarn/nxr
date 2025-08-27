@@ -60,8 +60,8 @@ class User < ApplicationRecord
   # J'ai mis un validate afin que les users n'aient pas le même username
   # Je l'ai renforcé avec case_sensitive donc Benji et benji sont egaux
   # J'ai également mis un message pour une UX plus propre
-  validates :user_name, presence: { message: "Veuillez renseigner un nom d’utilisateur." }, uniqueness:
-  { case_sensitive: false, message: "Oups ! Ce nom d’utilisateur est déjà pris." }
+  validates :user_name, presence: { message: "Veuillez renseigner un nom d'utilisateur." }, uniqueness:
+  { case_sensitive: false, message: "Oups ! Ce nom d'utilisateur est déjà pris." }
   # Valide que :club_member est true ou false
   # Message personnalisé si aucune des deux valeurs n’est sélectionnée
   validates :address, presence: { message: "Veuillez renseigner une adresse." }

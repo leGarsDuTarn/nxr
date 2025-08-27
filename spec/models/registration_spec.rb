@@ -12,15 +12,13 @@ RSpec.describe Registration, type: :model do
       birth_date: Date.new(1992, 6, 5),
       address: "testadress",
       post_code: "73000",
+      town: "Paris",
       country: "France",
       license_code: "NCO",
       license_number: "123456",
       club_member: true,
+      club_affiliation_number: "C0637",
       club_name: "testclubname",
-      bike_brand: "KTM",
-      cylinder_capacity: 50,
-      stroke_type: "2T",
-      plate_number: "AN-123-CD",
       password: "Exemples1,",
       password_confirmation: "Exemples1,"
     )
@@ -73,24 +71,19 @@ RSpec.describe Registration, type: :model do
     end
   end
 
-  # Fausse class créée uniquement pour le test
-  class Cooking < ApplicationRecord
-    self.table_name = 'events' # réutilise une table existante pour éviter les erreurs
-    belongs_to :user
-  end
   context "Quand l'inscription ne concerne pas un événement de type Race, Training ou Event" do
     it "Le test n'est pas valide avec un autre type d'événement" do
-
-      cooking = Cooking.create!(
-        name: "test",
-        description: "testdesc",
-        date: Date.today,
-        hour: Time.now,
-        user: user
+      registration = described_class.new(
+        user: user,
+        registerable_type: "Cooking",
+        registerable_id: 123
       )
-      registration = Registration.new(user: user, registerable: cooking)
+      # Empêche tout accès à l'association polymorphe → évite tout probléme de constance("Cooking")
+      allow(registration).to receive(:registerable).and_return(nil)
+
+      registration.validate
       expect(registration).not_to be_valid
-      expect(registration.errors[:registerable_type]).to include("Cooking n’est pas un type d’inscription valide")
+      expect(registration.errors[:registerable_type]).to include("Cooking n'est pas un type d'inscription valide")
     end
   end
 end
