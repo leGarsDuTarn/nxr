@@ -175,10 +175,21 @@ RSpec.describe User, type: :model do
     expect(user.errors[:club_member]).to include("Veuillez sélectionner 'Oui' ou 'Non'.")
   end
 
-  it "ne valide pas le test si club_name n'est pas renseigné" do
+  it "assigne automatiquement 'NAVÈS' si club_member est true et club_name est vide" do
+    user.club_member = true
     user.club_name = nil
     user.validate
+
+    expect(user).to be_valid
+    expect(user.club_name).to eq("NAVÈS")
+  end
+
+  it "ne valide pas si club_member est false et club_name est vide" do
+    user.club_member = false
+    user.club_name = nil
+    user.validate
+
     expect(user).not_to be_valid
-    expect(user.errors[:club_name]).to include("Vous devez renseigner le nom de votre club")
+    expect(user.errors[:club_name]).to include("Veuillez renseigner le nom de votre club.")
   end
 end
