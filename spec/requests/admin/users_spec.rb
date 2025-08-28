@@ -3,33 +3,8 @@ require 'rails_helper'
 RSpec.describe "Admin::Users", type: :request do
   let(:user) do
     User.create!(
-    user_name: "name",
-      role: "member",
-      first_name: "fname",
-      last_name: "lname",
-      email: "test1@gmail.com",
-      phone_number: "0678451203",
-      birth_date: Date.new(1992, 6, 5),
-      address: "adress",
-      post_code: "74000",
-      country: "France",
-      license_code: "NCP",
-      license_number: "654123",
-      club_member: true,
-      club_name: "clubname",
-      bike_brand: "KTM",
-      cylinder_capacity: 85,
-      stroke_type: "4T",
-      plate_number: "AC-123-CA",
-      password: "Exemples1,",
-      password_confirmation: "Exemples1,"
-    )
-  end
-
-  let(:admin) do
-    User.create!(
       user_name: "testuser_name",
-      role: "admin",
+      role: "member",
       first_name: "test_fname",
       last_name: "test_lname",
       email: "test@mail.com",
@@ -37,15 +12,36 @@ RSpec.describe "Admin::Users", type: :request do
       birth_date: Date.new(1992, 6, 5),
       address: "testadress",
       post_code: "73000",
+      town: "Paris",
       country: "France",
       license_code: "NCO",
       license_number: "123456",
       club_member: true,
+      club_affiliation_number: "C0637",
       club_name: "testclubname",
-      bike_brand: "KTM",
-      cylinder_capacity: 50,
-      stroke_type: "2T",
-      plate_number: "AN-123-CD",
+      password: "Exemples1,",
+      password_confirmation: "Exemples1,"
+    )
+  end
+
+  let(:admin) do
+    User.create!(
+      user_name: "user_name",
+      role: "admin",
+      first_name: "test_fname",
+      last_name: "test_lname",
+      email: "test@adminmail.com",
+      phone_number: "0600000000",
+      birth_date: Date.new(1992, 6, 5),
+      address: "testadress",
+      post_code: "73000",
+      town: "Paris",
+      country: "France",
+      license_code: "NCO",
+      license_number: "456123",
+      club_member: true,
+      club_affiliation_number: "C0637",
+      club_name: "testclubname",
       password: "Exemples1,",
       password_confirmation: "Exemples1,"
     )
@@ -97,7 +93,7 @@ RSpec.describe "Admin::Users", type: :request do
         updated_params = {
           user_name: "testnickname",
           role: "member",
-          first_name: "testfirsname",
+          first_name: "Testfirsname",
           last_name: "testlastname",
           email: "test@gmail.com",
           phone_number: "0689562302",
@@ -109,7 +105,7 @@ RSpec.describe "Admin::Users", type: :request do
         patch admin_user_path(user), params: { user: updated_params }
         user.reload # Recharge les données depuis la DB
         expect(response).to have_http_status(:redirect)
-        expect(user.first_name).to eq("testfirsname")
+        expect(user.first_name).to eq("Testfirsname")
         expect(user.post_code).to eq("63000")
       end
     end

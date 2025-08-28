@@ -12,15 +12,13 @@ RSpec.describe "Admin::Registrations", type: :request do
       birth_date: Date.new(1992, 6, 5),
       address: "testadress",
       post_code: "73000",
+      town: "Paris",
       country: "France",
       license_code: "NCO",
       license_number: "123456",
       club_member: true,
+      club_affiliation_number: "C0637",
       club_name: "testclubname",
-      bike_brand: "KTM",
-      cylinder_capacity: 50,
-      stroke_type: "2T",
-      plate_number: "AN-123-CD",
       password: "Exemples1,",
       password_confirmation: "Exemples1,"
     )
@@ -28,24 +26,22 @@ RSpec.describe "Admin::Registrations", type: :request do
 
   let(:user) do
     User.create!(
-      user_name: "name",
+      user_name: "member_user_name",
       role: "member",
-      first_name: "fname",
-      last_name: "lname",
-      email: "test1@gmail.com",
-      phone_number: "0678451203",
+      first_name: "test_fname",
+      last_name: "test_lname",
+      email: "member@monmail.com",
+      phone_number: "0600000000",
       birth_date: Date.new(1992, 6, 5),
-      address: "adress",
-      post_code: "74000",
+      address: "testadress",
+      post_code: "73000",
+      town: "Paris",
       country: "France",
-      license_code: "NCP",
-      license_number: "654123",
+      license_code: "NCO",
+      license_number: "546236",
       club_member: true,
-      club_name: "clubname",
-      bike_brand: "KTM",
-      cylinder_capacity: 85,
-      stroke_type: "4T",
-      plate_number: "AC-123-CA",
+      club_affiliation_number: "C0637",
+      club_name: "testclubname",
       password: "Exemples1,",
       password_confirmation: "Exemples1,"
     )
@@ -139,7 +135,13 @@ RSpec.describe "Admin::Registrations", type: :request do
     context "Quand un admin est connecté et affiche les détails des inscriptions à un événement de type race" do
       it "retourne un status 200, affiche les informations des users inscrit" do
         # Crée une inscription qui sera visible pour l'admin
-        registration = Registration.create!(user: user, registerable: race)
+        registration = Registration.create!(
+          user: user,
+          registerable: race,
+          bike_brand: "KTM",
+          cylinder_capacity: 50,
+          race_number: "153"
+        )
         get admin_race_registration_path(race, registration)
         expect(response).to have_http_status(:ok)
         expect(response.body).to include(user.last_name)
@@ -179,7 +181,13 @@ RSpec.describe "Admin::Registrations", type: :request do
     context "Quand l'admin delete une inscription lié à événement de type race" do
       it "supprime l'inscription, redirige l'user (302), et valide le test" do
         # Crée une inscription qui sera supprimée pour le test
-        registration = Registration.create!(user: user, registerable: race)
+        registration = Registration.create!(
+          user: user,
+          registerable: race,
+          bike_brand: "KTM",
+          cylinder_capacity: 50,
+          race_number: "153"
+        )
         # expect {...} permet de tester un changement d'état, test les créations et suppressions
         expect {
           delete admin_race_registration_path(race, registration)
