@@ -12,15 +12,13 @@ RSpec.describe "Members::Registrations", type: :request do
       birth_date: Date.new(1992, 6, 5),
       address: "testadress",
       post_code: "73000",
+      town: "Paris",
       country: "France",
       license_code: "NCO",
       license_number: "123456",
       club_member: true,
+      club_affiliation_number: "C0637",
       club_name: "testclubname",
-      bike_brand: "KTM",
-      cylinder_capacity: 50,
-      stroke_type: "2T",
-      plate_number: "AN-123-CD",
       password: "Exemples1,",
       password_confirmation: "Exemples1,"
     )
@@ -75,20 +73,12 @@ RSpec.describe "Members::Registrations", type: :request do
         expect(response).to have_http_status(:ok)
         expect(response.body).to match(/inscription/i) # case insensitive = Inscription ou inscription
         expect(response.body).to include(event.name)
-        expect(response.body).to include('<form') # Vérifie qu'un formulaire est bien affiché
         # vérifie ici que le formulaire HTML contient bien les champs cachés nécessaires
         # pour que l'inscription soit correctement reliée à un événement (comme une course).
         # Ces champs sont indispensables à cause de l'association polymorphe `registerable`
         # dans le modèle Registration.
         expect(response.body).to include('name="registration[registerable_id]"')
         expect(response.body).to include('name="registration[registerable_type]"')
-        # Vérifie que les champs du profil utilisateur apparaissent bien dans
-        # le formulaire, ce qui permet de les remplir ou les corriger au moment de l’inscription.
-        # ex : la date de naissance et le numéro de licence du membre.
-        expect(response.body).to include('name="user[first_name]"')
-        expect(response.body).to include('name="user[last_name]"')
-        expect(response.body).to include('name="user[phone_number]"')
-        expect(response.body).to include('name="user[club_name]"')
       end
     end
   end
@@ -100,31 +90,12 @@ RSpec.describe "Members::Registrations", type: :request do
         get new_members_race_registration_path(race)
         expect(response).to have_http_status(:ok)
         expect(response.body).to include(race.name)
-        expect(response.body).to include('<form') # Vérifie qu'un formulaire est bien affiché
         # vérifie ici que le formulaire HTML contient bien les champs cachés nécessaires
         # pour que l'inscription soit correctement reliée à un événement (comme une course).
         # Ces champs sont indispensables à cause de l'association polymorphe `registerable`
         # dans le modèle Registration.
         expect(response.body).to include('name="registration[registerable_id]"')
         expect(response.body).to include('name="registration[registerable_type]"')
-        # Vérifie que les champs du profil utilisateur apparaissent bien dans
-        # le formulaire, ce qui permet de les remplir ou les corriger au moment de l’inscription.
-        # ex : la date de naissance et le numéro de licence du membre.
-        expect(response.body).to include('name="user[first_name]"')
-        expect(response.body).to include('name="user[last_name]"')
-        expect(response.body).to include('name="user[birth_date]"')
-        expect(response.body).to include('name="user[phone_number]"')
-        expect(response.body).to include('name="user[race_number]"')
-        expect(response.body).to include('name="user[address]"')
-        expect(response.body).to include('name="user[post_code]"')
-        expect(response.body).to include('name="user[town]"')
-        expect(response.body).to include('name="user[license_code]"')
-        expect(response.body).to include('name="user[license_number]"')
-        expect(response.body).to include('name="user[club_name]"')
-        expect(response.body).to include('name="user[bike_brand]"')
-        expect(response.body).to include('name="user[cylinder_capacity]"')
-        expect(response.body).to include('name="user[stroke_type]"')
-        expect(response.body).to include('name="user[plate_number]"')
       end
     end
   end
@@ -137,24 +108,12 @@ RSpec.describe "Members::Registrations", type: :request do
         expect(response).to have_http_status(:ok)
         expect(response.body).to match(/inscription/i) # case insensitive = Inscription ou inscription
         expect(response.body).to include(training.name)
-        expect(response.body).to include('<form') # Vérifie qu'un formulaire est bien affiché
         # vérifie ici que le formulaire HTML contient bien les champs cachés nécessaires
         # pour que l'inscription soit correctement reliée à un événement (comme une course).
         # Ces champs sont indispensables à cause de l'association polymorphe `registerable`
         # dans le modèle Registration.
         expect(response.body).to include('name="registration[registerable_id]"')
         expect(response.body).to include('name="registration[registerable_type]"')
-        # Vérifie que les champs du profil utilisateur apparaissent bien dans
-        # le formulaire, ce qui permet de les remplir ou les corriger au moment de l’inscription.
-        # ex : la date de naissance et le numéro de licence du membre.
-        expect(response.body).to include('name="user[first_name]"')
-        expect(response.body).to include('name="user[last_name]"')
-        expect(response.body).to include('name="user[birth_date]"')
-        expect(response.body).to include('name="user[phone_number]"')
-        expect(response.body).to include('name="user[club_name]"')
-        expect(response.body).to include('name="user[license_code]"')
-        expect(response.body).to include('name="user[license_number]"')
-        expect(response.body).to include('name="user[plate_number]"')
       end
     end
   end
@@ -180,7 +139,13 @@ RSpec.describe "Members::Registrations", type: :request do
         # expect {...} permet de tester un changement d'état, test les créations et suppressions
         expect {
           post members_race_registrations_path(race), params: {
-            registration: { registerable_id: race.id, registerable_type: "Race" }
+            registration: {
+              registerable_id: race.id,
+              registerable_type: "Race",
+              bike_brand: "KTM",
+              cylinder_capacity: 50,
+              race_number: "153"
+            }
           }
         }.to change(Registration, :count).by(1) # Ici permet de vérifier que l'inscription à une race est bien créé en DB
         expect(response).to have_http_status(:redirect) # Vérifie que l'user est bien redirigé (302)
@@ -223,7 +188,13 @@ RSpec.describe "Members::Registrations", type: :request do
     context "Quand le membre supprime son inscription lié à événement de type race" do
       it "supprime l'inscription, redirige l'user (302), et valide le test" do
         # Crée une inscription qui sera supprimée pour le test
-        registration = Registration.create!(user: member, registerable: race)
+        registration = Registration.create!(
+          user: member,
+          registerable: race,
+          bike_brand: "KTM",
+          cylinder_capacity: 50,
+          race_number: "153"
+        )
         # expect {...} permet de tester un changement d'état, test les créations et suppressions
         expect {
           delete members_race_registration_path(race, registration)

@@ -12,15 +12,13 @@ RSpec.describe "Admin::Races", type: :request do
       birth_date: Date.new(1992, 6, 5),
       address: "testadress",
       post_code: "73000",
+      town: "Paris",
       country: "France",
       license_code: "NCO",
       license_number: "123456",
       club_member: true,
+      club_affiliation_number: "C0637",
       club_name: "testclubname",
-      bike_brand: "KTM",
-      cylinder_capacity: 50,
-      stroke_type: "2T",
-      plate_number: "AN-123-CD",
       password: "Exemples1,",
       password_confirmation: "Exemples1,"
     )
