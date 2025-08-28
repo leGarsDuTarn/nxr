@@ -21,5 +21,7 @@ class PagesController < ApplicationController
     @upcoming_activities = (races + events + trainings)
                            .sort_by(&:date)
                            .first(6)
+
+    @articles = Article.order(created_at: :desc).limit(3)
   end
 end

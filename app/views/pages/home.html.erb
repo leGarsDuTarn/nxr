@@ -65,3 +65,48 @@
     </div>
   <% end %>
 </div>
+
+<%# Les News %>
+<div class="container my-5">
+  <h2 class="mb-4 text-center">Les News</h2>
+
+  <% if @articles.present? %>
+    <div class="row g-4">
+      <% @articles.each do |article| %>
+        <div class="col-md-6 col-lg-4">
+          <div class="card-homepage shadow-sm rounded-4 h-100 position-relative">
+            <div class="row g-0 h-100">
+
+              <%# Image %>
+              <div class="col-5 d-flex align-items-center justify-content-center p-2">
+                <%= image_tag(article.image.attached? ? article.image : "default_article.jpeg",
+                    class: "img-fluid rounded-start img-card-hp",
+                    alt: article.title)
+                %>
+
+              </div>
+
+              <%# Infos %>
+              <div class="col-7 mt-2">
+                <div class="card-body text-center px-2">
+                  <h6 class="card-title mb-1 text-truncate"><%= article.title %></h6>
+                  <small class="mb-2 d-block"><%= l(article.created_at.to_date, format: "%d %B %Y") %></small>
+
+                  <%# Lien qui rend toute la card cliquable %>
+                  <%= link_to "", public_article_path(article), class: "stretched-link" %>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="col-md-6 col-lg-4 mx-auto">
+      <div class="card-homepage shadow-sm rounded-4 h-100 d-flex align-items-center justify-content-center text-center p-4">
+        <p class="mb-0">Aucune actualité pour le moment.</p>
+      </div>
+    </div>
+  <% end %>
+</div>
