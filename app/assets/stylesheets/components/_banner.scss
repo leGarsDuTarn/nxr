@@ -23,7 +23,25 @@
 .banner-hp {
   background-size: cover;
   background-position: center top;
-  padding: 150px 0;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;   // par défaut centré (mobile)
+  text-align: center;
+}
+
+@media (min-width: 992px) {
+  .banner-hp {
+    align-items: flex-start; // aligne à gauche
+    text-align: left;
+    padding-left: 60px;      // petit décalage depuis le bord
+  }
+  .banner-hp p {
+  font-size: 20px;
+  color: $on-surface;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
 }
 
 .banner-hp h1 {
@@ -37,6 +55,5 @@
 .banner-hp p {
   font-size: 20px;
   color: $on-surface;
-  opacity: .7;
   text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
 }
