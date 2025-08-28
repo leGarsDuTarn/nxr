@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+      - ci/*
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        ports: ['5432:5432']
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: nxr_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/nxr_test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2.2 # ⚠️ mets ici la version Ruby de ton projet
+
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          bundle install --jobs 4 --retry 3
+
+      - name: Set up database
+        run: |
+          bin/rails db:create db:schema:load --trace
+
+      - name: Run tests
+        run: |
+          bundle exec rspec
