@@ -1,5 +1,9 @@
 # NXR 🏁💥
 
+![CI](https://github.com/leGarsDuTarn/nxr/actions/workflows/ci.yml/badge.svg)
+![Ruby](https://img.shields.io/badge/ruby-3.3.5-red)
+![Rails](https://img.shields.io/badge/rails-7.1.5-red)
+
 **NXR** (Naves Cross Racing) est le site officiel du club de motocross de Naves.
 Il permet aux visiteurs et membres de :
 
