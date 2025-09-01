@@ -1,0 +1,28 @@
+.footer {
+  background-color: $surface;
+  color: $on-surface;
+  padding: 2rem 0;
+  text-align: center;
+
+  p {
+    margin-bottom: 0.5rem;
+  }
+
+  a {
+    color: $on-surface;
+    margin: 0 0.5rem;
+    text-decoration: none;
+
+    &:hover {
+      color: $color-primary;
+    }
+  }
+
+  .social-icons {
+    margin-top: 2rem;
+
+    a {
+      font-size: 1.5rem;
+    }
+  }
+}
