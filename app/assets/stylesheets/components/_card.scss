@@ -20,3 +20,13 @@
   color: $on-surface;
   background-color: $surface;
 }
+
+.card-article-preview {
+  color: $on-surface;
+  background-color: $surface;
+
+  a {
+    text-decoration: none;
+    color: $secondary;
+  }
+}

@@ -4,7 +4,7 @@ RSpec.describe Article, type: :model do
   let(:user) do
     User.create!(
       user_name: "testuser_name",
-      role: "member",
+      role: "admin",
       first_name: "test_fname",
       last_name: "test_lname",
       email: "test@mail.com",
@@ -24,23 +24,33 @@ RSpec.describe Article, type: :model do
     )
   end
 
-  let(:article) do
+  let!(:existing_article) do
     Article.create!(
       title: "Ma belle moto",
       content: "Quand j'étais petit je voulais une moto...",
-      user: user
+      user: user,
+      image: fixture_file_upload("spec/fixtures/files/event.jpg", "image/jpeg")
     )
   end
 
   subject do
     described_class.new(
-      title: "Ma belle moto",
-      content: "Quand j'étais petit je voulais une moto...",
+      title: "Mon KTM de feu",
+      content: "Quand j'étais petit je voulais une KTM...",
       user: user
     )
   end
 
-  context "Quand tout les champs sont correctement remplis" do
+  before do
+    # par défaut on attache une image au subject
+    subject.image.attach(
+      io: File.open(Rails.root.join("spec/fixtures/files/event.jpg")),
+      filename: "test_image_article.jpg",
+      content_type: "image/jpeg"
+    )
+  end
+
+  context "Quand tous les champs sont correctement remplis" do
     it "Le test est valide" do
       expect(subject).to be_valid
     end
@@ -56,7 +66,7 @@ RSpec.describe Article, type: :model do
   end
 
   context "Quand le titre n'est pas unique" do
-    before { subject.title = article.title}
+    before { subject.title = existing_article.title }
     it "Le test n'est pas valide" do
       subject.validate
       expect(subject.errors[:title]).to include("Ce titre est déjà utilisé")
@@ -69,6 +79,15 @@ RSpec.describe Article, type: :model do
     it "Le test n'est pas valide" do
       subject.validate
       expect(subject.errors[:content]).to include("Vous devez renseigner ce champ")
+    end
+  end
+
+  context "Quand l'image est absente" do
+    before { subject.image.detach }
+
+    it "Le test n'est pas valide" do
+      subject.validate
+      expect(subject.errors[:image]).to include("Vous devez ajouter une image")
     end
   end
 end

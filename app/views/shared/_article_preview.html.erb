@@ -1,21 +1,36 @@
-<div class="article-preview mb-4 d-flex align-items-start">
-  <div class="me-3">
-    <% if article.image.attached? %>
-      <%= image_tag(article.image, size: "120x120", class: "img-thumbnail") %>
-    <% else %>
-      <%= image_tag("https://cdn.pixabay.com/photo/2016/11/29/13/17/coffee-1869772_1280.jpg",
-                    size: "120x120", class: "img-thumbnail") %>
-    <% end %>
-  </div>
+<div class="container">
+<div class="col12">
+  <div class="card-article-preview shadow-sm rounded-4 h-100 position-relative">
+    <div class="row g-0 h-100">
 
-  <div>
-    <h2 class="h5 mb-1">
-      <%# 'path' permet ici d'avoir toujours un lien correct coté public ou admin  %>
-      <%# Ce qui permet de faire path: admin_article_path ou article_path %>
-      <%= link_to article.title, path, class: "text-decoration-none" %>
-    </h2>
-    <p class="text-muted mb-2"><%= l(article.created_at, format: :short) %></p>
-    <p><%= truncate(article.content, length: 150, separator: ' ') %></p>
+      <%# Image %>
+      <div class="col-5 d-flex align-items-center justify-content-center p-2">
+        <% if article.image.attached? %>
+          <%= image_tag article.image,
+              class: "img-fluid rounded-start img-card-hp",
+              alt: article.title %>
+        <% else %>
+          <%= image_tag "default_article.jpeg",
+              class: "img-fluid rounded-start img-card-hp",
+              alt: article.title %>
+        <% end %>
+      </div>
+
+      <%# Infos %>
+      <div class="col-7 mt-2">
+        <div class="text-center px-2">
+          <h4 class="mb-1 fs-3">
+            <%= link_to article.title, path %>
+          </h4>
+          <p class="mb-0"><%= truncate(article.content, length: 100, separator: ' ') %></p>
+          <small class="mb-2 d-block">Publié le <%= l(article.created_at.to_date, format: "%d %B %Y") %></small>
+
+          <%# Lien qui rend toute la card cliquable %>
+          <%= link_to "", path, class: "stretched-link" %>
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
-<hr>
+</div>

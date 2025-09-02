@@ -29,7 +29,8 @@ RSpec.describe "Admin::Articles", type: :request do
       title: "testtitle",
       content: "testcontent",
       date: Date.today,
-      user: admin
+      user: admin,
+      image: fixture_file_upload("spec/fixtures/files/event.jpg", "image/jpeg")
     )
   end
 
@@ -50,7 +51,7 @@ RSpec.describe "Admin::Articles", type: :request do
     end
   end
 
-  describe "GET/admin/aticles/:id" do # Méthode show
+  describe "GET/admin/articles/:id" do # Méthode show
     context "Quand un admin est connecté et affiche un article" do
       it "retourne un status 200, affiche le nom et le contenu d'un article et valide le test" do
         get admin_article_path(article)

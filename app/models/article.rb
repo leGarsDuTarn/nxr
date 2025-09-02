@@ -10,4 +10,5 @@ class Article < ApplicationRecord
   validates :title, presence: { message: "Vous devez renseigner un titre" }, uniqueness:
   { message: "Ce titre est déjà utilisé" }
   validates :content, presence: { message: "Vous devez renseigner ce champ" }
+  validates :image, presence: { message: "Vous devez ajouter une image" }
 end
