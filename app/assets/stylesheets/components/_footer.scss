@@ -26,3 +26,13 @@
     }
   }
 }
+
+@media (max-width: 768px) {
+    .footer a {
+      font-size: 0.70rem; 
+    }
+
+    .footer p {
+      font-size: 0.80rem;
+    }
+}
