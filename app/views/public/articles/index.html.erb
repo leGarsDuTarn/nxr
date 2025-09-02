@@ -1,5 +1,21 @@
-<h1>Nos actualités</h1>
+<div class="container my-5">
+  <header class="text-start mb-4">
+    <h1 class="display-5 fw-bold text-uppercase">Toutes les actualités</h1>
+    <p class="lead">Découvrez toutes les dernières nouvelles du club MCNC ! </p>
+  </header>
 
-<% @articles.each do |article| %>
-  <%= render partial: "shared/article_preview", locals: { article: article, path: public_article_path(article) } %>
-<% end %>
+  <% if @articles.present? %>
+    <div class="d-flex flex-column gap-4">
+      <% @articles.each do |article| %>
+          <%= render partial: "shared/article_preview",
+                     locals: { article: article, path: public_article_path(article) } %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="col-md-6 col-lg-4 mx-auto">
+      <div class="card-article-preview shadow-sm rounded-4 h-100 d-flex align-items-center justify-content-center text-center p-4">
+        <p class="mb-0">Aucune actualité pour le moment.</p>
+      </div>
+    </div>
+  <% end %>
+</div>
