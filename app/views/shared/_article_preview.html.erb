@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container mt-4">
 <div class="col12">
   <div class="card-article-preview shadow-sm rounded-4 h-100 position-relative">
     <div class="row g-0 h-100">
@@ -22,8 +22,8 @@
           <h4 class="mb-1 fs-3">
             <%= link_to article.title, path %>
           </h4>
-          <p class="mb-0"><%= truncate(article.content, length: 100, separator: ' ') %></p>
-          <small class="mb-2 d-block">Publié le <%= l(article.created_at.to_date, format: "%d %B %Y") %></small>
+          <p class="mb-0"><%= truncate(article.content, length: 50, separator: ' ') %></p>
+          <small class="mb-2 d-block text-tertiary">Publié le <%= l(article.created_at.to_date, format: "%d %B %Y") %></small>
 
           <%# Lien qui rend toute la card cliquable %>
           <%= link_to "", path, class: "stretched-link" %>

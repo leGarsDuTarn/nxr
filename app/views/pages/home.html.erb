@@ -10,7 +10,7 @@
 </div>
 
 <div class="container my-5">
-  <h2 class="mb-4 text-center fs-1">Les événements à venir</h2>
+  <h2 class="mb-4 text-center fs-1 fw-bold text-uppercase">Les événements à venir</h2>
 
   <% if @upcoming_activities.present? %>
     <div class="row g-4">
@@ -68,7 +68,7 @@
 
 <%# Les News %>
 <div class="container my-5">
-  <h2 class="mb-4 text-center fs-1">Les News</h2>
+  <h2 class="mb-4 text-center fs-1 fw-bold text-uppercase">Les News</h2>
 
   <% if @articles.present? %>
     <div class="row g-4">
@@ -90,7 +90,7 @@
               <div class="col-7 mt-2">
                 <div class="card-body text-center px-2">
                   <h6 class="card-title mb-1"><%= article.title %></h6>
-                  <small class="mb-2 d-block"><%= l(article.created_at.to_date, format: "%d %B %Y") %></small>
+                  <small class="mb-2 d-block">Publié le <%= l(article.created_at.to_date, format: "%d %B %Y") %></small>
 
                   <%# Lien qui rend toute la card cliquable %>
                   <%= link_to "", public_article_path(article), class: "stretched-link" %>
@@ -113,7 +113,7 @@
 
 <%# Les Photos %>
 <div class="container my-5">
-  <h2 class="mb-4 text-center fs-1">Albums Photos</h2>
+  <h2 class="mb-4 text-center fs-1 fw-bold text-uppercase">Albums Photos</h2>
 
   <% if @galleries.present? %>
     <div class="row g-4">
@@ -141,7 +141,7 @@
               <div class="col-7 mt-2">
                 <div class="card-body text-center px-2">
                   <h6 class="card-title mb-1"><%= gallery.title %></h6>
-                  <small class="mb-2 d-block"><%= l(gallery.created_at.to_date, format: "%d %B %Y") %></small>
+                  <small class="mb-2 d-block">Publié le <%= l(gallery.created_at.to_date, format: "%d %B %Y") %></small>
 
                   <%# Lien qui rend toute la card cliquable %>
                   <%= link_to "", public_article_path(gallery), class: "stretched-link" %>
