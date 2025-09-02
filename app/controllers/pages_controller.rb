@@ -23,5 +23,6 @@ class PagesController < ApplicationController
                            .first(6)
 
     @articles = Article.order(created_at: :desc).limit(3)
+    @galleries = Gallery.order(created_at: :desc).limit(3)
   end
 end
