@@ -17,7 +17,7 @@
 }
 
 .nav-link:hover {
-  color: $on-surface;
+  color: $color-primary;
   transform: scale(1.05);
 }
 
@@ -52,4 +52,9 @@
 
 .nav-item {
   margin-right: 12px;
+}
+
+.nav-connect:hover {
+  color: $on-surface;
+  transform: scale(1.05);
 }
