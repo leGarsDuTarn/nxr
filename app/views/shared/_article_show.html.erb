@@ -1,8 +1,26 @@
-<h1><%= @article.title %></h1>
+<div class="container mt-4">
+  <div class="col-12">
+    <div class="card shadow-sm rounded-4 overflow-hidden mt-4">
 
-<p><%= image_tag(@article.image) if @article.image.attached? %></p>
-<p><%= @article.content %></p>
+      <%# Image %>
+      <% if article.image.attached? %>
+        <%= image_tag article.image, class: "card-img-top img-fluid", alt: article.title %>
+      <% else %>
+        <%= image_tag "logo_mcnc_3.png", class: "card-img-top img-fluid", alt: article.title %>
+      <% end %>
 
-<%= link_to :back, class: "btn btn-primary", aria: { label: "Retour à la page précédente"} do %>
-  <i class="fas fa-arrow-left"></i>
-<% end %>
+      <%# Contenue article%>
+      <div class="card-body mt-4">
+        <h1 class="card-title fs-2 text-uppercase fw-bold"><%= article.title %></h1>
+        <p class="card-text fs-5 mt-4"><%= article.content %></p>
+        <small class="text-muted d-block">Publié le <%= l(article.created_at.to_date, format: "%d %B %Y") %></small>
+
+        <div class="mt-4">
+          <%= link_to :back, class: "btn-nxr", aria: { label: "Retour à la page précédente" } do %>
+            <i class="fas fa-arrow-left"></i> Retour
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
