@@ -28,8 +28,8 @@
 }
 
 .dropdown-item:hover {
-  background-color: $color-primary; // Vert fluo au hover
-  color: $on-primary; // Texte blanc cassé
+  background-color: $color-primary !important;
+  color: $on-primary;
 }
 
 .dropdown-menu{
@@ -44,4 +44,11 @@
 
 .nav-item {
   margin-right: 12px;
+}
+
+.navbar-toggler {
+  border: none;
+  background-color: $color-primary;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
 }
