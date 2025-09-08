@@ -65,25 +65,3 @@ input[type="submit"].btn-nxr {
   }
 }
 
-.btn-login-orange {
-  background-color: $secondary;
-  color: $on-surface;
-  border: none;
-  border-radius: 50rem;
-  padding: 0.5rem 1rem;
-
-  &:hover {
-  color: $on-surface;
-  transform: scale(1.05);
-  }
-}
-
-@media (max-width: 576px) {
-  .btn-login-orange {
-    background-color: transparent;
-    color: $on-surface;
-    border-radius: 0;
-    padding: 0.25rem 0;
-    font-weight: normal;
-  }
-}
