@@ -7,7 +7,7 @@
   top: 0;
   z-index: 1040; // ↑ au-dessus du panneau mobile
 
-  // Brand
+  // Logo
   .navbar-brand img {
     max-width: 90px;
     height: auto;
@@ -16,7 +16,7 @@
     &:hover { transform: scale(1.05); }
   }
 
-  // Zone collapse (desktop)
+
   .navbar-collapse { flex-grow: 0; }
 
   // Liste nav
@@ -70,10 +70,10 @@
     }
   }
 
-  // Chevron bootstrap (on masque)
+  // Chevron bootstrap masqué
   .dropdown-toggle::after { display: none; }
 
-  // Menu dropdown (desktop)
+  // Menu dropdown (pour desktop)
   .dropdown-menu {
     background-color: $surface;
     border: 1px solid rgba(0,0,0,0.1);
@@ -173,6 +173,8 @@
   }
 }
 
+// =========================
+// Animation
 // =========================
 @keyframes fadeDown {
   from { opacity: 0; transform: translateY(-10px); }
