@@ -10,31 +10,31 @@
 <section class="container my-5">
   <% has_events = @events.present? %>
 
-  <!-- Barre d’actions -->
+
   <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
     <h2 class="section-title mb-0">
       <i class="fas fa-calendar-alt me-2"></i>Gestion des événements
     </h2>
 
-        <div class="d-flex gap-2 flex-wrap">
-      <%= link_to admin_events_path, class: "btn-nxr-orange d-inline-flex align-items-center" do %>
-        <i class="fas fa-list-ul me-2"></i> Voir tous les événements
-      <% end %>
-
       <% if has_events %>
-        <%= link_to new_admin_event_path, class: "btn-nxr d-inline-flex align-items-center" do %>
-          <i class="fas fa-plus me-2"></i> Créer un événement
-        <% end %>
+        <div class="d-flex gap-2 flex-wrap">
+          <%= link_to new_admin_event_path, class: "btn-nxr d-inline-flex align-items-center" do %>
+            <i class="fas fa-plus me-2"></i> Créer un événement
+          <% end %>
+
+          <%= link_to admin_events_path, class: "btn-nxr-orange d-inline-flex align-items-center" do %>
+          <i class="fas fa-list-ul me-2"></i> Voir tous les événements
+          <% end %>
+        </div>
       <% end %>
     </div>
-  </div>
 
 
 
   <% if has_events %>
     <div class="row g-4">
       <% @events.each do |event| %>
-        <div class="col-sm-6 col-lg-4">
+        <div class="col-sm-6 col-lg-4 mx-auto">
           <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
             <!-- Media -->
             <div class="ratio ratio-4x3 bg-dark">
@@ -90,7 +90,7 @@
       <% end %>
     </div>
 
-    <%#= paginate @events %>
+
   <% else %>
     <!-- Empty state -->
     <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
