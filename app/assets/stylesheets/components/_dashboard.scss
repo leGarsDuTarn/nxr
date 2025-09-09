@@ -1,0 +1,121 @@
+/* HERO admin = réutilise la bannière HP */
+.admin-hero {
+  background-size: cover;
+  background-position: center;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Titres de section */
+.section-title {
+  color: $surface;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-weight: 800;
+}
+
+/* Cards admin alignées au style homepage */
+.card-admin {
+  background: $surface;
+  color: $on-surface;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  border: 1px solid rgba(255,255,255,0.04);
+  position: relative; /* requis pour stretched-link */
+
+  &:hover, &:focus-within {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0,0,0,.18);
+    border-color: $surface;
+  }
+
+  .card-img-top { width: 100%; height: 100%; display: block; }
+  .object-cover { object-fit: cover; }
+  .object-contain { object-fit: contain; background: rgba(0,0,0,.05); border-radius: .75rem; }
+
+  /* --- Fix stretched-link vs boutons --- */
+  .stretched-link::after { z-index: 1; } /* l’overlay de la carte */
+  .card-body { position: relative; z-index: 1; } /* base du contenu */
+}
+
+/* Boutons icône compacts (édition/suppression) — base neutre */
+.btn-icon {
+  --size: 38px;
+  width: var(--size); height: var(--size);
+  display: inline-grid; place-items: center;
+  border-radius: .75rem;
+  font-size: .95rem;
+  border: 1px solid transparent;
+  transition: all .15s ease;
+  background: transparent;
+  color: $on-surface;
+  position: relative;
+  z-index: 2; /* > overlay stretched-link */
+
+  &:hover { transform: translateY(-1px) scale(1.02); }
+  &:focus-visible { outline: 2px solid $color-primary; outline-offset: 2px; }
+}
+
+/* Toolbar d’actions au-dessus de l’overlay */
+.card-admin .btn-toolbar,
+.card-admin .btn {
+  position: relative;
+  z-index: 2; /* > 1 */
+}
+
+/* Variante ORANGE*/
+.btn-edit-orange {
+  --size: 38px;
+  width: var(--size); height: var(--size);
+  display: inline-grid; place-items: center;
+  border-radius: .75rem;
+  font-size: .95rem;
+  border: 1px solid transparent;
+  transition: all .15s ease;
+  position: relative;
+  z-index: 2;
+  background: rgba($secondary, .12);
+  border-color: rgba($secondary, .35);
+  color: $secondary;
+
+  &:hover {
+    transform: translateY(-1px) scale(1.02);
+    background: rgba($secondary, .2);
+  }
+  &:focus-visible { outline: 2px solid $secondary; outline-offset: 2px; }
+}
+
+/* Variante ROUGE (sans @extend) */
+.btn-delete-red {
+  --size: 38px;
+  width: var(--size); height: var(--size);
+  display: inline-grid; place-items: center;
+  border-radius: .75rem;
+  font-size: .95rem;
+  border: 1px solid transparent;
+  transition: all .15s ease;
+  position: relative;
+  z-index: 2;
+  background: rgba($color-danger, .12);
+  border-color: rgba($color-danger, .35);
+  color: $color-danger;
+
+  &:hover {
+    transform: translateY(-1px) scale(1.02);
+    background: rgba($color-danger, .2);
+  }
+  &:focus-visible { outline: 2px solid $color-danger; outline-offset: 2px; }
+}
+
+/* Liens d’action intra-card */
+.text-color-primary { color: $color-primary; }
+.text-color-primary:hover { color: lighten($color-primary, 8%); }
+
+/* Ratio helpers si Bootstrap n’est pas à jour */
+.ratio { position: relative; width: 100%; }
+.ratio::before { display: block; content: ""; }
+.ratio-4x3::before { padding-top: calc(3 / 4 * 100%); }
+.ratio > * { position: absolute; inset: 0; }
+
+/* Harmonise le fond général si l’admin a un background différent */
+body.admin {
+  background: linear-gradient(180deg, darken($surface, 2%) 0%, $surface 100%);
+}

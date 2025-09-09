@@ -57,3 +57,42 @@
   color: $on-surface;
   text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
 }
+
+// Banner dashboard
+.banner-dashboard {
+  background-size: cover;
+  background-position: center top;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;   // par défaut centré (mobile)
+  text-align: center;
+}
+
+@media (min-width: 992px) {
+  .banner-dashboard {
+    align-items: flex-start; // aligne à gauche
+    text-align: left;
+    padding-left: 60px;      // petit décalage depuis le bord
+  }
+  .banner-dashboard p {
+  font-size: 20px;
+  color: $on-surface;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+}
+
+.banner-dashboard h1 {
+  margin: 0;
+  color: $on-surface;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+  font-size: 50px;
+  font-weight: bold;
+}
+
+.banner-dashboard p {
+  font-size: 20px;
+  color: $on-surface;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
