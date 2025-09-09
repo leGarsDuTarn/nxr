@@ -88,3 +88,23 @@ input[type="submit"].btn-nxr {
     transform: none !important;
   }
 }
+
+.btn-edit-orange {
+  color: $color-warning;
+  border-color: $color-warning;
+
+  &:hover {
+    background-color: $color-warning;
+    color:$on-color-warning
+  }
+}
+
+.btn-delete-red {
+  color: $color-danger;
+  border-color: $color-danger;
+
+  &:hover {
+    background-color: $color-danger;
+    color:$on-color-danger
+  }
+}
