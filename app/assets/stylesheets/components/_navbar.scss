@@ -109,8 +109,8 @@
     }
 
     &.text-danger {
-      color: #dc3545 !important;
-      &:hover { background-color: #dc3545 !important; color: #fff !important; }
+      color: $color-danger !important;
+      &:hover { background-color: $color-danger !important; color: #fff !important; }
     }
 
     @media (max-width: 991.98px) {
@@ -126,8 +126,8 @@
       }
 
       &.text-danger:hover {
-        background-color: rgba(#dc3545, 0.1) !important;
-        color: #dc3545 !important;
+        background-color: rgba($color-danger, 0.1) !important;
+        color: $color-danger !important;
       }
     }
   }

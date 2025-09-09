@@ -13,11 +13,13 @@ $light-gray: #F4F4F4;
 // Couleurs principales d'identité
 $color-primary: #56E343;        // Couleur identitaire principale
 $on-primary: #1c1c1c; // Couleur du texte ou icônes
-$tertiary: #d6d6d6; 
 
 // Couleurs secondaires
 $secondary: #ff6600;      // Couleur complémentaire
 $on-secondary: #1c1c1c;   // Couleur du texte ou icônes
+
+// Couleurs tertiaire
+$tertiary: #d6d6d6;
 
 // Couleurs de surface
 $surface: #121212;        // Fond des cartes, sections, encarts )
@@ -26,3 +28,6 @@ $on-surface: #fdfdff;     // Texte ou icônes affichés sur une surface
 // Couleurs de fond global
 $background: #F4F4F4;     // Fond général du site
 $on-background: #1c1c1c;  // Texte ou icônes affichés sur le fond général
+
+// Couleur d’alerte / suppression
+$color-danger: #dc3545;
