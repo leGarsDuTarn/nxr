@@ -194,7 +194,7 @@
       </div>
       <h3 class="h5 fw-bold mb-2">Aucune course pour le moment</h3>
       <p class="mb-4">Créez votre première course pour le club MCNC.</p>
-      <%= link_to new_admin_event_path, class: "btn-nxr d-inline-flex align-items-center" do %>
+      <%= link_to new_admin_race_path, class: "btn-nxr d-inline-flex align-items-center" do %>
         <i class="fas fa-plus me-2"></i>Créer une course
       <% end %>
     </div>
@@ -389,50 +389,110 @@
       </div>
       <h3 class="h5 fw-bold mb-2">Aucun article pour le moment</h3>
       <p class="mb-4">Créez votre premier article pour le club MCNC.</p>
-      <%= link_to new_admin_event_path, class: "btn-nxr d-inline-flex align-items-center" do %>
+      <%= link_to new_admin_article_path, class: "btn-nxr d-inline-flex align-items-center" do %>
         <i class="fas fa-plus me-2"></i>Créer un article
       <% end %>
     </div>
   <% end %>
 </section>
 
-<hr>
+<%# Galleries %>
 
-<h3>Les galeries photos</h3>
+<section class="container my-5">
+  <% has_galleries = @galleries.present? %>
 
-<% if @galleries.empty? %>
-  <p>Vous n'avez pas de galerie créée pour le moment</p>
-<% else %>
-  <ul>
-    <% @galleries.each do |gallery| %>
-      <li><%= gallery.title %>
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <h2 class="section-title mb-0">
+      <i class="fas fa-calendar-alt me-2"></i>Gestion des albums photo
+    </h2>
 
-          <%= link_to admin_gallery_path(gallery), class: "btn btn-primary", aria: { label: "Voir la galerie #{gallery.title}" } do %>
-            <i class="fas fa-search"></i>
+      <% if has_galleries %>
+        <div class="d-flex gap-2 flex-wrap">
+          <%= link_to new_admin_gallery_path, class: "btn-nxr d-inline-flex align-items-center" do %>
+            <i class="fas fa-plus me-2"></i> Créer un nouvel album
           <% end %>
 
-          <%= link_to edit_admin_gallery_path(gallery),class: "btn btn-primary", aria: { label: "Modifier la galerie #{gallery.title}" } do %>
-            <i class="fas fa-edit"></i>
+          <%= link_to admin_galleries_path, class: "btn-nxr-orange d-inline-flex align-items-center" do %>
+          <i class="fas fa-list-ul me-2"></i> Voir tous les albums
           <% end %>
+        </div>
+      <% end %>
+    </div>
 
-          <%= link_to admin_gallery_path(gallery),
-            data: { turbo_method: :delete, turbo_confirm: "Es-tu sûr de vouloir supprimer cette galerie ?" },
-            class: "btn btn-danger",
-            aria: { label: "Supprimer la galerie #{gallery.title}" } do %>
-            <i class="fas fa-trash"></i>
-          <% end %>
-        </li>
-    <% end %>
-  </ul>
-<% end %>
+  <% if has_galleries %>
+    <div class="row g-4">
+      <% @galleries.each do |gallery| %>
+        <div class="col-sm-6 col-lg-4 mx-auto">
+          <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+            <!-- Media -->
+            <div class="ratio ratio-4x3 bg-dark">
+              <% if gallery.images.attached? %>
+                <%= image_tag gallery.images.first, class: "card-img-top object-cover", alt: gallery.title %>
+              <% else %>
+                <%= image_tag "logo_mcnc_3.png", class: "card-img-top object-contain p-3", alt: gallery.title %>
+              <% end %>
+            </div>
 
-<%= link_to admin_galleries_path, class: "btn btn-primary", aria: { label: "Voir toutes les galeries" } do %>
-  <i class="fas fa-search-plus"></i>
-<% end %>
+            <!-- Body -->
+            <div class="card-body d-flex flex-column">
+              <div class="d-flex align-items-start justify-content-between mb-2">
+                <h3 class="h6 fw-bold mb-0"><%= gallery.title %></h3>
+                <% if gallery.respond_to?(:status) %>
+                  <span class="badge rounded-pill <%= gallery.status == "published" ? "bg-success" : "bg-secondary" %>">
+                    <%= gallery.status.capitalize %>
+                  </span>
+                <% end %>
+              </div>
 
-<%= link_to new_admin_gallery_path, class: "btn btn-primary", aria: { label: "Créer une nouvelle galerie" } do %>
-<i class="fas fa-plus"></i>
-<% end %>
+              <p class="text-tertiary small mb-3">
+                <i class="far fa-clock me-1"></i>
+                <%= l(gallery.date, format: "%d %B %Y") %>
+              </p>
+
+              <div class="mt-auto d-flex align-items-center justify-content-between">
+                <%= link_to admin_gallery_path(gallery),
+                      class: "stretched-link text-decoration-none text-color-primary small me-2" do %>
+                  <i class="fas fa-arrow-right me-1"></i> Voir l'album photo
+                <% end %>
+
+                <div class="btn-toolbar gap-2">
+                  <%= link_to edit_admin_gallery_path(gallery),
+                        class: "btn btn-icon btn-edit-orange",
+                        title: "Modifier #{gallery.title}",
+                        aria: { label: "Modifier l'album photo' #{gallery.title}" } do %>
+                    <i class="fas fa-edit"></i>
+                  <% end %>
+
+                  <%= link_to admin_gallery_path(gallery),
+                        data: { turbo_method: :delete, turbo_confirm: "Supprimer cet album photo ?" },
+                        class: "btn btn-icon btn-delete-red",
+                        title: "Supprimer #{gallery.title}",
+                        aria: { label: "Supprimer l'album photo' #{gallery.title}" } do %>
+                    <i class="fas fa-trash"></i>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      <% end %>
+    </div>
+
+  <% else %>
+    <!-- Empty state -->
+    <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
+      <div class="mb-3">
+        <i class="far fa-calendar-times fa-3x"></i>
+      </div>
+      <h3 class="h5 fw-bold mb-2">Aucun album photo pour le moment</h3>
+      <p class="mb-4">Créez votre premier album photo pour le club MCNC.</p>
+      <%= link_to new_admin_gallery_path, class: "btn-nxr d-inline-flex align-items-center" do %>
+        <i class="fas fa-plus me-2"></i>Créer un album photo
+      <% end %>
+    </div>
+  <% end %>
+</section>
+
 
 <hr>
 
