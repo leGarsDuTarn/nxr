@@ -5,6 +5,8 @@ class Event < ApplicationRecord
 
   # Offre à l'admin la possibilté d'ajouter une image pour la création d'un événement
   has_one_attached :image
+  # Permet de supprimer l'image via la partiale view/event/_form.html.erb
+  attr_accessor :remove_image
   # Validation obligatoire pour pouvoir créer un événement
   validates :name, presence: { message: "Vous devez renseigner un nom" }
   validates :date, presence: { message: "Vous devez renseigner une date" }
