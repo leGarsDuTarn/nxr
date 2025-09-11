@@ -1,0 +1,29 @@
+.badge-validated {
+  color: $color-primary;
+  display: inline-block;
+  font-weight: 600;
+  border: 2px solid $color-primary;
+  border-radius: 50rem;
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+}
+
+.badge-rejected {
+  color: $color-danger;
+  display: inline-block;
+  font-weight: 600;
+  border: 2px solid $color-danger;
+  border-radius: 50rem;
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+}
+
+.badge-pending {
+  color: $color-warning;
+  display: inline-block;
+  font-weight: 600;
+  border: 2px solid $color-warning;
+  border-radius: 50rem;
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+}
