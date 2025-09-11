@@ -40,7 +40,7 @@
             <small class="text-tertiary">(<%= time_ago_in_words(user.created_at) %>)</small>
           </p>
 
-          <p class="text-muted small mb-3">
+          <p class="small mb-3">
             <i class="far fa-envelope me-1"></i> <%= mail_to user.email %><br>
             <% if user.phone_number.present? %>
               <i class="fas fa-phone me-1"></i> <%= user.phone_number %>
@@ -56,7 +56,7 @@
             end %>
 
           <div class="d-flex align-items-center justify-content-between mb-2">
-            <span class="small text-muted">Statut actuel</span>
+            <span class="small">Statut actuel</span>
             <span class="badge rounded-pill <%= status_color %>">
               <%= @registration.status.to_s.humanize %>
             </span>

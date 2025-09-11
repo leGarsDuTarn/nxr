@@ -1,64 +1,148 @@
-<%= simple_form_for [:admin, @user], html: { multipart: true } do |f| %>
-  <fieldset>
-    <legend>Informations personnelles</legend>
-    <%= f.input :user_name, label: "Pseudo" %>
-    <%= f.input :avatar, as: :file, label: "Avatar" %>
-    <% if f.object.persisted? && f.object.avatar.attached? %>
-      <div class="mt-2">
-        <p>Avatar actuel :</p>
-        <%= image_tag(f.object.avatar, size: "150x100", class: "img-thumbnail") %><br>
-        <%= f.check_box :remove_avatar %>
-        <%= f.label :remove_avatar, "Supprimer l'image actuelle" %>
+<div class="container d-flex justify-content-center align-items-start py-5">
+  <div class="card-signup shadow p-4 p-md-5 rounded-4 w-100">
+    <div class="d-flex justify-content-center mb-4">
+      <h2 class="text-center"><strong>Modification des données personnelles</strong></h2>
+    </div>
+
+    <%= simple_form_for [:admin, @user], html: { multipart: true } do |f| %>
+      <%= f.error_notification %>
+
+      <%# Identité %>
+      <fieldset class="form-section mb-4">
+        <legend class="section-title">Identité</legend>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <%= f.input :user_name, required: true, placeholder: "Pseudo" %>
+          </div>
+          <div class="col-md-6">
+            <%= f.input :birth_date, as: :date, required: true,
+                        start_year: Date.current.year - 80,
+                        end_year: Date.current.year - 10,
+                        order: [:day, :month, :year],
+                        prompt: { day: 'Jour', month: 'Mois', year: 'Année' } %>
+          </div>
+
+          <div class="col-md-6">
+            <%= f.input :first_name, required: true, placeholder: "Prénom" %>
+          </div>
+          <div class="col-md-6">
+            <%= f.input :last_name, required: true, placeholder: "Nom" %>
+          </div>
+
+          <div class="col-12">
+            <%# Avatar actuel + suppression si présent %>
+            <% if @user.avatar.attached? && @user.avatar.blob&.persisted? %>
+              <div class="mb-2">
+                <p class="mb-1">Avatar actuel :</p>
+                <%= image_tag url_for(@user.avatar), size: "150x100", class: "img-thumbnail mb-2" %><br>
+                <div class="form-check">
+                  <%= f.check_box :remove_avatar, class: "form-check-input" %>
+                  <%= f.label :remove_avatar, "Supprimer l'avatar actuel", class: "form-check-label" %>
+                </div>
+              </div>
+            <% end %>
+
+            <%= f.input :avatar, as: :file, required: false, hint: "Photo de profil (optionnel)." %>
+          </div>
+        </div>
+      </fieldset>
+
+      <%# Coordonnées %>
+      <fieldset class="form-section mb-4">
+        <legend class="section-title">Coordonnées</legend>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <%= f.input :phone_number,
+                        hint: "Recommandé – utile en cas d’annulation/urgence." %>
+          </div>
+
+          <div class="col-12">
+            <%= f.input :address, placeholder: "N° et rue" %>
+          </div>
+
+          <div class="col-md-4">
+            <%= f.input :post_code, placeholder: "Code postal" %>
+          </div>
+          <div class="col-md-8">
+            <%= f.input :town, placeholder: "Ville" %>
+          </div>
+
+          <div class="col-md-6">
+            <%= f.input :country, as: :country, priority: ["France"], prompt: "Sélectionner un pays" %>
+          </div>
+          <div class="col-md-6">
+            <%= f.input :email, required: true, label: "Adresse email" %>
+          </div>
+        </div>
+      </fieldset>
+
+      <%# Club %>
+      <fieldset class="form-section mb-4" data-controller="club-member-check">
+        <legend class="section-title">Club</legend>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <%= f.input :club_member,
+                        label: "Êtes-vous membre du club de Navès ?",
+                        as: :select,
+                        collection: [['Oui', true], ['Non', false]],
+                        include_blank: "Sélectionner",
+                        required: true,
+                        input_html: {
+                          data: {
+                            "club-member-check-target": "select",
+                            action: "change->club-member-check#toggle"
+                          }
+                        } %>
+          </div>
+
+          <%# Affiché si Non (pas membre) %>
+          <div class="col-md-6"
+               data-club-member-check-target="clubNameWrapper"
+               style="<%= @user.club_member? ? 'display:none;' : '' %>">
+            <%= f.input :club_name, label: "Nom de votre club", placeholder: "Nom du club" %>
+          </div>
+
+          <%# Affiché si Oui (membre du club) %>
+          <div class="col-md-6"
+               data-club-member-check-target="affiliationWrapper"
+               style="<%= @user.club_member? ? '' : 'display:none;' %>">
+            <%# numéro d’affiliation imposé si membre du club de Navès %>
+            <%= f.input :club_affiliation_number, label: "N° d'affiliation du club de Navès",
+                        input_html: { value: User::VALID_NUMBER_CLUB_AFFILIATION } %>
+          </div>
+        </div>
+      </fieldset>
+
+      <%# Licence %>
+      <fieldset class="form-section mb-4">
+        <legend class="section-title">Licence</legend>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <%= f.input :license_code, as: :select, required: true,
+                        collection: User::LICENCE_CODES,
+                        include_blank: "Sélectionner un code" %>
+          </div>
+          <div class="col-md-6">
+            <%= f.input :license_number, required: true, placeholder: "Numéro à 6 chiffres" %>
+          </div>
+        </div>
+      </fieldset>
+
+      <%#  Administration (rôle) %>
+      <fieldset class="form-section mb-4">
+        <legend class="section-title">Administration</legend>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <%= f.input :role, collection: User.roles.keys, label: "Rôle", prompt: "Sélectionner un rôle" %>
+          </div>
+        </div>
+      </fieldset>
+
+      <%# Actions %>
+      <div class="d-flex gap-2">
+        <%= f.button :submit, "Enregistrer", class: "btn-nxr" %>
+        <%= link_to "Annuler", admin_user_path(@user), class: "btn-nxr-orange" %>
       </div>
     <% end %>
-    <%= f.input :role, collection: User.roles.keys, label: "Rôle", prompt: "Sélectionner un rôle" %>
-    <%= f.input :email, label: "Adresse email" %>
-    <%= f.input :first_name, label: "Prénom" %>
-    <%= f.input :last_name, label: "Nom de famille" %>
-    <%= f.input :birth_date, label: "Date de naissance" do %>
-      <%= f.date_field :birth_date, class: "form-control" %>
-    <% end %>
-    <%= f.input :phone_number, label: "Numéro de téléphone" %>
-    <%= f.input :address, label: "Adresse" %>
-    <%= f.input :post_code, label: "Code postal" %>
-    <%= f.input :town, label: "Ville" %>
-    <%= f.input :country, label: "Pays", as: :country, priority: ["France"], prompt: "Sélectionner un pays" %>
-  </fieldset>
-
-  <fieldset>
-    <legend>Informations sur la licence</legend>
-    <%= f.input :license_code,
-                as: :select,
-                collection: User::LICENCE_CODES,
-                label: "Code de licence" %>
-    <%= f.input :license_number, label: "Numéro de licence" %>
-  </fieldset>
-
-  <fieldset data-controller="club-member-check">
-    <legend>Informations sur le club</legend>
-    <%= f.input :club_member,
-                label: "Licencié du club ?",
-                as: :select,
-                collection: [["Oui", true], ["Non", false]],
-                include_blank: false,
-                input_html: {
-                  value_as_boolean: true,
-                  data: {
-                    "club-member-check-target": "select",
-                    action: "change->club-member-check#toggle"
-                  }
-                } %>
-
-    <%# Champ caché si membre du club %>
-    <div data-club-member-check-target="affiliationWrapper" style="<%= f.object.club_member? ? '' : 'display: none;' %>">
-      <%= f.hidden_field :club_affiliation_number, value: User::VALID_NUMBER_CLUB_AFFILIATION %>
-    </div>
-
-    <%# Champ nom du club visible uniquement si PAS membre %>
-    <div data-club-member-check-target="clubNameWrapper" style="<%= f.object.club_member? ? 'display: none;' : '' %>">
-      <%= f.input :club_name, label: "Nom du club" %>
-    </div>
-  </fieldset>
-
-  <%= f.button :submit, "Valider", class: "btn btn-primary" %>
-<% end %>
+  </div>
+</div>

@@ -1,11 +1,127 @@
 <%= render "shared/user_banner", user: @user %>
 
+<section class="container my-5">
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <h2 class="section-title mb-0">
+      <i class="fas fa-id-card me-2"></i>Fiche membre
+    </h2>
 
-<p>Numéro de téléphone : <%= @user.phone_number %></p>
+    <div class="d-flex flex-wrap gap-2">
+      <%= link_to admin_user_path(@user, format: :json),
+                  class: "btn-nxr d-inline-flex align-items-center",
+                  target: "_blank",
+                  rel: "noopener" do %>
+        <i class="fas fa-file-export me-2"></i> Exporter (JSON)
+      <% end %>
 
-<%# Permet de télécharger en format JSON les données utilisateur - conforme RGPD %>
-<%= link_to "📤 Exporter fiche RGPD (JSON)", admin_user_path(@user, format: :json), class: "btn btn-primary", target: "_blank" %>
+      <%= link_to edit_admin_user_path(@user),
+                  class: "btn-nxr-orange d-inline-flex align-items-center" do %>
+        <i class="fas fa-edit me-2"></i> Modifier les données
+      <% end %>
+    </div>
+  </div>
 
-<%= link_to admin_dashboard_path, class: "btn btn-primary", aria: { label: "Retour au tableau de bord"} do %>
-  <i class="fas fa-home"></i>
-<% end %>
+  <div class="row g-4">
+    <%# Colonne gauche : avatar + méta %>
+    <div class="col-lg-4">
+      <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+        <div class="ratio ratio-4x3 bg-dark">
+          <% if @user.respond_to?(:avatar) && @user.avatar.attached? %>
+            <%= image_tag @user.avatar, class: "card-img-top object-cover", alt: "#{@user.first_name} #{@user.last_name}" %>
+          <% else %>
+            <%= image_tag "avatar_default.jpg", class: "card-img-top object-contain p-3", alt: "#{@user.first_name} #{@user.last_name}" %>
+          <% end %>
+        </div>
+        <div class="card-body">
+          <h3 class="h6 fw-bold mb-1"><%= @user.first_name %> <%= @user.last_name %></h3>
+          <p class="text-tertiary small mb-2">
+            <i class="fas fa-hashtag me-1"></i><%= @user.user_name.presence || "—" %>
+          </p>
+
+          <p class="text-tertiary small mb-2">
+            <i class="far fa-user me-1"></i>
+            Membre depuis le <%= l(@user.created_at.to_date, format: "%d %B %Y") %>
+            <small class="text-tertiary">(<%= time_ago_in_words(@user.created_at) %>)</small>
+          </p>
+
+          <div class=" small">
+            <div class="mb-1">
+              <i class="far fa-envelope me-1"></i>
+              <%= mail_to @user.email %>
+            </div>
+            <% if @user.phone_number.present? %>
+              <div>
+                <i class="fas fa-phone me-1"></i>
+                <%= @user.phone_number %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <%# Colonne droite : détails %>
+    <div class="col-lg-8">
+      <!-- Infos personnelles -->
+      <article class="card card-admin shadow-sm rounded-4 mb-4">
+        <div class="card-body">
+          <h3 class="h6 fw-bold mb-3"><i class="far fa-id-card me-2"></i>Informations personnelles</h3>
+
+          <div class="row g-2 small">
+            <div class="col-sm-6"><strong>Prénom :</strong> <%= @user.first_name.presence || "—" %></div>
+            <div class="col-sm-6"><strong>Nom :</strong> <%= @user.last_name.presence || "—" %></div>
+
+            <% if @user.birth_date.present? %>
+              <div class="col-sm-6"><strong>Date de naissance :</strong> <%= l(@user.birth_date, format: "%d/%m/%Y") %></div>
+            <% end %>
+
+            <% if @user.phone_number.present? %>
+              <div class="col-sm-6"><strong>Téléphone :</strong> <%= @user.phone_number %></div>
+            <% end %>
+
+            <div class="col-12"><strong>Email :</strong> <%= @user.email %></div>
+
+            <% if @user.address.present? || @user.post_code.present? || @user.town.present? || @user.country.present? %>
+              <div class="col-12">
+                <strong>Adresse :</strong>
+                <%= [@user.address, @user.post_code, @user.town, @user.country].compact_blank.join(" • ") %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </article>
+
+      <%# Licence & Club %>
+      <article class="card card-admin shadow-sm rounded-4">
+        <div class="card-body">
+          <h3 class="h6 fw-bold mb-3"><i class="fas fa-id-badge me-2"></i>Licence & Club</h3>
+
+          <div class="row g-2 small">
+            <% if @user.license_code.present? %>
+              <div class="col-sm-6"><strong>Code licence :</strong> <%= @user.license_code %></div>
+            <% end %>
+            <% if @user.license_number.present? %>
+              <div class="col-sm-6"><strong>Numéro licence :</strong> <%= @user.license_number %></div>
+            <% end %>
+
+            <div class="col-sm-6">
+              <strong>Membre du club :</strong>
+              <% if @user.club_member %>
+                <span class="text-color-primary">Oui</span>
+              <% else %>
+                <span class="text-danger">Non</span>
+              <% end %>
+            </div>
+
+            <% if @user.club_name.present? || @user.club_affiliation_number.present? %>
+              <div class="col-12">
+                <strong>Club :</strong>
+                <%= [@user.club_name, @user.club_affiliation_number].compact_blank.join(" • ") %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
