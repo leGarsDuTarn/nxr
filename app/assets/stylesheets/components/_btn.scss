@@ -95,7 +95,7 @@ input[type="submit"].btn-nxr {
 
   &:hover {
     background-color: $color-warning;
-    color:$on-color-warning
+    color: $on-color-warning;
   }
 }
 
@@ -105,6 +105,44 @@ input[type="submit"].btn-nxr {
 
   &:hover {
     background-color: $color-danger;
-    color:$on-color-danger
+    color: $on-color-danger;
+  }
+}
+
+.btn-rejected,
+input[type="submit"].btn-rejected {
+  background-color: $color-danger;
+  color: $on-primary;
+  display: inline-block;
+  font-weight: 700;
+  border: none;
+  border-radius: 50rem;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: $on-primary;
+    background-color: $color-danger;
+    transform: scale(1.03);
+  }
+}
+
+.btn-pending,
+input[type="submit"].btn-warning {
+  background-color: $color-warning;
+  color: $on-primary;
+  display: inline-block;
+  font-weight: 700;
+  border: none;
+  border-radius: 50rem;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: $on-primary;
+    background-color: $color-warning;
+    transform: scale(1.03);
   }
 }

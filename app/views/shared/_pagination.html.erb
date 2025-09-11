@@ -1,0 +1,73 @@
+<% if @users.total_pages > 1 %>
+  <nav class="mt-5">
+    <ul class="pagination justify-content-center flex-wrap gap-2">
+
+      <%# Première page %>
+      <% if @users.first_page? %>
+        <li class="page-item disabled">
+          <span class="page-link"><i class="fas fa-angle-double-left"></i></span>
+        </li>
+      <% else %>
+        <li class="page-item">
+          <%= link_to url_for(page: 1), class: "page-link btn-nxr", title: "Première page" do %>
+            <i class="fas fa-angle-double-left"></i>
+          <% end %>
+        </li>
+      <% end %>
+
+      <%# Page précédente %>
+      <% if @users.prev_page %>
+        <li class="page-item">
+          <%= link_to url_for(page: @users.prev_page), class: "page-link btn-nxr", title: "Page précédente" do %>
+            <i class="fas fa-angle-left"></i>
+          <% end %>
+        </li>
+      <% else %>
+        <li class="page-item disabled">
+          <span class="page-link"><i class="fas fa-angle-left"></i></span>
+        </li>
+      <% end %>
+
+      <%# Pages numérotées %>
+      <% (@users.current_page - 2..@users.current_page + 2).each do |page_number| %>
+        <% next if page_number < 1 || page_number > @users.total_pages %>
+
+        <% if page_number == @users.current_page %>
+          <li class="page-item active">
+            <span class="page-link btn-nxr-orange fw-bold"><%= page_number %></span>
+          </li>
+        <% else %>
+          <li class="page-item">
+            <%= link_to page_number, url_for(page: page_number), class: "page-link btn-nxr" %>
+          </li>
+        <% end %>
+      <% end %>
+
+      <%# Page suivante %>
+      <% if @users.next_page %>
+        <li class="page-item">
+          <%= link_to url_for(page: @users.next_page), class: "page-link btn-nxr", title: "Page suivante" do %>
+            <i class="fas fa-angle-right"></i>
+          <% end %>
+        </li>
+      <% else %>
+        <li class="page-item disabled">
+          <span class="page-link"><i class="fas fa-angle-right"></i></span>
+        </li>
+      <% end %>
+
+      <%# Dernière page %>
+      <% if @users.last_page? %>
+        <li class="page-item">
+          <%= link_to url_for(page: @users.total_pages), class: "page-link btn-nxr", title: "Dernière page" do %>
+            <i class="fas fa-angle-double-right"></i>
+          <% end %>
+        </li>
+      <% else %>
+        <li class="page-item disabled">
+          <span class="page-link"><i class="fas fa-angle-double-right"></i></span>
+        </li>
+      <% end %>
+    </ul>
+  </nav>
+<% end %>

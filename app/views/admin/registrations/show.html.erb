@@ -1,63 +1,175 @@
-<h1>Détail de l'inscription de <%= @registration.user.first_name %> <%= @registration.user.last_name %> à : <br>
-  <%= @registration.registerable.name %>
-</h1>
+<section class="container my-5">
+  <!-- Barre d’actions -->
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <h2 class="section-title mb-0">
+      <i class="fas fa-user-check me-2"></i>
+      Détail de l’inscription — <%= @registration.registerable.try(:name) || @registration.registerable_type %>
+    </h2>
 
-<fieldset>
-  <legend>Informations personnelles</legend>
-  <ul>
-    <li><strong>Prénom :</strong> <%= @registration.user.first_name %></li>
-    <li><strong>Nom :</strong> <%= @registration.user.last_name %></li>
-    <li><strong>Date de naissance :</strong> <%= @registration.user.birth_date %></li>
-    <li><strong>Téléphone :</strong> <%= @registration.user.phone_number %></li>
-    <li><strong>Email :</strong> <%= @registration.user.email %></li>
-    <li><strong>Adresse :</strong> <%= @registration.user.address %></li>
-    <li><strong>Code postal :</strong> <%= @registration.user.post_code %></li>
-    <li><strong>Ville :</strong> <%= @registration.user.town %></li>
-  </ul>
-</fieldset>
-
-<fieldset>
-  <legend>Informations sur la course</legend>
-  <ul>
-    <li><strong>Numéro de course :</strong> <%= @registration.race_number %></li>
-    <li><strong>Code licence :</strong> <%= @registration.user.license_code %></li>
-    <li><strong>Numéro licence :</strong> <%= @registration.user.license_number %></li>
-    <li><strong>Nom du club :</strong> <%= @registration.user.club_name %> <%= @registration.user.club_affiliation_number %></li>
-  </ul>
-</fieldset>
-
-<fieldset>
-  <legend>Informations véhicule</legend>
-  <ul>
-    <li><strong>Marque moto :</strong> <%= @registration.bike_brand %></li>
-    <li><strong>Cylindrée :</strong> <%= @registration.cylinder_capacity %></li>
-    <li><strong>Type de moteur :</strong> <%= @registration.stroke_type %></li>
-  </ul>
-</fieldset>
-
-<% return unless current_user.admin? %> <%# Vérifie que seul un admin peut voir ces actions %>
-  <p><strong>Statut actuel :</strong> <%= @registration.status.capitalize %></p>
-
-  <div class="btn-group mt-2">
-
-    <% unless @registration.validated? %> <!-- Exécute le code sauf si l'inscription est validée -->
-      <%= form_with url: admin_validate_admin_registration_path(@registration), method: :patch, class: "d-inline" do %>
-        <%= submit_tag "Valider", class: "btn btn-success btn-sm", data: { turbo_confirm: "Confirmer la validation ?" } %>
+    <div class="d-flex flex-wrap gap-2">
+      <%= link_to admin_user_path(@registration.user), class: "btn-nxr d-inline-flex align-items-center" do %>
+        <i class="fas fa-user me-2"></i> Voir la fiche membre
       <% end %>
-    <% end %>
 
-    <% unless @registration.rejected? %> <%# Exécute le code sauf si l'inscription est rejetée %>
-      <%= form_with url: admin_reject_admin_registration_path(@registration), method: :patch, class: "d-inline" do %>
-        <%= submit_tag "Refuser", class: "btn btn-danger btn-sm", data: { turbo_confirm: "Confirmer le refus ?" } %>
+      <%= link_to polymorphic_path([:admin, @registration.registerable]), class: "btn-nxr-orange d-inline-flex align-items-center" do %>
+        <i class="fas fa-clipboard-list me-2"></i> Voir la fiche <%= @registration.registerable_type %>
       <% end %>
-    <% end %>
-
-    <% unless @registration.pending? %>  <%# Exécute le code sauf si l'inscription est en attente %>
-      <%= form_with url: admin_reset_admin_registration_path(@registration), method: :patch, class: "d-inline" do %>
-        <%#  Crée un formulaire PATCH vers la route de réinitialisation (retour à 'pending') %>
-        <%= submit_tag "Remettre en attente", class: "btn btn-warning btn-sm", data: { turbo_confirm: "Remettre l'inscription en attente ?" } %>
-      <% end %>
-    <% end %>
-
+    </div>
   </div>
 
+  <div class="row g-4">
+    <% user = @registration.user %>
+
+    <!-- Colonne gauche : avatar + infos + statut & actions -->
+    <div class="col-lg-4">
+      <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden mb-4">
+        <div class="ratio ratio-4x3 bg-dark">
+          <% if user.respond_to?(:avatar) && user.avatar.attached? %>
+            <%= image_tag user.avatar, class: "card-img-top object-cover", alt: "#{user.first_name} #{user.last_name}" %>
+          <% else %>
+            <%= image_tag "avatar_default.jpg", class: "card-img-top object-contain p-3", alt: "#{user.first_name} #{user.last_name}" %>
+          <% end %>
+        </div>
+
+        <div class="card-body d-flex flex-column">
+          <h3 class="h6 fw-bold mb-1"><%= user.first_name %> <%= user.last_name %></h3>
+
+          <p class="text-tertiary small mb-2">
+            <i class="far fa-user me-1"></i>
+            Membre depuis le <%= l(user.created_at.to_date, format: "%d %B %Y") %>
+            <small class="text-tertiary">(<%= time_ago_in_words(user.created_at) %>)</small>
+          </p>
+
+          <p class="text-muted small mb-3">
+            <i class="far fa-envelope me-1"></i> <%= mail_to user.email %><br>
+            <% if user.phone_number.present? %>
+              <i class="fas fa-phone me-1"></i> <%= user.phone_number %>
+            <% end %>
+          </p>
+
+          <div class="border-top my-3"></div>
+
+          <% status_color = case @registration.status.to_s
+              when "validated" then "badge-validated"
+              when "rejected"  then "badge-rejected"
+              else "badge-pending"
+            end %>
+
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="small text-muted">Statut actuel</span>
+            <span class="badge rounded-pill <%= status_color %>">
+              <%= @registration.status.to_s.humanize %>
+            </span>
+          </div>
+
+          <% if current_user.admin? %>
+            <div class="d-flex flex-wrap gap-2">
+              <% unless @registration.validated? %>
+                <%= form_with url: admin_validate_admin_registration_path(@registration), method: :patch, class: "d-inline" do %>
+                  <%= submit_tag "Valider", class: "btn btn-nxr btn-sm", data: { turbo_confirm: "Confirmer la validation ?" } %>
+                <% end %>
+              <% end %>
+
+              <% unless @registration.rejected? %>
+                <%= form_with url: admin_reject_admin_registration_path(@registration), method: :patch, class: "d-inline" do %>
+                  <%= submit_tag "Refuser", class: "btn btn-rejected btn-sm", data: { turbo_confirm: "Confirmer le refus ?" } %>
+                <% end %>
+              <% end %>
+
+              <% unless @registration.pending? %>
+                <%= form_with url: admin_reset_admin_registration_path(@registration), method: :patch, class: "d-inline" do %>
+                  <%= submit_tag "Remettre en attente", class: "btn btn-warning btn-sm", data: { turbo_confirm: "Remettre l'inscription en attente ?" } %>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </article>
+    </div>
+
+    <!-- Colonne droite : infos perso + inscription + véhicule -->
+    <div class="col-lg-8">
+      <!-- Informations personnelles -->
+      <article class="card card-admin shadow-sm rounded-4 mb-4">
+        <div class="card-body">
+          <h3 class="h6 fw-bold mb-3">
+            <i class="far fa-id-card me-2"></i>Informations personnelles
+          </h3>
+          <div class="row g-2 small">
+            <div class="col-sm-6"><strong>Prénom :</strong> <%= user.first_name %></div>
+            <div class="col-sm-6"><strong>Nom :</strong> <%= user.last_name %></div>
+            <% if user.birth_date.present? %>
+              <div class="col-sm-6"><strong>Date de naissance :</strong> <%= user.birth_date %></div>
+            <% end %>
+            <% if user.phone_number.present? %>
+              <div class="col-sm-6"><strong>Téléphone :</strong> <%= user.phone_number %></div>
+            <% end %>
+            <div class="col-12"><strong>Email :</strong> <%= user.email %></div>
+            <% if user.address.present? || user.post_code.present? || user.town.present? %>
+              <div class="col-12">
+                <strong>Adresse :</strong>
+                <%= [user.address, user.post_code, user.town].compact_blank.join(" • ") %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </article>
+
+      <!-- Informations sur l’inscription -->
+      <article class="card card-admin shadow-sm rounded-4 mb-4">
+        <div class="card-body">
+          <h3 class="h6 fw-bold mb-3">
+            <i class="fas fa-flag-checkered me-2"></i>Informations sur l’inscription
+          </h3>
+          <div class="row g-2 small">
+            <div class="col-sm-6">
+              <strong>Inscrit à :</strong>
+              <%= @registration.registerable.try(:name) || @registration.registerable_type %>
+            </div>
+            <div class="col-sm-6">
+              <strong>Le :</strong> <%= l(@registration.created_at, format: :short) %>
+            </div>
+
+            <%# Champs liés aux courses si présents %>
+            <% if @registration.respond_to?(:race_number) && @registration.race_number.present? %>
+              <div class="col-sm-6"><strong>Numéro de course :</strong> <%= @registration.race_number %></div>
+            <% end %>
+            <% if user.respond_to?(:license_code) && user.license_code.present? %>
+              <div class="col-sm-6"><strong>Code licence :</strong> <%= user.license_code %></div>
+            <% end %>
+            <% if user.respond_to?(:license_number) && user.license_number.present? %>
+              <div class="col-sm-6"><strong>Numéro licence :</strong> <%= user.license_number %></div>
+            <% end %>
+            <% if user.respond_to?(:club_name) && (user.club_name.present? || user.try(:club_affiliation_number).present?) %>
+              <div class="col-12">
+                <strong>Club :</strong> <%= [user.club_name, user.try(:club_affiliation_number)].compact_blank.join(" • ") %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </article>
+
+      <!-- Informations véhicule (affiché seulement si champs présents) -->
+      <% if @registration.respond_to?(:bike_brand) || @registration.respond_to?(:cylinder_capacity) || @registration.respond_to?(:stroke_type) %>
+        <article class="card card-admin shadow-sm rounded-4">
+          <div class="card-body">
+            <h3 class="h6 fw-bold mb-3">
+              <i class="fas fa-motorcycle me-2"></i>Informations véhicule
+            </h3>
+            <div class="row g-2 small">
+              <% if @registration.respond_to?(:bike_brand) && @registration.bike_brand.present? %>
+                <div class="col-sm-6"><strong>Marque moto :</strong> <%= @registration.bike_brand %></div>
+              <% end %>
+              <% if @registration.respond_to?(:cylinder_capacity) && @registration.cylinder_capacity.present? %>
+                <div class="col-sm-6"><strong>Cylindrée :</strong> <%= @registration.cylinder_capacity %></div>
+              <% end %>
+              <% if @registration.respond_to?(:stroke_type) && @registration.stroke_type.present? %>
+                <div class="col-sm-6"><strong>Type de moteur :</strong> <%= @registration.stroke_type %></div>
+              <% end %>
+            </div>
+          </div>
+        </article>
+      <% end %>
+    </div>
+  </div>
+</section>
