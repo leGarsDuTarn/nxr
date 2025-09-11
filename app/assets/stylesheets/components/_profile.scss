@@ -14,7 +14,8 @@
   }
 }
 
-.profile-user.banner-dashboard {
+.profile-user.banner-dashboard,
+.admin-dashboard.banner-dashboard {
   /* voile très subtil de la couleur primaire sur le fond surface */
   background:
     linear-gradient(180deg,
