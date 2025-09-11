@@ -30,6 +30,13 @@ class User < ApplicationRecord
   # Permet que chaque inscription soit uniquement en role members
   enum role: { member: "member", admin: "admin" }
   after_initialize :set_default_role, if: :new_record?
+  # Permet de faire une rechercher au niveau de users/index.html.erb
+  scope :search, lambda { |q|
+    next all if q.blank?
+
+    where("first_name ILIKE :q OR last_name ILIKE :q OR email ILIKE :q OR (first_name || ' ' || last_name) ILIKE :q",
+          q: "%#{q.strip}%")
+  }
 
   def set_default_role
     self.role ||= "member"

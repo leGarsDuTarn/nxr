@@ -1,11 +1,107 @@
-<div class="banner" style="background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(https://cdn.pixabay.com/photo/2017/07/18/23/40/group-2517459_1280.png);">
-  <h1>Les membres</h1>
-</div>
 
-<% @users.each do |user| %>
-  <ul>
-    <li>
-      <%= user.last_name %> - <%= user.first_name %>
-    </li>
-  </ul>
-<% end %>
+<section class="admin-hero banner-dashboard"
+  style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url(<%= asset_path('banner_mcnc.jpeg') %>);">
+  <div class="container py-5">
+    <h1 class="display-5 fw-bold mb-1">Les membres</h1>
+    <p class="lead mb-0">Annuaire des membres du club</p>
+  </div>
+</section>
+
+<section class="container my-5">
+  <% has_members = @users.present? %>
+
+  <!-- Barre d’actions -->
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <h2 class="section-title mb-0">
+      <i class="fas fa-users me-2"></i>Gestion des membres
+    </h2>
+
+    <!-- Formulaire de recherche pill -->
+    <div class="d-flex flex-wrap gap-2 flex-grow-1 justify-content-md-end">
+      <%= form_with url: admin_users_path, method: :get, local: true,
+                    class: "search-pill d-flex align-items-center" do |f| %>
+        <%= f.label :q, "Rechercher un membre", class: "visually-hidden" %>
+
+        <%= f.search_field :q,
+              value: params[:q],
+              class: "form-control form-control-sm border-0 flex-grow-1",
+              placeholder: "Nom, prénom, email…" %>
+
+        <%= button_tag type:"submit", class: "btn btn-sm btn-nxr rounded-pill d-flex align-items-center justify-content-center ms-2 px-3" do %>
+          <i class="fa-solid fa-magnifying-glass"></i>
+        <% end %>
+
+        <% if params[:q].present? %>
+          <%= link_to admin_users_path,
+                class: "btn btn-sm btn-outline-danger rounded-pill d-flex align-items-center justify-content-center ms-2 px-3",
+                title: "Effacer la recherche" do %>
+            <i class="fas fa-times"></i>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <% if has_members %>
+    <div class="row g-4">
+      <% @users.each do |user| %>
+        <div class="col-sm-6 col-lg-4 mx-auto">
+          <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+            <div class="ratio ratio-4x3 bg-dark">
+              <% if user.respond_to?(:avatar) && user.avatar.attached? %>
+                <%= image_tag user.avatar, class: "card-img-top object-cover", alt: "#{user.first_name} #{user.last_name}" %>
+              <% else %>
+                <%= image_tag "avatar_default.jpg", class: "card-img-top object-contain p-3", alt: "#{user.first_name} #{user.last_name}" %>
+              <% end %>
+            </div>
+
+            <div class="card-body d-flex flex-column">
+              <div class="d-flex align-items-start justify-content-between mb-2">
+                <h3 class="h6 fw-bold mb-0"><%= user.first_name %> <%= user.last_name %></h3>
+              </div>
+
+              <p class="text-tertiary small mb-3">
+                <i class="far fa-user me-1"></i>
+                Membre depuis le <%= l(user.created_at.to_date, format: "%d %B %Y") %>
+                <small class="text-tertiary">(<%= time_ago_in_words(user.created_at) %>)</small>
+              </p>
+
+              <div class="mt-auto d-flex align-items-center justify-content-between">
+                <%= link_to admin_user_path(user),
+                      class: "stretched-link text-decoration-none text-color-primary small me-2" do %>
+                  <i class="fas fa-arrow-right me-1"></i> Voir la fiche
+                <% end %>
+
+                <div class="btn-toolbar gap-2">
+                  <%= link_to edit_admin_user_path(user),
+                        class: "btn btn-icon btn-edit-orange",
+                        title: "Modifier les données de #{user.first_name} - #{user.last_name}",
+                        aria: { label: "Modifier les données de #{user.first_name} - #{user.last_name}" } do %>
+                    <i class="fas fa-edit"></i>
+                  <% end %>
+
+                  <%= link_to admin_user_path(user),
+                        data: { turbo_method: :delete, turbo_confirm: "Supprimer cet utilisateur ?" },
+                        class: "btn btn-icon btn-delete-red",
+                        title: "Supprimer l'utilisateur #{user.first_name} - #{user.last_name}",
+                        aria: { label: "Supprimer l'utilisateur #{user.first_name} - #{user.last_name}" } do %>
+                    <i class="fas fa-trash"></i>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      <% end %>
+    </div>
+
+    <%= render "shared/pagination", pagy_object: @users %>
+
+  <% else %>
+    <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
+      <div class="mb-3"><i class="fas fa-user-slash fa-3x"></i></div>
+      <h3 class="h5 fw-bold mb-2">Aucun membre</h3>
+      <p class="mb-0">Dès qu’un membre s’inscrit, il apparaîtra ici.</p>
+    </div>
+  <% end %>
+</section>

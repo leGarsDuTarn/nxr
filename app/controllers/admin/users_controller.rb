@@ -17,7 +17,15 @@ module Admin
     end
 
     def index
-      @users = User.all
+      @users = User.order(created_at: :desc).search(params[:q])
+      # Préchargement de l'avatar afin d'éviter un nombre incalculable de requetes SQL
+      @users = @users.with_attached_avatar if User.reflect_on_attachment(:avatar)
+      # Pagination
+      return unless defined?(Kaminari) && @users.respond_to?(:page)
+
+      per = params[:per].presence&.to_i
+      per = per&.clamp(1, 100) || 2
+      @users = @users.page(params[:page]).per(per)
     end
 
     def show
