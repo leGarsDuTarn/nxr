@@ -1,0 +1,28 @@
+.profile-user {
+  background-size: cover;
+  background-position: center;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  color: #fff;
+
+  .avatar-wrapper {
+    .avatar-lg {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border: 3px solid #fff;
+    }
+  }
+}
+
+.profile-user.banner-dashboard {
+  /* voile très subtil de la couleur primaire sur le fond surface */
+  background:
+    linear-gradient(180deg,
+      rgba($color-primary, .06) 0%,
+      rgba($color-primary, .04) 45%,
+      rgba($color-primary, 0)   100%
+    ),
+    $surface;
+  color: $on-surface;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
