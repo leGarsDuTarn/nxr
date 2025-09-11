@@ -21,4 +21,9 @@
 
 body {
   background-color: $background;
+  font-family: $body-font;
+}
+
+h1, h2, h3, h4, h5, h6, legend.section-title {
+  font-family: $headers-font;
 }
