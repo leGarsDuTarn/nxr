@@ -1,24 +1,58 @@
-<%= simple_form_for [:admin, @training], html: { multipart: true } do |f| %>
-  <%= f.input :name, label: "Nom de l'entraînement" %>
-  <%= f.input :description, label: "Description de l'entraînement" %>
-  <%= f.input :date, label: "Date de l'entraînement" do %>
-    <%= f.date_field :date, class: "form-control" %>
-  <% end %>
-  <%= f.input :hour, as: :time, label: "Heure de l'entraînement" %>
-  
-  <div class="col-12">
-          <%# Affiche l’image actuelle uniquement si elle est bien persistée %>
-  <%= f.input :image, as: :file, label: "Image de l'entrainement" %>
-          <% if f.object.image.attached? && f.object.image.attachment&.persisted? %>
-            <div class="mb-2">
-              <p class="mb-1">Image actuelle :</p>
-              <%= image_tag f.object.image, size: "150x100", class: "img-thumbnail mb-2" %><br>
-              <div class="form-check">
-                <%= f.check_box :remove_image, class: "form-check-input" %>
-                <%= f.label :remove_image, "Supprimer l'image actuel", class: "form-check-label" %>
-              </div>
-            </div>
+<div class="container d-flex justify-content-center align-items-start py-5">
+  <div class="card-signup shadow p-4 p-md-5 rounded-4 w-100">
+    <div class="d-flex justify-content-center mb-4">
+      <h1 class="text-center">
+        <strong><%= @training.new_record? ? "Créer un entraînement" : "Modifier l’entraînement" %> <%= @training.name %></strong>
+      </h1>
+    </div>
+
+    <%= simple_form_for [:admin, @training], html: { multipart: true } do |f| %>
+      <%= f.error_notification %>
+
+      <!-- Infos -->
+      <div class="row g-3">
+        <div class="col-md-6"><%= f.input :name, label: "Nom de l'entraînement" %></div>
+        <div class="col-md-6"><%= f.input :hour, as: :time, label: "Heure" %></div>
+        <div class="col-md-6">
+          <%= f.input :date, label: "Date" do %>
+            <%= f.date_field :date, class: "form-control" %>
           <% end %>
-  <%= f.button :submit, "Valider", class: "btn btn-primary" %>
-<% end %>
+        </div>
+        <div class="col-12"><%= f.input :description, label: "Description" %></div>
+      </div>
+
+      <!-- Tarifs -->
+      <fieldset class="form-section my-4">
+        <legend class="section-title">Tarifs</legend>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <%= f.input :club_member_price, label: "Prix adhérent (€)", input_html: { step: 0.01 } %>
+          </div>
+          <div class="col-md-6">
+            <%= f.input :non_club_member_price, label: "Prix non adhérent (€)", input_html: { step: 0.01 } %>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Image -->
+      <fieldset class="form-section my-4">
+        <legend class="section-title">Image</legend>
+        <%= f.input :image, as: :file, label: "Image de l'entraînement" %>
+        <% if f.object.image.attached? && f.object.image.attachment&.persisted? %>
+          <div class="mb-2">
+            <p class="mb-1">Image actuelle :</p>
+            <%= image_tag f.object.image, size: "150x100", class: "img-thumbnail mb-2" %><br>
+            <div class="form-check">
+              <%= f.check_box :remove_image, class: "form-check-input" %>
+              <%= f.label :remove_image, "Supprimer l'image actuelle", class: "form-check-label" %>
+            </div>
+          </div>
+        <% end %>
+      </fieldset>
+
+      <div class="d-grid mt-4">
+        <%= f.button :submit, "Valider", class: "btn-nxr btn-lg" %>
+      </div>
+    <% end %>
+  </div>
 </div>

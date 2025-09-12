@@ -8,7 +8,7 @@ module Admin
 
     def show
       # @event est déjà défini par set_admin_event
-      @price = @race.price_for(current_user)
+      @price = @event.price_for(current_user)
     end
 
     def new

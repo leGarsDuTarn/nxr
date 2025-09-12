@@ -31,10 +31,9 @@
       <i class="fa-solid fa-list-check"></i> Détail de l’entraînement
     </h2>
 
-      <%= link_to edit_admin_training_path(@training), class: "btn-nxr d-inline-flex align-items-center" do %>
-        <i class="fas fa-edit me-2"></i> Modifier la fiche 
-      <% end %>
-    </div>
+    <%= link_to edit_admin_training_path(@training), class: "btn-nxr d-inline-flex align-items-center" do %>
+      <i class="fas fa-edit me-2"></i> Modifier la fiche
+    <% end %>
   </div>
 
   <div class="row g-4">
@@ -57,9 +56,13 @@
               <div><strong>Coach :</strong> <%= @training.coach %></div>
             <% end %>
 
-            <% if @training.respond_to?(:price) && @training.price.present? %>
-              <div><strong>Tarif :</strong> <%= number_to_currency(@training.price, unit: "€", format: "%n %u") %></div>
-            <% end %>
+            <!-- ✅ Ajout des deux tarifs -->
+            <div><strong>Tarif adhérent :</strong>
+              <%= number_to_currency(@training.club_member_price, unit: "€", format: "%n %u") %>
+            </div>
+            <div><strong>Tarif non adhérent :</strong>
+              <%= number_to_currency(@training.non_club_member_price, unit: "€", format: "%n %u") %>
+            </div>
 
             <% if @training.respond_to?(:status) && @training.status.present? %>
               <% status_badge =
@@ -68,7 +71,9 @@
                    when "closed","archived" then "badge-rejected"
                    else "badge-pending"
                    end %>
-              <div><strong>Statut :</strong> <span class="badge rounded-pill <%= status_badge %>"><%= @training.status.to_s.humanize %></span></div>
+              <div><strong>Statut :</strong>
+                <span class="badge rounded-pill <%= status_badge %>"><%= @training.status.to_s.humanize %></span>
+              </div>
             <% end %>
           </div>
         </div>
