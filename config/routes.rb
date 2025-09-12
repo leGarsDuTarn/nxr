@@ -24,13 +24,13 @@ Rails.application.routes.draw do
 
     resources :articles
     resources :galleries
+    resource :club, only: [:index, :show, :new, :edit, :update, :create]
     # Pour pouvoir avoir une gestion des membres et pouvoir se conformer au RGPD
     resources :users, only: [:index, :show, :edit, :update, :destroy] do
       # Route qui permet l'export des données personnelles des utilisateurs - conforme RGPD
       member do
         get :export
       end
-    resource :club, only: [:show, :new, :edit, :update, :create]
     end
 
     # Route custom pour pouvoir recupérer la bonne URL pour le status des inscription et le dashboard#

@@ -8,7 +8,7 @@ module Admin
       @galleries = Gallery.all.order(date: :asc).limit(3)
       @users = User.all.order(created_at: :asc).limit(3)
       @recent_registrations = Registration.includes(:user, :registerable).order(created_at: :desc).limit(10)
-      @clubs = Club.all
+      @clubs = Club.first
     end
   end
 end

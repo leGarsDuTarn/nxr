@@ -2,6 +2,10 @@ module Admin
   class ClubsController < BaseController
     before_action :set_club, only: %i[show edit update]
 
+    def index
+      @clubs = Club.all
+    end
+
     def show
       # @club est déjà défini par set_club
     end
@@ -35,7 +39,7 @@ module Admin
 
     def set_club
       # Pas besoin d'ID car il n'y a qu'un seul club
-      @club = Club.first!
+      @club = Club.first
     end
 
     def club_params
