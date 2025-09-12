@@ -82,7 +82,7 @@ RSpec.describe "Admin::Users", type: :request do
       it "modifie les infos d'un membre existant, retourne un status 200 et valide le test" do
         get edit_admin_user_path(user)
         expect(response).to have_http_status(:ok)
-        expect(response.body).to match(/modifier/i) # case insensitive = Modifier ou modifier
+        expect(response.body).to match(/modification/i) # case insensitive = Modification ou modification
       end
     end
   end
