@@ -655,8 +655,12 @@
       <div class="col-sm-6 col-lg-4 mx-auto">
         <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
           <!-- Media -->
-          <div class="ratio ratio-4x3 bg-dark d-flex align-items-center justify-content-center text-white">
-            <i class="fas fa-building fa-3x"></i>
+          <div class="ratio ratio-4x3 bg-light d-flex align-items-center justify-content-center bg-dark">
+            <% if @clubs.logo.attached? %>
+              <%= image_tag @clubs.logo, class: "card-img-top object-contain p-3", alt: @clubs.name %>
+            <% else %>
+              <i class="fas fa-building fa-3x text-muted"></i>
+            <% end %>
           </div>
 
           <!-- Body -->

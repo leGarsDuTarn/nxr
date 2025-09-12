@@ -1,0 +1,63 @@
+<div class="container d-flex justify-content-center align-items-start py-5">
+  <div class="card-signup shadow p-4 p-md-5 rounded-4 w-100">
+    <div class="d-flex justify-content-center mb-4">
+      <h1 class="text-center">
+        <strong><%= @club.new_record? ? "Créer le club" : "Modifier le club" %></strong>
+      </h1>
+    </div>
+
+    <%= simple_form_for [:admin, @club], html: { multipart: true } do |f| %>
+      <%= f.error_notification %>
+
+      <!-- Informations générales -->
+      <fieldset class="form-section mb-4">
+        <legend class="section-title">Informations générales</legend>
+        <div class="row g-3">
+          <div class="col-md-6"><%= f.input :name, label: "Nom du club" %></div>
+          <div class="col-md-6"><%= f.input :affiliation_number, label: "Numéro d’affiliation" %></div>
+          <div class="col-12"><%= f.input :address, label: "Adresse" %></div>
+          <div class="col-md-4"><%= f.input :post_code, label: "Code postal" %></div>
+          <div class="col-md-8"><%= f.input :town, label: "Ville" %></div>
+        </div>
+      </fieldset>
+
+      <!-- Coordonnées -->
+      <fieldset class="form-section mb-4">
+        <legend class="section-title">Coordonnées</legend>
+        <div class="row g-3">
+          <div class="col-md-6"><%= f.input :phone_number, label: "Téléphone" %></div>
+          <div class="col-md-6"><%= f.input :email, label: "Email" %></div>
+        </div>
+      </fieldset>
+
+      <!-- Responsables -->
+      <fieldset class="form-section mb-4">
+        <legend class="section-title">Responsables</legend>
+        <div class="row g-3">
+          <div class="col-md-6"><%= f.input :president_name, label: "Président" %></div>
+          <div class="col-md-6"><%= f.input :responsable_communication_name, label: "Responsable communication" %></div>
+        </div>
+      </fieldset>
+
+      <!-- Logo -->
+      <fieldset class="form-section mb-4">
+        <legend class="section-title">Logo</legend>
+        <%= f.input :logo, as: :file, label: "Logo du club" %>
+        <% if f.object.logo.attached? && f.object.logo.attachment&.persisted? %>
+          <div class="mb-2">
+            <p class="mb-1">Logo actuel :</p>
+            <%= image_tag f.object.logo, size: "150x100", class: "img-thumbnail mb-2" %><br>
+            <div class="form-check">
+              <%= f.check_box :remove_logo, class: "form-check-input" %>
+              <%= f.label :remove_logo, "Supprimer le logo actuel", class: "form-check-label" %>
+            </div>
+          </div>
+        <% end %>
+      </fieldset>
+
+      <div class="d-grid mt-4">
+        <%= f.button :submit, "Valider", class: "btn-nxr btn-lg" %>
+      </div>
+    <% end %>
+  </div>
+</div>
