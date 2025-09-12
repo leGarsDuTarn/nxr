@@ -44,19 +44,7 @@
           <h3 class="h6 fw-bold mb-3"><i class="fa-solid fa-circle-info me-2"></i>Informations</h3>
 
           <div class="vstack gap-2">
-            <% if @training.respond_to?(:level) && @training.level.present? %>
-              <div><strong>Niveau :</strong> <%= @training.level %></div>
-            <% end %>
-
-            <% if @training.respond_to?(:capacity) && @training.capacity.present? %>
-              <div><strong>Capacité :</strong> <%= @training.capacity %></div>
-            <% end %>
-
-            <% if @training.respond_to?(:coach) && @training.coach.present? %>
-              <div><strong>Coach :</strong> <%= @training.coach %></div>
-            <% end %>
-
-            <!-- ✅ Ajout des deux tarifs -->
+            <!-- Ajout des deux tarifs -->
             <div><strong>Tarif adhérent :</strong>
               <%= number_to_currency(@training.club_member_price, unit: "€", format: "%n %u") %>
             </div>

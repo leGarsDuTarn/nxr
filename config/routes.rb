@@ -30,6 +30,7 @@ Rails.application.routes.draw do
       member do
         get :export
       end
+    resource :club, only: [:show, :edit, :update]
     end
 
     # Route custom pour pouvoir recupérer la bonne URL pour le status des inscription et le dashboard#
