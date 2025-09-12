@@ -1,4 +1,6 @@
 class Race < ApplicationRecord
+  include HasPrices # Voir models/concerns/has_prices.rb
+
   belongs_to :user
   has_many :registrations, as: :registerable, dependent: :destroy
   has_many :users, through: :registrations
@@ -7,6 +9,7 @@ class Race < ApplicationRecord
   has_one_attached :image
   # Permet de supprimer l'image via la partiale view/race/_form.html.erb
   attr_accessor :remove_image
+  
   # Validation obligatoire pour pouvoir créer une course
   validates :name, presence: { message: "Vous devez renseigner un nom" }
   validates :date, presence: { message: "Vous devez renseigner une date" }

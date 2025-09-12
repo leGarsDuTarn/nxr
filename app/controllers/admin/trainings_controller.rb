@@ -8,6 +8,7 @@ module Admin
 
     def show
       # @training - déjà défini par set_admin_training
+      @price = @training.price_for(current_user)
     end
 
     def new
@@ -48,7 +49,10 @@ module Admin
     end
 
     def training_params
-      params.require(:training).permit(:name, :description, :date, :hour, :image)
+      params.require(:training).permit(
+        :name, :description, :date, :hour, :image,
+        :club_member_price, :non_club_member_price
+      )
     end
   end
 end
