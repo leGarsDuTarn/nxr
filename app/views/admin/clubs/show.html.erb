@@ -1,0 +1,49 @@
+<section class="admin-dashboard banner-dashboard">
+  <div class="container py-5 text-center text-white">
+    <h1 class="display-5 fw-bold mb-1"><i class="fas fa-flag-checkered me-2"></i><%= @club.name %></h1>
+    <p class="lead mb-0">Informations officielles du club</p>
+  </div>
+</section>
+
+<section class="container my-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="section-title mb-0">
+      <i class="fa-solid fa-circle-info me-2"></i> Fiche du club
+    </h2>
+    <%= link_to edit_admin_club_path, class: "btn-nxr d-inline-flex align-items-center" do %>
+      <i class="fas fa-edit me-2"></i> Modifier
+    <% end %>
+  </div>
+
+  <article class="card card-admin shadow-sm rounded-4">
+    <div class="card-body small">
+      <div class="row g-3">
+        <div class="col-md-6"><strong>Nom :</strong> <%= @club.name %></div>
+        <div class="col-md-6"><strong>N° d’affiliation :</strong> <%= @club.affiliation_number %></div>
+
+        <% if @club.address.present? || @club.post_code.present? || @club.town.present? %>
+          <div class="col-12">
+            <strong>Adresse :</strong>
+            <%= [@club.address, @club.post_code, @club.town].compact_blank.join(" • ") %>
+          </div>
+        <% end %>
+
+        <% if @club.phone_number.present? %>
+          <div class="col-md-6"><strong>Téléphone :</strong> <%= @club.phone_number %></div>
+        <% end %>
+
+        <% if @club.email.present? %>
+          <div class="col-md-6"><strong>Email :</strong> <%= mail_to @club.email %></div>
+        <% end %>
+
+        <% if @club.president_name.present? %>
+          <div class="col-md-6"><strong>Président :</strong> <%= @club.president_name %></div>
+        <% end %>
+
+        <% if @club.responsable_communication_name.present? %>
+          <div class="col-md-6"><strong>Responsable communication :</strong> <%= @club.responsable_communication_name %></div>
+        <% end %>
+      </div>
+    </div>
+  </article>
+</section>

@@ -639,3 +639,86 @@
     </div>
   <% end %>
 </section>
+
+<%# Fiche identitée du club  %>
+
+<section class="container my-5">
+  <!-- Barre d’actions -->
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <h2 class="section-title mb-0">
+      <i class="fas fa-flag-checkered me-2"></i> Informations du club
+    </h2>
+  </div> <!-- /barre d’actions -->
+
+  <% if @clubs.present? %>
+    <div class="row g-4">
+      <div class="col-sm-6 col-lg-4 mx-auto">
+        <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+          <!-- Media -->
+          <div class="ratio ratio-4x3 bg-light d-flex align-items-center justify-content-center bg-dark">
+            <% if @clubs.logo.attached? %>
+              <%= image_tag @clubs.logo, class: "card-img-top object-contain p-3", alt: @clubs.name %>
+            <% else %>
+              <i class="fas fa-building fa-3x text-muted"></i>
+            <% end %>
+          </div>
+
+          <!-- Body -->
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex align-items-start justify-content-between mb-2">
+              <h3 class="h6 fw-bold mb-0"><%= @clubs.name %></h3>
+            </div>
+
+            <p class="text-tertiary small mb-2">
+              <i class="fas fa-id-card me-1"></i>
+              N° d’affiliation : <strong><%= @clubs.affiliation_number %></strong>
+            </p>
+
+            <% if @clubs.phone_number.present? %>
+              <p class="text-tertiary small mb-2">
+                <i class="fas fa-phone me-1"></i>
+                <%= @clubs.phone_number %>
+              </p>
+            <% end %>
+
+            <% if @clubs.email.present? %>
+              <p class="text-tertiary small mb-3">
+                <i class="fas fa-envelope me-1"></i>
+                <%= mail_to @clubs.email %>
+              </p>
+            <% end %>
+
+            <div class="mt-auto d-flex align-items-center justify-content-between">
+              <%= link_to admin_club_path,
+                    class: "stretched-link text-decoration-none text-color-primary small me-2" do %>
+                <i class="fas fa-arrow-right me-1"></i> Voir la fiche
+              <% end %>
+
+              <div class="btn-toolbar gap-2">
+                <%= link_to edit_admin_club_path,
+                      class: "btn btn-icon btn-edit-orange",
+                      title: "Modifier le club",
+                      aria: { label: "Modifier le club" } do %>
+                  <i class="fas fa-edit"></i>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  <% else %>
+    <!-- Empty state -->
+    <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
+      <div class="mb-3">
+        <i class="far fa-clipboard fa-3x"></i>
+      </div>
+      <h3 class="h5 fw-bold mb-2">Aucune information de club</h3>
+      <p class="mb-0">Ajoutez les informations du club pour les voir apparaître ici.</p>
+      <%= link_to new_admin_club_path, class: "btn-nxr d-inline-flex align-items-center" do %>
+        <i class="fas fa-plus me-2"></i>Créer la fiche du club
+      <% end %>
+
+    </div>
+  <% end %>
+</section>

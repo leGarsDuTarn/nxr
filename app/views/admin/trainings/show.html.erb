@@ -1,4 +1,4 @@
-<!-- HERO cohérente avec le site -->
+
 <section class="admin-hero banner-dashboard"
   style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url('<%= banner_image_training_url(@training).presence || asset_path("banner_mcnc.jpeg") %>');">
   <div class="container py-5">
@@ -31,24 +31,9 @@
       <i class="fa-solid fa-list-check"></i> Détail de l’entraînement
     </h2>
 
-    <div class="d-flex flex-wrap gap-2">
-      <%= link_to admin_trainings_path, class: "btn-nxr-orange d-inline-flex align-items-center" do %>
-        <i class="fas fa-list-ul me-2"></i> Tous les entraînements
-      <% end %>
-
-      <%= link_to edit_admin_training_path(@training), class: "btn-nxr d-inline-flex align-items-center" do %>
-        <i class="fas fa-edit me-2"></i> Modifier
-      <% end %>
-
-      <%= link_to admin_dashboard_path, class: "btn btn-outline-light d-inline-flex align-items-center" do %>
-        <i class="fas fa-home me-2"></i> Tableau de bord
-      <% end %>
-
-      <%# CTA d’inscription si tu dois le garder %>
-      <span class="d-inline-flex align-items-center">
-        <%= registration_link(@training) %>
-      </span>
-    </div>
+    <%= link_to edit_admin_training_path(@training), class: "btn-nxr d-inline-flex align-items-center" do %>
+      <i class="fas fa-edit me-2"></i> Modifier la fiche
+    <% end %>
   </div>
 
   <div class="row g-4">
@@ -56,24 +41,16 @@
     <div class="col-lg-4">
       <article class="card card-admin shadow-sm rounded-4 h-100">
         <div class="card-body small">
-          <h3 class="h6 fw-bold mb-3"><i class="far fa-info-circle me-2"></i>Informations</h3>
+          <h3 class="h6 fw-bold mb-3"><i class="fa-solid fa-circle-info me-2"></i>Informations</h3>
 
           <div class="vstack gap-2">
-            <% if @training.respond_to?(:level) && @training.level.present? %>
-              <div><strong>Niveau :</strong> <%= @training.level %></div>
-            <% end %>
-
-            <% if @training.respond_to?(:capacity) && @training.capacity.present? %>
-              <div><strong>Capacité :</strong> <%= @training.capacity %></div>
-            <% end %>
-
-            <% if @training.respond_to?(:coach) && @training.coach.present? %>
-              <div><strong>Coach :</strong> <%= @training.coach %></div>
-            <% end %>
-
-            <% if @training.respond_to?(:price) && @training.price.present? %>
-              <div><strong>Tarif :</strong> <%= number_to_currency(@training.price, unit: "€", format: "%n %u") %></div>
-            <% end %>
+            <!-- Ajout des deux tarifs -->
+            <div><strong>Tarif adhérent :</strong>
+              <%= number_to_currency(@training.club_member_price, unit: "€", format: "%n %u") %>
+            </div>
+            <div><strong>Tarif non adhérent :</strong>
+              <%= number_to_currency(@training.non_club_member_price, unit: "€", format: "%n %u") %>
+            </div>
 
             <% if @training.respond_to?(:status) && @training.status.present? %>
               <% status_badge =
@@ -82,7 +59,9 @@
                    when "closed","archived" then "badge-rejected"
                    else "badge-pending"
                    end %>
-              <div><strong>Statut :</strong> <span class="badge rounded-pill <%= status_badge %>"><%= @training.status.to_s.humanize %></span></div>
+              <div><strong>Statut :</strong>
+                <span class="badge rounded-pill <%= status_badge %>"><%= @training.status.to_s.humanize %></span>
+              </div>
             <% end %>
           </div>
         </div>

@@ -8,6 +8,7 @@ module Admin
 
     def show
       # @race - déjà défini par set_admin_race
+      @price = @race.price_for(current_user)
     end
 
     def new
@@ -48,7 +49,11 @@ module Admin
     end
 
     def race_params
-      params.require(:race).permit(:name, :description, :date, :hour, :image, :remove_image)
+      params.require(:race).permit(
+        :name, :description, :date,
+        :hour, :image, :remove_image,
+        :club_member_price, :non_club_member_price
+      )
     end
   end
 end

@@ -8,6 +8,7 @@ module Admin
 
     def show
       # @event est déjà défini par set_admin_event
+      @price = @event.price_for(current_user)
     end
 
     def new
@@ -49,7 +50,10 @@ module Admin
     end
 
     def event_params
-      params.require(:event).permit(:name, :description, :date, :hour, :image)
+      params.require(:event).permit(
+        :name, :description, :date, :hour, :image,
+        :club_member_price, :non_club_member_price
+      )
     end
   end
 end
