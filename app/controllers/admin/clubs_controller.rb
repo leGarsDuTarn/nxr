@@ -6,6 +6,19 @@ module Admin
       # @club est déjà défini par set_club
     end
 
+    def new
+      @club = Club.new
+    end
+
+    def create
+      @club = Club.new(club_params)
+      if @club.save
+        redirect_to admin_club_path, notice: "Le club a été créé avec succès."
+      else
+        render :new, status: :unprocessable_entity, alert: "Erreur lors de la création du club."
+      end
+    end
+
     def edit
       # @club est déjà défini par set_club
     end
