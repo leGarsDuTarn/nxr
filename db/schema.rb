@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_09_12_072817) do
+ActiveRecord::Schema[7.1].define(version: 2025_09_12_075944) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -50,6 +50,21 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_12_072817) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_articles_on_user_id"
+  end
+
+  create_table "clubs", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "affiliation_number", default: "C0637", null: false
+    t.string "address"
+    t.string "post_code"
+    t.string "town"
+    t.string "phone_number"
+    t.string "email"
+    t.string "president_name"
+    t.string "responsable_communication_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["affiliation_number"], name: "index_clubs_on_affiliation_number", unique: true
   end
 
   create_table "events", force: :cascade do |t|
