@@ -1,11 +1,42 @@
+<% if registerable.new_record? %>
+  <!-- Cas 1 : nouvel enregistrement -->
+  <section class="profile-user banner-dashboard">
+    <div class="container py-5 text-center">
+      <h1 class="display-5 fw-bold mb-0">
+        Nouvelle création
+      </h1>
+    </div>
+  </section>
+
+<% elsif registerable.respond_to?(:image) && registerable.image.attached? %>
+  <!-- Cas 2 : existant avec image -->
+  <section class="banner-dashboard"
+    style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url('<%= banner_image_url(registerable) %>');">
+    <div class="container py-5 text-center">
+      <h1 class="display-5 fw-bold mb-0"><%= registerable.name %></h1>
+    </div>
+  </section>
+
+<% else %>
+  <!-- Cas 3 : existant sans image -->
+  <section class="profile-user banner-dashboard">
+    <div class="container py-5 text-center">
+      <h1 class="display-5 fw-bold mb-0"><%= registerable.name %></h1>
+    </div>
+  </section>
+<% end %>
+
+
+
+
 <div class="container d-flex justify-content-center align-items-start py-5">
   <div class="card-signup shadow p-4 p-md-5 rounded-4 w-100">
     <div class="d-flex justify-content-center mb-4">
-      <h1 class="text-center">
+      <h2 class="text-center">
         <strong>
-          <%= registerable.new_record? ? "Créer un nouvel événement" : "Modifier l'événement : #{registerable.name}" %>
+          <%= registerable.new_record? ? "Formulaire de création" : "Formulaire de modification" %>
         </strong>
-      </h1>
+      </h2>
     </div>
 
     <%= simple_form_for [:admin, registerable], html: { multipart: true } do |f| %>
