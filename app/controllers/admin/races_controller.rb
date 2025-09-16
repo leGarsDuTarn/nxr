@@ -1,13 +1,23 @@
 module Admin
   class RacesController < BaseController
+    include Paginable
     before_action :set_admin_race, only: %i[show edit update destroy]
 
     def index
-      @races = Race.all
+      @races = Race.order(date: :asc)
+
+      # Recherche (si param q présent)
+      @races = @races.search(params[:q]) if params[:q].present?
+
+      # Préchargement ActiveStorage pour éviter les N+1
+      @races = @races.with_attached_image if Race.reflect_on_attachment(:image)
+
+      # Pagination Kaminari
+      @races = apply_pagination(@races)
     end
 
     def show
-      # @race - déjà défini par set_admin_race
+      # @race est défini dans set_admin_race
       @price = @race.price_for(current_user)
     end
 
@@ -19,14 +29,14 @@ module Admin
       @race = Race.new(race_params)
       @race.user = current_user
       if @race.save
-        redirect_to admin_race_path(@race), notice: "Course crée avec succès"
+        redirect_to admin_race_path(@race), notice: "Course créée avec succès"
       else
         render :new, status: :unprocessable_entity, alert: "Erreur lors de la création de la course"
       end
     end
 
     def edit
-      # @race - déjà défini par set_admin_race
+      # @race est défini dans set_admin_race
     end
 
     def update

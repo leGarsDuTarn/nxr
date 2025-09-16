@@ -1,9 +1,11 @@
-<div class="banner" style="background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(https://cdn.pixabay.com/photo/2019/12/17/10/04/glow-4701292_1280.jpg);">
-  <h1>Les événements du club</h1>
-</div>
+<%= render "admin/shared/registerable_index",
+           title: "Les événements",
+           subtitle: "Tous les événements organisés par le club",
+           title_action: "Gestion des événements",
+           icon: "fas fa-flag-checkered",
+           registerables: @events,
+           search_path: admin_events_path,
+           empty_title: "Aucune événement",
+           empty_message: "Créez un événement pour le voir apparaître ici." %>
 
-<% @events.each do|event|  %>
-<ul>
-  <li><%= event.name %></li>
-</ul>
-<% end %>
+<%= render "shared/pagination", paginated: @events %>

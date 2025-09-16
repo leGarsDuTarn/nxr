@@ -1,11 +1,11 @@
-<div class="banner" style="background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(https://cdn.pixabay.com/photo/2017/03/07/12/25/enduro-2123843_1280.jpg);">
-  <h1>Les courses</h1>
-</div>
+<%= render "admin/shared/registerable_index",
+           title: "Les courses",
+           subtitle: "Toutes les courses organisées par le club",
+           title_action: "Gestion des courses",
+           icon: "fas fa-flag-checkered",
+           registerables: @races,
+           search_path: admin_races_path,
+           empty_title: "Aucune course",
+           empty_message: "Créez une course pour la voir apparaître ici." %>
 
-<% @races.each do |race| %>
-  <ul>
-    <li>
-      <%= race.name %>
-    </li>
-  </ul>
-<% end %>
+<%= render "shared/pagination", paginated: @races %>
