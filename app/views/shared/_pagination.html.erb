@@ -1,9 +1,9 @@
-<% if @users.total_pages > 1 %>
+<% if defined?(paginated) && paginated.respond_to?(:total_pages) && paginated.total_pages > 1 %>
   <nav class="mt-5">
     <ul class="pagination justify-content-center flex-wrap gap-2">
 
       <%# Première page %>
-      <% if @users.first_page? %>
+      <% if paginated.first_page? %>
         <li class="page-item disabled">
           <span class="page-link"><i class="fas fa-angle-double-left"></i></span>
         </li>
@@ -16,9 +16,9 @@
       <% end %>
 
       <%# Page précédente %>
-      <% if @users.prev_page %>
+      <% if paginated.prev_page %>
         <li class="page-item">
-          <%= link_to url_for(page: @users.prev_page), class: "page-link btn-nxr", title: "Page précédente" do %>
+          <%= link_to url_for(page: paginated.prev_page), class: "page-link btn-nxr", title: "Page précédente" do %>
             <i class="fas fa-angle-left"></i>
           <% end %>
         </li>
@@ -29,10 +29,10 @@
       <% end %>
 
       <%# Pages numérotées %>
-      <% (@users.current_page - 2..@users.current_page + 2).each do |page_number| %>
-        <% next if page_number < 1 || page_number > @users.total_pages %>
+      <% (paginated.current_page - 2..paginated.current_page + 2).each do |page_number| %>
+        <% next if page_number < 1 || page_number > paginated.total_pages %>
 
-        <% if page_number == @users.current_page %>
+        <% if page_number == paginated.current_page %>
           <li class="page-item active">
             <span class="page-link btn-nxr-orange fw-bold"><%= page_number %></span>
           </li>
@@ -44,9 +44,9 @@
       <% end %>
 
       <%# Page suivante %>
-      <% if @users.next_page %>
+      <% if paginated.next_page %>
         <li class="page-item">
-          <%= link_to url_for(page: @users.next_page), class: "page-link btn-nxr", title: "Page suivante" do %>
+          <%= link_to url_for(page: paginated.next_page), class: "page-link btn-nxr", title: "Page suivante" do %>
             <i class="fas fa-angle-right"></i>
           <% end %>
         </li>
@@ -57,9 +57,9 @@
       <% end %>
 
       <%# Dernière page %>
-      <% if @users.last_page? %>
+      <% unless paginated.last_page? %>
         <li class="page-item">
-          <%= link_to url_for(page: @users.total_pages), class: "page-link btn-nxr", title: "Dernière page" do %>
+          <%= link_to url_for(page: paginated.total_pages), class: "page-link btn-nxr", title: "Dernière page" do %>
             <i class="fas fa-angle-double-right"></i>
           <% end %>
         </li>

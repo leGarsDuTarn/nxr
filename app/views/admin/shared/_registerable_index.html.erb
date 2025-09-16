@@ -1,0 +1,102 @@
+<section class="admin-dashboard banner-dashboard">
+  <div class="container py-5">
+    <h1 class="display-5 fw-bold mb-1"><%= title %></h1>
+    <p class="lead mb-0"><%= subtitle %></p>
+  </div>
+</section>
+
+<section class="container my-5">
+  <% has_items = registerables.present? %>
+
+  <!-- Barre d’actions -->
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <h2 class="section-title mb-0">
+      <i class="<%= icon %> me-2"></i><%= title_action %>
+    </h2>
+
+    <!-- Formulaire de recherche -->
+    <div class="d-flex flex-wrap gap-2 flex-grow-1 justify-content-md-end">
+      <%= form_with url: search_path, method: :get, local: true,
+                    class: "search-pill d-flex align-items-center" do |f| %>
+        <%= f.label :q, "Rechercher", class: "visually-hidden" %>
+        <%= f.search_field :q, value: params[:q],
+              class: "form-control form-control-sm border-0 flex-grow-1",
+              placeholder: "Nom, description…" %>
+        <%= button_tag type:"submit", class: "btn-nxr rounded-pill d-flex align-items-center justify-content-center ms-2 px-3" do %>
+          <i class="fa-solid fa-magnifying-glass"></i>
+        <% end %>
+        <% if params[:q].present? %>
+          <%= link_to search_path,
+                class: "btn btn-sm btn-outline-danger rounded-pill d-flex align-items-center justify-content-center ms-2 px-3",
+                title: "Effacer la recherche" do %>
+            <i class="fas fa-times"></i>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <% if has_items %>
+    <div class="row g-4">
+      <% registerables.each do |item| %>
+        <div class="col-sm-6 col-lg-4 mx-auto">
+          <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+            <div class="ratio ratio-4x3 bg-dark">
+              <% if item.respond_to?(:image) && item.image.attached? %>
+                <%= image_tag item.image, class: "card-img-top object-cover", alt: item.name %>
+              <% else %>
+                <%= image_tag "banner_mcnc.jpeg", class: "card-img-top object-cover", alt: item.name %>
+              <% end %>
+            </div>
+
+            <div class="card-body d-flex flex-column">
+              <h3 class="h6 fw-bold mb-2"><%= item.name %></h3>
+
+              <% if item.respond_to?(:date) && item.date.present? %>
+                <p class="text-tertiary small mb-2">
+                  <i class="far fa-calendar-alt me-1"></i>
+                  <%= l(item.date, format: "%d %B %Y") %>
+                </p>
+              <% end %>
+
+              <p class="text-muted small flex-grow-1">
+                <%= truncate(item.description, length: 100, separator: ' ') %>
+              </p>
+
+              <div class="mt-auto d-flex justify-content-between align-items-center">
+                <%= link_to [:admin, item],
+                      class: "stretched-link text-decoration-none text-color-primary small me-2" do %>
+                  <i class="fas fa-arrow-right me-1"></i> Voir la fiche
+                <% end %>
+
+                <div class="btn-toolbar gap-2">
+                  <%= link_to [:edit, :admin, item],
+                        class: "btn btn-icon btn-edit-orange",
+                        title: "Modifier #{item.name}" do %>
+                    <i class="fas fa-edit"></i>
+                  <% end %>
+
+                  <%= link_to [:admin, item],
+                        data: { turbo_method: :delete, turbo_confirm: "Supprimer #{item.name} ?" },
+                        class: "btn btn-icon btn-delete-red",
+                        title: "Supprimer #{item.name}" do %>
+                    <i class="fas fa-trash"></i>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      <% end %>
+    </div>
+
+    <%= render "shared/pagination", pagy_object: pagy if defined?(pagy) %>
+
+  <% else %>
+    <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
+      <div class="mb-3"><i class="fas fa-inbox fa-3x"></i></div>
+      <h3 class="h5 fw-bold mb-2"><%= empty_title %></h3>
+      <p class="mb-0"><%= empty_message %></p>
+    </div>
+  <% end %>
+</section>

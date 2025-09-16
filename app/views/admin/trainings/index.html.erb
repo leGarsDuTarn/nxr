@@ -1,11 +1,11 @@
-<div class="banner" style="background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(https://cdn.pixabay.com/photo/2017/07/07/11/10/motocross-2481129_1280.jpg);">
-  <h1>Les entraînements du club</h1>
-</div>
+<%= render "admin/shared/registerable_index",
+           title: "Les entraînements",
+           subtitle: "Tous les entraînements organisés par le club",
+           title_action: "Gestion des entraînements",
+           icon: "fas fa-flag-checkered",
+           registerables: @trainings,
+           search_path: admin_trainings_path,
+           empty_title: "Aucun entraînement",
+           empty_message: "Créez un entraînement pour le voir apparaître ici." %>
 
-<% @trainings.each do |training| %>
-  <ul>
-    <li>
-      <%= training.name %>
-    </li>
-  </ul>
-<% end %>
+<%= render "shared/pagination", paginated: @trainings %>
