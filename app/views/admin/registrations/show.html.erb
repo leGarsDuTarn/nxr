@@ -1,9 +1,38 @@
+
+<%# --- BANNER --- %>
+<% if @registerable.respond_to?(:image) && @registerable.image.attached? %>
+  <!-- Cas : avec image -->
+  <section class="banner-dashboard"
+    style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url('<%= url_for(@registerable.image) %>');">
+    <div class="container py-5 text-center">
+      <h1 class="display-5 fw-bold mb-0"><%= @registerable.name %></h1>
+      <% if @registerable.respond_to?(:date) && @registerable.date.present? %>
+        <div class="fw-bold mt-2 text-on-surface">
+          <i class="far fa-calendar-alt me-1"></i>
+          <%= l(@registerable.date, format: "%d %B %Y") %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+<% else %>
+  <!-- Cas : sans image -->
+  <section class="banner-dashboard profile-user">
+    <div class="container py-5 text-center">
+      <h1 class="display-5 fw-bold mb-0"><%= @registerable.name %></h1>
+      <% if @registerable.respond_to?(:date) && @registerable.date.present? %>
+        <div class="fw-bold mt-2 text-on-surface">
+          <i class="far fa-calendar-alt me-1"></i>
+          <%= l(@registerable.date, format: "%d %B %Y") %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+<% end %>
 <section class="container my-5">
   <!-- Barre d’actions -->
   <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
     <h2 class="section-title mb-0">
-      <i class="fas fa-user-check me-2"></i>
-      Détail de l’inscription — <%= @registration.registerable.try(:name) || @registration.registerable_type %>
+      <i class="fas fa-user-check me-2"></i>Détail de l’inscription
     </h2>
 
     <div class="d-flex flex-wrap gap-2">
@@ -12,7 +41,7 @@
       <% end %>
 
       <%= link_to polymorphic_path([:admin, @registration.registerable]), class: "btn-nxr-orange d-inline-flex align-items-center" do %>
-        <i class="fas fa-clipboard-list me-2"></i> Voir la fiche : <%= @registration.registerable.name %>
+        <i class="fas fa-clipboard-list me-2"></i> Voir la fiche
       <% end %>
     </div>
   </div>
@@ -48,22 +77,34 @@
           </p>
 
           <div class="border-top my-3"></div>
+          <% status = @registration.status.to_s %>
 
-          <% status_color = case @registration.status.to_s
-              when "validated" then "badge-validated"
-              when "rejected"  then "badge-rejected"
-              else "badge-pending"
-            end %>
+          <% status_color = case status
+            when "validated" then "badge-validated"
+            when "rejected"  then "badge-rejected"
+            else "badge-pending"
+          end %>
+
+          <% status_icon = case status
+            when "validated" then "fa-check-circle"
+            when "rejected"  then "fa-times-circle"
+            else "fa-hourglass-half"
+          end %>
 
           <div class="d-flex align-items-center justify-content-between mb-2">
-            <span class="small">Statut actuel</span>
-            <span class="badge rounded-pill <%= status_color %>">
-              <%= @registration.status.to_s.humanize %>
+            <span class="small text-tertiary d-inline-flex align-items-center">
+              <i class="fas fa-traffic-light me-1"></i> Statut actuel
+            </span>
+
+            <span class="badge rounded-pill d-inline-flex align-items-center gap-1 <%= status_color %>"
+              title="<%= status.humanize %>">
+              <i class="fas <%= status_icon %>"></i>
+              <%= status.humanize %>
             </span>
           </div>
 
           <% if current_user.admin? %>
-            <div class="d-flex flex-wrap gap-2">
+            <div class="d-flex flex-wrap gap-2 mt-2">
               <% unless @registration.validated? %>
                 <%= form_with url: admin_validate_admin_registration_path(@registration), method: :patch, class: "d-inline" do %>
                   <%= submit_tag "Valider", class: "btn btn-nxr btn-sm", data: { turbo_confirm: "Confirmer la validation ?" } %>

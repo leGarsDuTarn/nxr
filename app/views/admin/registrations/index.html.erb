@@ -1,16 +1,46 @@
+<%# --- BANNER --- %>
+<% if @registerable.respond_to?(:image) && @registerable.image.attached? %>
+  <!-- Cas : avec image -->
+  <section class="banner-dashboard"
+    style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url('<%= url_for(@registerable.image) %>');">
+    <div class="container py-5 text-center">
+      <h1 class="display-5 fw-bold mb-0"><%= @registerable.name %></h1>
+      <% if @registerable.respond_to?(:date) && @registerable.date.present? %>
+        <div class="fw-bold mt-2 text-on-surface">
+          <i class="far fa-calendar-alt me-1"></i>
+          <%= l(@registerable.date, format: "%d %B %Y") %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+<% else %>
+  <!-- Cas : sans image -->
+  <section class="banner-dashboard profile-user">
+    <div class="container py-5 text-center">
+      <h1 class="display-5 fw-bold mb-0"><%= @registerable.name %></h1>
+      <% if @registerable.respond_to?(:date) && @registerable.date.present? %>
+        <div class="fw-bold mt-2 text-on-surface">
+          <i class="far fa-calendar-alt me-1"></i>
+          <%= l(@registerable.date, format: "%d %B %Y") %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+<% end %>
+
 <section class="container my-5">
   <!-- Barre d’actions -->
   <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
     <h2 class="section-title mb-0">
       <i class="fas fa-user-friends me-2"></i>
-      Inscriptions à <%= @registerable.name %>
+      Toutes les inscriptions
     </h2>
 
     <div class="d-flex flex-wrap gap-2">
       <%= link_to polymorphic_path([:admin, @registerable, :registrations], format: :pdf),
                   class: "btn-nxr d-inline-flex align-items-center",
                   target: "_blank" do %>
-        <i class="fas fa-file-pdf me-2"></i> Exporter PDF (validés)
+        <i class="fas fa-file-pdf me-2"></i> Exporter
       <% end %>
     </div>
   </div>
@@ -56,7 +86,7 @@
               <!-- Contexte / intitulé -->
               <p class="text-tertiary small mb-2">
                 <i class="fas fa-clipboard-list me-1"></i>
-                <%= registration.registerable.try(:name) || registration.registerable_type %>
+                <%= registration.registerable&.name || registration.registerable_type %>
               </p>
 
               <!-- Détails moto + numéro -->
