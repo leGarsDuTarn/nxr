@@ -161,9 +161,9 @@
               <% end %>
             </div>
 
-            <% if registerable.registrations.count > 2 %>
+            <% if registerable.registrations.count >= 1 %>
               <div class="text-center mt-3">
-                <%= link_to "Voir tous les inscrits", polymorphic_path([:admin, registerable, :registrations]), class: "btn-nxr" %>
+                <%= link_to "Voir toutes les inscriptions", polymorphic_path([:admin, registerable, :registrations]), class: "btn-nxr small" %>
               </div>
             <% end %>
           <% end %>
