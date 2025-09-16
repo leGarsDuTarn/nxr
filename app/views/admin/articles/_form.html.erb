@@ -1,21 +1,88 @@
-<%= simple_form_for [:admin, @article], html: { multipart: true } do |f| %>
-  <%= f.input :title, label: "Titre de l'article" %>
-  <%= f.input :content, label: "Contenu de l'article" %>
-
-  <%= f.input :date, label: "Date de l'article" do %>
-    <%= f.date_field :date, class: "form-control" %>
-  <% end %>
-
-  <%= f.input :image, as: :file, label: "Image de l'article" %>
-
-  <% if f.object.image.attached? %>
-    <div class="mt-2">
-      <p>Image actuelle :</p>
-      <%= image_tag(f.object.image, size: "300x200", class: "img-thumbnail") %><br>
-      <%= f.check_box :remove_image %>
-      <%= f.label :remove_image, "Supprimer l'image actuelle" %>
+<% if @article.new_record? %>
+  <!-- Cas 1 : nouvel enregistrement -->
+  <section class="profile-user banner-dashboard">
+    <div class="container py-5 text-center">
+      <h1 class="display-5 fw-bold mb-0">Nouvel article</h1>
     </div>
-  <% end %>
+  </section>
 
-  <%= f.button :submit, "Valider", class: "btn btn-primary" %>
+<% elsif @article.image.attached? %>
+  <!-- Cas 2 : article existant avec image -->
+  <section class="banner-dashboard"
+    style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)),
+            url('<%= url_for(@article.image) %>');">
+    <div class="container py-5 text-center text-on-surface">
+      <h1 class="display-5 fw-bold mb-0"><%= @article.title %></h1>
+      <% if @article.date.present? %>
+        <div class="h6 fw-bold mt-2">
+          <i class="far fa-calendar-alt me-1"></i>
+          Publié le <%= l(@article.date, format: "%d %B %Y") %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+
+<% else %>
+  <!-- Cas 3 : article existant sans image -->
+  <section class="profile-user banner-dashboard">
+    <div class="container py-5 text-center">
+      <h1 class="display-5 fw-bold mb-0"><%= @article.title %></h1>
+      <% if @article.date.present? %>
+        <div class="h6 fw-bold mt-2 text-on-surface">
+          <i class="far fa-calendar-alt me-1"></i>
+          Publié le <%= l(@article.date, format: "%d %B %Y") %>
+        </div>
+      <% end %>
+    </div>
+  </section>
 <% end %>
+
+<div class="container d-flex justify-content-center align-items-start py-5">
+  <div class="card-signup shadow p-4 p-md-5 rounded-4 w-100">
+    <div class="d-flex justify-content-center mb-4">
+      <h2 class="text-center">
+        <strong>
+          <%= @article.new_record? ? "Formulaire de création" : "Formulaire de modification" %>
+        </strong>
+      </h2>
+    </div>
+
+    <%= simple_form_for [:admin, @article], html: { multipart: true } do |f| %>
+      <%= f.error_notification %>
+
+      <!-- Infos -->
+      <div class="row g-3">
+        <div class="col-md-6">
+          <%= f.input :title, label: "Titre de l’article" %>
+        </div>
+        <div class="col-md-6">
+          <%= f.input :date, as: :date, label: "Date" %>
+        </div>
+        <div class="col-12">
+          <%= f.input :content, as: :text, label: "Contenu", input_html: { rows: 6 } %>
+        </div>
+      </div>
+
+      <!-- Image -->
+      <fieldset class="form-section my-4">
+        <legend class="section-title">Image</legend>
+        <%= f.input :image, as: :file, label: "Image de l’article" %>
+        <% if f.object.image.attached? && f.object.image.attachment&.persisted? %>
+          <div class="mb-2">
+            <p class="mb-1">Image actuelle :</p>
+            <%= image_tag f.object.image, size: "300x200", class: "img-thumbnail mb-2" %><br>
+            <div class="form-check">
+              <%= f.check_box :remove_image, class: "form-check-input" %>
+              <%= f.label :remove_image, "Supprimer l'image actuelle", class: "form-check-label" %>
+            </div>
+          </div>
+        <% end %>
+      </fieldset>
+
+      <!-- Submit -->
+      <div class="d-grid mt-4">
+        <%= f.button :submit, "Valider", class: "btn-nxr btn-lg" %>
+      </div>
+    <% end %>
+  </div>
+</div>
