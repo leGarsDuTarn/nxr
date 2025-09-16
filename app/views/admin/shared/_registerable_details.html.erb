@@ -5,7 +5,7 @@
     <div class="container py-5 text-center">
       <h1 class="display-5 fw-bold mb-0"><%= registerable.name %></h1>
       <% if registerable.respond_to?(:date) && registerable.date.present? %>
-          <div class="h6 fw-bold mt-2 text-on-surface">
+          <div class=" w-bold mt-2 text-on-surface">
             <i class="far fa-calendar-alt me-1"></i>
             <%= l(registerable.date, format: "%d %B %Y") %>
           </div>
@@ -19,7 +19,7 @@
     <div class="container py-5 text-center">
       <h1 class="display-5 fw-bold mb-0"><%= registerable.name %></h1>
       <% if registerable.respond_to?(:date) && registerable.date.present? %>
-          <div class="h6 fw-bold mt-2 text-on-surface">
+          <div class="fw-bold mt-2 text-on-surface">
             <i class="far fa-calendar-alt me-1"></i>
             <%= l(registerable.date, format: "%d %B %Y") %>
           </div>
@@ -153,7 +153,6 @@
 
                       <%= link_to polymorphic_path([:admin, registration.registerable, registration]),
                                   class: "stretched-link text-decoration-none text-color-primary small" do %>
-                        <i class="fas fa-arrow-right"></i>
                       <% end %>
                     </div>
                   </article>
@@ -161,9 +160,9 @@
               <% end %>
             </div>
 
-            <% if registerable.registrations.count > 2 %>
+            <% if registerable.registrations.count >= 1 %>
               <div class="text-center mt-3">
-                <%= link_to "Voir tous les inscrits", polymorphic_path([:admin, registerable, :registrations]), class: "btn-nxr" %>
+                <%= link_to "Voir toutes les inscriptions", polymorphic_path([:admin, registerable, :registrations]), class: "btn-nxr small" %>
               </div>
             <% end %>
           <% end %>

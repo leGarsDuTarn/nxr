@@ -14,3 +14,10 @@
 <%= link_to admin_dashboard_path, class: "btn btn-primary", aria: { label: "Retour au tableau de bord"} do %>
   <i class="fas fa-home"></i>
 <% end %>
+
+<!-- Nettoyage de la sélection locale après une MAJ réussie -->
+<script>
+  document.addEventListener("turbo:load", function () {
+    try { localStorage.removeItem("gallery:<%= @gallery.id %>:remove"); } catch (e) {}
+  });
+</script>

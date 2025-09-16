@@ -1,8 +1,154 @@
-<h1>Inscriptions à <%= @registerable.name %></h1>
-<h2>Liste des inscrits</h2>
-<% @registrations.each do |registration| %>
-  <p><%= registration.registerable.name %></p>
-  <p><%= registration.user.first_name %> <%= registration.user.last_name %></p>
-  <p><%= registration.status %></p>
-
+<%# --- BANNER --- %>
+<% if @registerable.respond_to?(:image) && @registerable.image.attached? %>
+  <!-- Cas : avec image -->
+  <section class="banner-dashboard"
+    style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url('<%= url_for(@registerable.image) %>');">
+    <div class="container py-5 text-center">
+      <h1 class="display-5 fw-bold mb-0"><%= @registerable.name %></h1>
+      <% if @registerable.respond_to?(:date) && @registerable.date.present? %>
+        <div class="fw-bold mt-2 text-on-surface">
+          <i class="far fa-calendar-alt me-1"></i>
+          <%= l(@registerable.date, format: "%d %B %Y") %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+<% else %>
+  <!-- Cas : sans image -->
+  <section class="banner-dashboard profile-user">
+    <div class="container py-5 text-center">
+      <h1 class="display-5 fw-bold mb-0"><%= @registerable.name %></h1>
+      <% if @registerable.respond_to?(:date) && @registerable.date.present? %>
+        <div class="fw-bold mt-2 text-on-surface">
+          <i class="far fa-calendar-alt me-1"></i>
+          <%= l(@registerable.date, format: "%d %B %Y") %>
+        </div>
+      <% end %>
+    </div>
+  </section>
 <% end %>
+
+<section class="container my-5">
+  <!-- Barre d’actions -->
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <h2 class="section-title mb-0">
+      <i class="fas fa-user-friends me-2"></i>
+      Toutes les inscriptions
+    </h2>
+
+    <div class="d-flex flex-wrap gap-2">
+      <%= link_to polymorphic_path([:admin, @registerable, :registrations], format: :pdf),
+                  class: "btn-nxr d-inline-flex align-items-center",
+                  target: "_blank" do %>
+        <i class="fas fa-file-pdf me-2"></i> Exporter
+      <% end %>
+    </div>
+  </div>
+
+  <% if @registrations.any? %>
+    <div class="row g-4">
+      <% @registrations.each do |registration| %>
+        <% user = registration.user %>
+
+        <%# Nom du pilote : priorité aux champs de l'inscription, fallback user %>
+        <% driver_first = registration.user.first_name.presence || user&.first_name %>
+        <% driver_last  = registration.user.last_name.presence  || user&.last_name %>
+
+        <% status_color = case registration.status.to_s
+            when "validated" then "badge-validated"
+            when "rejected"  then "badge-rejected"
+            else "badge-pending"
+          end %>
+
+        <div class="col-md-6 col-lg-4 mx-auto">
+          <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+            <!-- Visuel -->
+            <div class="ratio ratio-4x3 bg-dark">
+              <% if user.respond_to?(:avatar) && user.avatar.attached? %>
+                <%= image_tag user.avatar,
+                              class: "card-img-top object-cover",
+                              alt: [driver_first, driver_last].compact.join(" ") %>
+              <% else %>
+                <%= image_tag "avatar_default.jpg",
+                              class: "card-img-top object-contain p-3",
+                              alt: [driver_first, driver_last].compact.join(" ") %>
+              <% end %>
+            </div>
+
+            <!-- Corps -->
+            <div class="card-body d-flex flex-column">
+              <!-- Pilote -->
+              <h5 class="fw-bold mb-2">
+                <i class="fas fa-id-card me-1"></i>
+                <%= [driver_first, driver_last].compact.join(" ") %>
+              </h5>
+
+              <!-- Contexte / intitulé -->
+              <p class="text-tertiary small mb-2">
+                <i class="fas fa-clipboard-list me-1"></i>
+                <%= registration.registerable&.name || registration.registerable_type %>
+              </p>
+
+              <!-- Détails moto + numéro -->
+              <ul class="list-unstyled small mb-3">
+                <% if registration.bike_brand.present? || registration.cylinder_capacity.present? || registration.stroke_type.present? %>
+                  <li>
+                    <i class="fas fa-motorcycle me-1"></i>
+                    <%= [
+                          registration.bike_brand,
+                          (registration.cylinder_capacity.present? ? "#{registration.cylinder_capacity}cc" : nil),
+                          registration.stroke_type
+                        ].compact.join(" — ") %>
+                  </li>
+                <% end %>
+
+                <% if registration.race_number.present? %>
+                  <li>
+                    <i class="fas fa-hashtag me-1"></i>
+                    N° <%= registration.race_number %>
+                  </li>
+                <% end %>
+              </ul>
+
+              <!-- Bas de carte : statut + lien fiche -->
+              <div class="mt-auto">
+                <div class="d-flex justify-content-between align-items-center border-top pt-3">
+                  <span class="small text-tertiary d-inline-flex align-items-center">
+                    <i class="fas fa-traffic-light me-1"></i> Statut
+                  </span>
+
+                  <% status_icon = case registration.status.to_s
+                       when "validated" then "fa-check-circle"
+                       when "rejected"  then "fa-times-circle"
+                       else "fa-hourglass-half"
+                     end %>
+
+                  <span class="badge rounded-pill d-inline-flex align-items-center gap-1 <%= status_color %>">
+                    <i class="fas <%= status_icon %>"></i>
+                    <%= registration.status.to_s.humanize %>
+                  </span>
+                </div>
+
+                <div class="d-flex justify-content-center mt-4">
+                  <%= link_to polymorphic_path([:admin, registration.registerable, registration]),
+                              class: "btn-nxr btn-sm d-inline-flex align-items-center" do %>
+                    <i class="fas fa-search me-1"></i> Voir la fiche
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <!-- Empty state -->
+    <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
+      <div class="mb-3">
+        <i class="far fa-user-slash fa-3x"></i>
+      </div>
+      <h3 class="h5 fw-bold mb-2">Aucune inscription pour le moment</h3>
+      <p class="mb-0">Les inscriptions apparaîtront ici dès qu'elles seront enregistrées.</p>
+    </div>
+  <% end %>
+</section>
