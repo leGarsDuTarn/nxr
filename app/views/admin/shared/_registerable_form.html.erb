@@ -14,6 +14,12 @@
     style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url('<%= banner_image_url(registerable) %>');">
     <div class="container py-5 text-center">
       <h1 class="display-5 fw-bold mb-0"><%= registerable.name %></h1>
+      <% if registerable.respond_to?(:date) && registerable.date.present? %>
+          <div class="h6 fw-bold mt-2 text-on-surface">
+            <i class="far fa-calendar-alt me-1"></i>
+            <%= l(registerable.date, format: "%d %B %Y") %>
+          </div>
+        <% end %>
     </div>
   </section>
 
@@ -22,6 +28,12 @@
   <section class="profile-user banner-dashboard">
     <div class="container py-5 text-center">
       <h1 class="display-5 fw-bold mb-0"><%= registerable.name %></h1>
+      <% if registerable.respond_to?(:date) && registerable.date.present? %>
+          <div class="h6 fw-bold mt-2 text-on-surface">
+            <i class="far fa-calendar-alt me-1"></i>
+            <%= l(registerable.date, format: "%d %B %Y") %>
+          </div>
+        <% end %>
     </div>
   </section>
 <% end %>

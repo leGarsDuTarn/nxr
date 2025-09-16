@@ -1,33 +1,38 @@
-<section class="banner-dashboard"
- style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url('<%= banner_image_url(registerable) %>');">
-  <div class="container py-5">
-    <h1 class="display-5 fw-bold mb-1"><%= registerable.name %></h1>
-
-    <%# Méta %>
-    <% if registerable.respond_to?(:starts_at) || registerable.respond_to?(:date) || registerable.respond_to?(:location) %>
-      <p class="lead mb-0">
-        <% if registerable.respond_to?(:starts_at) && registerable.starts_at.present? %>
-          <i class="far fa-clock me-1"></i> <%= l(registerable.starts_at, format: :long) %>
-          <% if registerable.respond_to?(:ends_at) && registerable.ends_at.present? %>
-            — <%= l(registerable.ends_at, format: :time) %>
-          <% end %>
-        <% elsif registerable.respond_to?(:date) && registerable.date.present? %>
-          <i class="far fa-calendar-alt me-1"></i> <%= l(registerable.date, format: "%d %B %Y") %>
+<% if registerable.respond_to?(:image) && registerable.image.attached? %>
+  <!-- Cas 2 : existant avec image -->
+  <section class="banner-dashboard"
+    style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url('<%= banner_image_url(registerable) %>');">
+    <div class="container py-5 text-center">
+      <h1 class="display-5 fw-bold mb-0"><%= registerable.name %></h1>
+      <% if registerable.respond_to?(:date) && registerable.date.present? %>
+          <div class="h6 fw-bold mt-2 text-on-surface">
+            <i class="far fa-calendar-alt me-1"></i>
+            <%= l(registerable.date, format: "%d %B %Y") %>
+          </div>
         <% end %>
+    </div>
+  </section>
 
-        <% if registerable.respond_to?(:location) && registerable.location.present? %>
-          <span class="ms-3"><i class="fas fa-map-marker-alt me-1"></i> <%= registerable.location %></span>
+<% else %>
+  <!-- Cas 3 : existant sans image -->
+  <section class="profile-user banner-dashboard">
+    <div class="container py-5 text-center">
+      <h1 class="display-5 fw-bold mb-0"><%= registerable.name %></h1>
+      <% if registerable.respond_to?(:date) && registerable.date.present? %>
+          <div class="h6 fw-bold mt-2 text-on-surface">
+            <i class="far fa-calendar-alt me-1"></i>
+            <%= l(registerable.date, format: "%d %B %Y") %>
+          </div>
         <% end %>
-      </p>
-    <% end %>
-  </div>
-</section>
+    </div>
+  </section>
+<% end %>
 
 <section class="container my-5">
   <!-- Barre d’actions -->
   <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
     <h2 class="section-title mb-0">
-      <i class="fa-solid fa-list-check"></i> Détail de <%= registerable.class.model_name.human %>
+      <i class="fa-solid fa-list-check"></i> Fiche d'escriptive
     </h2>
 
     <%= link_to [:edit, :admin, registerable], class: "btn-nxr d-inline-flex align-items-center" do %>
