@@ -1,13 +1,22 @@
 module Admin
   class EventsController < BaseController
+    include Paginable
     before_action :set_admin_event, only: %i[show edit update destroy]
 
     def index
-      @events = Event.all
+      @events = Event.order(date: :asc)
+
+      # Recherche
+      @events = @events.search(params[:q]) if params[:q].present?
+
+      # Préchargement ActiveStorage pour éviter les N+1
+      @events = @events.with_attached_image if Event.reflect_on_attachment(:image)
+
+      # Pagination Kaminari via concern
+      @events = apply_pagination(@events)
     end
 
     def show
-      # @event est déjà défini par set_admin_event
       @price = @event.price_for(current_user)
     end
 
@@ -27,7 +36,7 @@ module Admin
     end
 
     def edit
-      # @event est déjà défini par set_admin_event
+      # @event défini par set_admin_event
     end
 
     def update
@@ -51,7 +60,8 @@ module Admin
 
     def event_params
       params.require(:event).permit(
-        :name, :description, :date, :hour, :image,
+        :name, :description, :date, :hour,
+        :image, :remove_image,
         :club_member_price, :non_club_member_price
       )
     end
