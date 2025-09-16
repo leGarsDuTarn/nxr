@@ -1,6 +1,2 @@
-<h1>Créer un nouvel événement</h1>
+<%= render "admin/shared/registerable_form", registerable: @event %>
 
-<%= render "form" %>
-<%= link_to admin_dashboard_path, class: "btn btn-primary", aria: { label: "Retour au tableau de bord"} do %>
-<i class="fas fa-home"></i>
-<% end %>

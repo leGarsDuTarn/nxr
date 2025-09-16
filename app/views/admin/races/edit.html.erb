@@ -1,7 +1,1 @@
-<h1>Modifier la course : <%= @race.name %></h1>
-
-<%= render "form" %>
-
-<%= link_to admin_dashboard_path, class: "btn btn-primary", aria: { label: "Retour au tableau de bord"} do %>
-  <i class="fas fa-home"></i>
-<% end %>
+<%= render "admin/shared/registerable_form", registerable: @race %>

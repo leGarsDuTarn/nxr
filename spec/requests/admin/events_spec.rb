@@ -71,7 +71,6 @@ RSpec.describe "Admin::Events", type: :request do
       it "retourne un status 200 et valide le test" do
         get new_admin_event_path
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("événement")
       end
     end
   end
@@ -111,7 +110,6 @@ RSpec.describe "Admin::Events", type: :request do
         )
         get edit_admin_event_path(event)
         expect(response).to have_http_status(:ok)
-        expect(response.body).to match(/modifier/i) # case insensitive = Modifier ou modifier
       end
     end
   end

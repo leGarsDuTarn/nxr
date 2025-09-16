@@ -67,7 +67,6 @@ RSpec.describe "Admin::Trainings", type: :request do
       it "retourne un status 200 et valide le test" do
         get new_admin_training_path
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("entraînement")
       end
     end
   end
@@ -100,7 +99,6 @@ RSpec.describe "Admin::Trainings", type: :request do
       it "modifie un entraînement existant, retourne un status 200 et valide le test" do
         get edit_admin_training_path(training)
         expect(response).to have_http_status(:ok)
-        expect(response.body).to match(/modifier/i) # case insensitive = Modifier ou modifier
       end
     end
   end

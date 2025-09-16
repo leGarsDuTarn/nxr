@@ -19,8 +19,8 @@
   /* voile très subtil de la couleur primaire sur le fond surface */
   background:
     linear-gradient(180deg,
-      rgba($color-primary, .06) 0%,
-      rgba($color-primary, .04) 45%,
+      rgba($color-primary, .20) 0%,
+      rgba($color-primary, .15) 45%,
       rgba($color-primary, 0)   100%
     ),
     $surface;
