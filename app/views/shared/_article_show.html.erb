@@ -27,34 +27,17 @@
             </p>
           <% end %>
 
-          <small class="text-muted d-block mb-4">
-            Rédigé par : <%= article.user.user_name %>
-          </small>
-
           <div class="card-text fs-5 mb-4">
             <%= simple_format(article.content) %>
           </div>
 
+          <small class="text-muted d-block mb-4">
+            Rédigé par : <%= article.user.user_name %>
+          </small>
+
           <div class="d-flex justify-content-between">
             <%= link_to :back, class: "btn-nxr", aria: { label: "Retour à la page précédente" } do %>
               <i class="fas fa-arrow-left" aria-hidden="true"></i> Retour
-            <% end %>
-
-            <% if defined?(admin) && admin %>
-              <div class="btn-toolbar gap-2">
-                <%= link_to edit_admin_article_path(article),
-                      class: "btn btn-icon btn-edit-orange",
-                      title: "Modifier l’article" do %>
-                  <i class="fas fa-edit"></i>
-                <% end %>
-
-                <%= link_to admin_article_path(article),
-                      data: { turbo_method: :delete, turbo_confirm: "Supprimer cet article ?" },
-                      class: "btn btn-icon btn-delete-red",
-                      title: "Supprimer l’article" do %>
-                  <i class="fas fa-trash"></i>
-                <% end %>
-              </div>
             <% end %>
           </div>
         </div>
