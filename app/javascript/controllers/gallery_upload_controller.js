@@ -1,19 +1,40 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from "@hotwired/stimulus";
 
-// Connects to data-controller="gallery-upload"
+// data-controller="gallery-upload"
+// data-gallery-upload-target="container"
+// data-gallery-upload-max-value="10"   (optionnel : limite)
 export default class extends Controller {
-  // Définit les éléments HTML ciblés à l'intérieur du controller, ici "container"
-  static targets = ["container"]
-  connect() {
-  }
+  static targets = ["container"];
+  static values = { max: Number };
+
   addInput() {
-    // Crée dynamiquement un nouveau champ <input type="file">
+    // Limite éventuelle
+    const count =
+      this.containerTarget.querySelectorAll('input[type="file"]').length;
+    if (this.hasMaxValue && count >= this.maxValue) return;
+
+    // Wrapper de la ligne
+    const wrapper = document.createElement("div");
+    wrapper.className = "form-group d-flex align-items-center gap-2 mb-2";
+
+    // Input file
     const input = document.createElement("input");
     input.type = "file";
     input.name = "gallery[images][]";
-    // Limite la sélection aux fichiers image uniquement
     input.accept = "image/*";
-    // Ajoute ce champ dans l’élément HTML qui a le data-gallery-upload-target="container"
-    this.containerTarget.appendChild(input);
+    input.className = "form-control";
+
+    // Bouton supprimer la ligne ajoutée
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = "btn btn-outline-danger btn-sm";
+    remove.innerHTML = '<i class="fas fa-times"></i>';
+    remove.addEventListener("click", () => wrapper.remove());
+
+    wrapper.appendChild(input);
+    wrapper.appendChild(remove);
+    this.containerTarget.appendChild(wrapper);
+
+    input.focus();
   }
 }

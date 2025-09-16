@@ -1,39 +1,133 @@
-<%= simple_form_for [:admin, @gallery], html: { multipart: true } do |f| %>
-  <%= f.input :title, label: "Titre de la galerie" %>
-  <%= f.input :date, as: :date, label: "Date de la galerie" %>
-
-  <%# Bloc Stimulus : ajout dynamique de champs fichier pour ajouter des nouvelles images %>
-  <div data-controller="gallery-upload">
-    <div id="file-inputs" data-gallery-upload-target="container">
-      <div class="form-group mb-2">
-        <label>Ajouter une image</label>
-        <input type="file" name="gallery[images][]" accept="image/*" class="form-control">
-      </div>
+<%# ====== BANNERS ====== %>
+<% if @gallery.new_record? %>
+  <!-- Cas 1 : nouvelle galerie -->
+  <section class="profile-user banner-dashboard">
+    <div class="container py-5 text-center">
+      <h1 class="display-5 fw-bold mb-0">Nouvelle galerie</h1>
     </div>
+  </section>
 
-    <button type="button"
-            class="btn btn-success mb-3"
-            data-action="click->gallery-upload#addInput">
-      Ajouter une autre image
-    </button>
-  </div>
-
-  <%# Affichage des images existantes uniquement si la galerie est save en DB et a des images attachées %>
-  <% if f.object.persisted? && f.object.images.attached? %>
-    <p>Images actuelles :</p>
-    <div class="row">
-      <% f.object.images.each do |image| %>
-        <div class="col-md-4 text-center mb-3">
-          <%# Affiche les images en miniature %>
-          <%= image_tag url_for(image), class: "img-thumbnail mb-2", style: "max-width: 300px;" %>
-
-          <%# Checkbox pour suppression %>
-          <%= check_box_tag "gallery[remove_images][]", image.id, false, id: "remove_image_#{image.id}" %>
-          <%= label_tag "remove_image_#{image.id}", "Supprimer cette image" %>
+<% elsif @gallery.images.attached? %>
+  <!-- Cas 2 : galerie existante avec au moins une image -->
+  <section class="banner-dashboard"
+    style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)),
+            url('<%= url_for(@gallery.images.first) %>');">
+    <div class="container py-5 text-center text-on-surface">
+      <h1 class="display-5 fw-bold mb-0"><%= @gallery.title %></h1>
+      <% if @gallery.date.present? %>
+        <div class="h6 fw-bold mt-2">
+          <i class="far fa-calendar-alt me-1"></i>
+          Le <%= l(@gallery.date, format: "%d %B %Y") %>
         </div>
       <% end %>
     </div>
-  <% end %>
+  </section>
 
-  <%= f.button :submit, "Valider", class: "btn btn-primary mt-3" %>
+<% else %>
+  <!-- Cas 3 : galerie existante sans image -->
+  <section class="profile-user banner-dashboard">
+    <div class="container py-5 text-center">
+      <h1 class="display-5 fw-bold mb-0"><%= @gallery.title %></h1>
+      <% if @gallery.date.present? %>
+        <div class="h6 fw-bold mt-2 text-on-surface">
+          <i class="far fa-calendar-alt me-1"></i>
+          Le <%= l(@gallery.date, format: "%d %B %Y") %>
+        </div>
+      <% end %>
+    </div>
+  </section>
 <% end %>
+
+<%# ====== FORM CARD ====== %>
+<div class="container d-flex justify-content-center align-items-start py-5">
+  <div class="card-signup shadow p-4 p-md-5 rounded-4 w-100">
+    <div class="d-flex justify-content-center mb-4">
+      <h2 class="text-center">
+        <strong>
+          <%= @gallery.new_record? ? "Formulaire de création" : "Formulaire de modification" %>
+        </strong>
+      </h2>
+    </div>
+
+    <%= simple_form_for [:admin, @gallery],
+      html: { multipart: true,
+              data: { controller: "persist-checks",
+                      "persist-checks-gallery-id-value": @gallery.id } } do |f| %>
+
+      <%= f.error_notification %>
+
+      <!-- Infos principales -->
+      <div class="row g-3">
+        <div class="col-md-6">
+          <%= f.input :title, label: "Titre de la galerie" %>
+        </div>
+        <div class="col-md-6">
+          <%= f.input :date, as: :date, label: "Date de la galerie" %>
+        </div>
+      </div>
+
+      <!-- Images -->
+      <fieldset class="form-section my-4">
+        <legend class="section-title">
+          <i class="fas fa-images me-2"></i>Images
+        </legend>
+
+        <%# Bloc Stimulus : ajout dynamique de champs fichier %>
+        <div data-controller="gallery-upload">
+          <div id="file-inputs" data-gallery-upload-target="container" class="d-grid gap-2">
+            <div class="form-group">
+              <label class="form-label">Ajouter une image</label>
+              <input type="file" name="gallery[images][]" accept="image/*" class="form-control">
+            </div>
+          </div>
+
+          <button type="button"
+                  class="btn-nxr btn-sm d-inline-flex align-items-center mt-4"
+                  data-action="click->gallery-upload#addInput">
+            <i class="fas fa-plus me-2"></i>Ajouter une autre image
+          </button>
+        </div>
+
+        <%# Affichage des images existantes (paginées si @images est défini) %>
+        <% if f.object.persisted? && f.object.images.attached? %>
+          <div class="border-top pt-3 mt-3">
+            <p class="mb-3 fw-bold">Images actuelles :</p>
+
+            <%# on utilise @images si le controller l’a préparé, sinon fallback sur toutes les images %>
+            <% images_collection = (defined?(@images) && @images.present?) ? @images : f.object.images %>
+
+            <div id="images" class="row g-3">
+              <% images_collection.each do |image| %>
+                <div class="col-sm-6 col-md-4">
+                  <article class="card card-admin shadow-sm rounded-4 h-100">
+                    <div class="ratio ratio-4x3 bg-dark">
+                      <%= image_tag url_for(image), class: "card-img-top object-cover", alt: f.object.title %>
+                    </div>
+                    <div class="card-body p-3">
+                      <div class="form-check">
+                        <%= check_box_tag "gallery[remove_images][]", image.id, false,
+                                          id: "remove_image_#{image.id}",
+                                          class: "form-check-input" %>
+                        <%= label_tag "remove_image_#{image.id}", "Supprimer cette image", class: "form-check-label" %>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+              <% end %>
+            </div>
+
+            <%# Pagination (avec ancre) si @images est une collection paginée %>
+            <% if defined?(@images) && @images.respond_to?(:total_pages) && @images.total_pages > 1 %>
+              <%= render "shared/pagination", paginated: @images, anchor: "images" %>
+            <% end %>
+          </div>
+        <% end %>
+      </fieldset>
+
+      <!-- Submit -->
+      <div class="d-grid mt-4">
+        <%= f.button :submit, "Valider", class: "btn-nxr btn-lg" %>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -1,4 +1,5 @@
 <% if defined?(paginated) && paginated.respond_to?(:total_pages) && paginated.total_pages > 1 %>
+  <% qp = request.query_parameters %>
   <nav class="mt-5">
     <ul class="pagination justify-content-center flex-wrap gap-2">
 
@@ -9,7 +10,8 @@
         </li>
       <% else %>
         <li class="page-item">
-          <%= link_to url_for(page: 1), class: "page-link btn-nxr", title: "Première page" do %>
+          <%= link_to url_for(qp.merge(page: 1, anchor: (defined?(anchor) ? anchor : nil))),
+                      class: "page-link btn-nxr", title: "Première page" do %>
             <i class="fas fa-angle-double-left"></i>
           <% end %>
         </li>
@@ -18,7 +20,8 @@
       <%# Page précédente %>
       <% if paginated.prev_page %>
         <li class="page-item">
-          <%= link_to url_for(page: paginated.prev_page), class: "page-link btn-nxr", title: "Page précédente" do %>
+          <%= link_to url_for(qp.merge(page: paginated.prev_page, anchor: (defined?(anchor) ? anchor : nil))),
+                      class: "page-link btn-nxr", title: "Page précédente" do %>
             <i class="fas fa-angle-left"></i>
           <% end %>
         </li>
@@ -28,7 +31,7 @@
         </li>
       <% end %>
 
-      <%# Pages numérotées %>
+      <%# Pages numérotées (fenêtre autour de la page courante) %>
       <% (paginated.current_page - 2..paginated.current_page + 2).each do |page_number| %>
         <% next if page_number < 1 || page_number > paginated.total_pages %>
 
@@ -38,7 +41,9 @@
           </li>
         <% else %>
           <li class="page-item">
-            <%= link_to page_number, url_for(page: page_number), class: "page-link btn-nxr" %>
+            <%= link_to page_number,
+                        url_for(qp.merge(page: page_number, anchor: (defined?(anchor) ? anchor : nil))),
+                        class: "page-link btn-nxr" %>
           </li>
         <% end %>
       <% end %>
@@ -46,7 +51,8 @@
       <%# Page suivante %>
       <% if paginated.next_page %>
         <li class="page-item">
-          <%= link_to url_for(page: paginated.next_page), class: "page-link btn-nxr", title: "Page suivante" do %>
+          <%= link_to url_for(qp.merge(page: paginated.next_page, anchor: (defined?(anchor) ? anchor : nil))),
+                      class: "page-link btn-nxr", title: "Page suivante" do %>
             <i class="fas fa-angle-right"></i>
           <% end %>
         </li>
@@ -59,7 +65,8 @@
       <%# Dernière page %>
       <% unless paginated.last_page? %>
         <li class="page-item">
-          <%= link_to url_for(page: paginated.total_pages), class: "page-link btn-nxr", title: "Dernière page" do %>
+          <%= link_to url_for(qp.merge(page: paginated.total_pages, anchor: (defined?(anchor) ? anchor : nil))),
+                      class: "page-link btn-nxr", title: "Dernière page" do %>
             <i class="fas fa-angle-double-right"></i>
           <% end %>
         </li>
