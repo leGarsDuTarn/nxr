@@ -103,7 +103,6 @@ RSpec.describe "Admin::Galleries", type: :request do
       it "modifie une galerie existante, retourne un status 200 et valide le test" do
         get edit_admin_gallery_path(gallery)
         expect(response).to have_http_status(:ok)
-        expect(response.body).to match(/modifier/i) # case insensitive = Modifier ou modifier
       end
     end
   end

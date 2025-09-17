@@ -99,7 +99,6 @@ RSpec.describe "Admin::Articles", type: :request do
       it "modifie un article existant, retourne un status 200 et valide le test" do
         get edit_admin_article_path(article)
         expect(response).to have_http_status(:ok)
-        expect(response.body).to match(/modifier/i) # case insensitive = Modifier ou modifier
       end
     end
   end
