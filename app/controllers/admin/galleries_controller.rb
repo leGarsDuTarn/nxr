@@ -16,11 +16,10 @@ module Admin
     end
 
     def create
-      @gallery = Gallery.new(gallery_params.except(:images, :remove_images))
+      @gallery = Gallery.new(gallery_params.except(:remove_images))  # <= on laisse :images
       @gallery.user = current_user
 
       if @gallery.save
-        @gallery.images.attach(gallery_params[:images]) if gallery_params[:images].present?
         redirect_to admin_gallery_path(@gallery), notice: "Galerie créée avec succès"
       else
         render :new, status: :unprocessable_entity, alert: "Erreur lors de la création de la galerie"
@@ -32,18 +31,14 @@ module Admin
     end
 
     def update
-      # 1) Purge des images cochées (si présentes)
       if params[:gallery][:remove_images].present?
         @gallery.images.where(id: params[:gallery][:remove_images]).each(&:purge_later)
       end
 
-      # 2) Met à jour les autres champs (sans images)
-      if @gallery.update(gallery_params.except(:images, :remove_images))
-        # 3) Append des nouvelles images (ne touche pas aux existantes)
-        @gallery.images.attach(gallery_params[:images]) if gallery_params[:images].present?
+      if @gallery.update(gallery_params.except(:images, :remove_images))  # <= on exclut :images en update
+        @gallery.images.attach(gallery_params[:images]) if gallery_params[:images].present? # append
         redirect_to admin_gallery_path(@gallery), notice: "Modification réussie"
       else
-        # Recharger la pagination avant de réafficher le formulaire
         prepare_images_page
         render :edit, status: :unprocessable_entity, alert: "Erreur lors de la modification"
       end
