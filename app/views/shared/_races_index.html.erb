@@ -39,21 +39,19 @@
   <% if has_items %>
     <div class="row g-4">
       <% registerables.each do |item| %>
-        <div class="col-sm-6 col-lg-4 mx-auto">
-          <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+        <div class="col-sm-6 col-lg-4 d-flex flex-column mx-auto">
+          <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden position-relative">
             <div class="ratio ratio-4x3 bg-dark">
               <% if item.respond_to?(:image) && item.image.attached? %>
                 <%= image_tag registerable_image_url(item),
-                  class: "card-img-top object-cover",
-                  alt: item.name %>
+                      class: "card-img-top object-cover",
+                      alt: item.name %>
               <% else %>
                 <%= image_tag registerable_image_url(item),
-                  class: "card-img-top object-contain p-3",
-                  alt: item.name %>
+                      class: "card-img-top object-contain p-3",
+                      alt: item.name %>
               <% end %>
             </div>
-
-
 
             <div class="card-body d-flex flex-column">
               <h3 class="h6 fw-bold mb-2"><%= item.name %></h3>
@@ -66,29 +64,14 @@
               <% end %>
 
               <p class="small flex-grow-1">
-                <%= truncate(item.description, length: 100, separator: ' ') %>
+                <%= truncate(item.description.to_s, length: 100, separator: ' ') %>
               </p>
 
               <div class="mt-auto d-flex justify-content-between align-items-center">
-                <%= link_to [:admin, item],
-                      class: "stretched-link text-decoration-none text-color-primary small me-2" do %>
-                  <i class="fas fa-arrow-right me-1"></i> Voir la fiche
+                <%= link_to [:public, item],
+                      class: "stretched-link btn-nxr small me-2" do %>
+                  <i class="fas fa-search me-1"></i> Voir la fiche
                 <% end %>
-
-                <div class="btn-toolbar gap-2">
-                  <%= link_to [:edit, :admin, item],
-                        class: "btn btn-icon btn-edit-orange",
-                        title: "Modifier #{item.name}" do %>
-                    <i class="fas fa-edit"></i>
-                  <% end %>
-
-                  <%= link_to [:admin, item],
-                        data: { turbo_method: :delete, turbo_confirm: "Supprimer #{item.name} ?" },
-                        class: "btn btn-icon btn-delete-red",
-                        title: "Supprimer #{item.name}" do %>
-                    <i class="fas fa-trash"></i>
-                  <% end %>
-                </div>
               </div>
             </div>
           </article>
@@ -97,7 +80,6 @@
     </div>
 
     <%= render "shared/pagination", pagy_object: pagy if defined?(pagy) %>
-
   <% else %>
     <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
       <div class="mb-3"><i class="fas fa-inbox fa-3x"></i></div>
