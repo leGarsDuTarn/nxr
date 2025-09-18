@@ -36,3 +36,59 @@
   .carousel-nav { display: none; }
   .gallery-item { width: 80%; } /* items plus larges en mobile */
 }
+
+
+/* ===================== */
+/* === Carousel Home === */
+/* ===================== */
+
+/* Carrousel "home" (classes isolées, pas de conflit Bootstrap) */
+.home-carousel {
+  position: relative;
+}
+
+.home-carousel__track {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: .25rem;
+}
+
+.home-carousel__item {
+  scroll-snap-align: start;
+  flex: 0 0 auto;
+  width: 300px;                 /* desktop par défaut */
+}
+
+/* Flèches flottantes */
+.home-carousel__nav {
+  position: absolute;
+  top: 42%;
+  transform: translateY(-50%);
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(0,0,0,.6);
+  color: $on-surface;
+  border: 0;
+  font-size: 28px;
+  display: grid; place-items: center;
+  z-index: 5;
+  cursor: pointer;
+  transition: background .2s ease;
+}
+.home-carousel__nav:hover { background: rgba(0,0,0,.8); }
+.home-carousel__nav--prev { left: -60px; }
+.home-carousel__nav--next { right: -60px; }
+
+/* Mobile : items plus larges, on masque les flèches (swipe natif) */
+@media (max-width: 575.98px) {
+  .home-carousel__item { width: 80%; }
+  .home-carousel__nav { display: none; }
+}
+
+/* Option tablette : items un peu plus larges */
+@media (min-width: 576px) and (max-width: 991.98px) {
+  .home-carousel__item { width: 360px; }
+}

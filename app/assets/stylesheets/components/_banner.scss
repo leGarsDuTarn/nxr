@@ -1,25 +1,3 @@
-.banner {
-  background-size: cover;
-  background-position: center;
-  padding: 150px 0;
-}
-
-.banner h1 {
-  margin: 0;
-  color: $on-surface;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-  font-size: 32px;
-  font-weight: bold;
-}
-
-.banner p {
-  font-size: 20px;
-  color: $on-surface;
-  opacity: .7;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-}
-
-// Banner homepage
 .banner-hp {
   background-size: cover;
   background-position: center top;
@@ -27,21 +5,51 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;   // par défaut centré (mobile)
+  align-items: center;   // mobile centré
   text-align: center;
+
+  position: relative;    // <-- essentiel pour le ::after
+  z-index: 0;            // crée un contexte empilé
+
+  /* Liseré vert en haut */
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    pointer-events: none;
+    z-index: 1; // au-dessus du background
+
+    /* si c'était trop discret, on peut renforcer l’opacité */
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba($color-primary, 0.5) 15%,
+      rgba($color-primary, 0.9) 50%,
+      rgba($color-primary, 0.5) 85%,
+      transparent 100%
+    );
+  }
+
+  /* --- Bordures sobres --- */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  /* --- Ombre douce pour donner du relief --- */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  /* --- Padding confortable (responsive avec clamp si tu veux) --- */
+  padding: 2rem 1.5rem;
+
+  /* --- Coins arrondis en bas pour casser la rigidité --- */
+  border-radius: 0 0 1rem 1rem;
 }
 
 @media (min-width: 992px) {
   .banner-hp {
     align-items: flex-start; // aligne à gauche
     text-align: left;
-    padding-left: 60px;      // petit décalage depuis le bord
+    padding-left: 60px;
   }
-  .banner-hp p {
-  font-size: 20px;
-  color: $on-surface;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-}
 }
 
 .banner-hp h1 {
@@ -57,6 +65,7 @@
   color: $on-surface;
   text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
 }
+
 
 // Banner dashboard
 .banner-dashboard {

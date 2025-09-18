@@ -1,0 +1,170 @@
+<% if registerable.respond_to?(:image) && registerable.image.attached? %>
+  <!-- Cas 1 : existant avec image -->
+  <section class="banner-dashboard"
+    style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url('<%= banner_image_url(registerable) %>');">
+    <div class="container py-5 text-center">
+      <h1 class="display-5 fw-bold mb-0"><%= registerable.name %></h1>
+      <% if registerable.respond_to?(:date) && registerable.date.present? %>
+          <div class=" w-bold mt-2 text-on-surface">
+            <i class="far fa-calendar-alt me-1"></i>
+            <%= l(registerable.date, format: "%d %B %Y") %>
+          </div>
+        <% end %>
+    </div>
+  </section>
+
+<% else %>
+  <!-- Cas 2 : existant sans image -->
+  <section class="profile-user banner-dashboard">
+    <div class="container py-5 text-center">
+      <h1 class="display-5 fw-bold mb-0"><%= registerable.name %></h1>
+      <% if registerable.respond_to?(:date) && registerable.date.present? %>
+          <div class="fw-bold mt-2 text-on-surface">
+            <i class="far fa-calendar-alt me-1"></i>
+            <%= l(registerable.date, format: "%d %B %Y") %>
+          </div>
+        <% end %>
+    </div>
+  </section>
+<% end %>
+
+<section class="container my-5">
+  <!-- Barre d’actions -->
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <h2 class="section-title mb-0">
+      <i class="fa-solid fa-list-check"></i> Fiche d'escriptive
+    </h2>
+  </div>
+
+  <div class="row g-4">
+    <!-- Colonne gauche -->
+    <div class="col-lg-4">
+      <article class="card card-admin shadow-sm rounded-4 h-100">
+        <div class="card-body small">
+          <h3 class="h6 fw-bold mb-3"><i class="fa-solid fa-euro-sign me-2"></i>Tarifs</h3>
+
+          <div class="vstack gap-2">
+            <% if registerable.respond_to?(:club_member_price) %>
+              <div><strong>Tarif adhérent :</strong>
+                <%= number_to_currency(registerable.club_member_price, unit: "€", format: "%n %u") %>
+              </div>
+              <div><strong>Tarif non adhérent :</strong>
+                <%= number_to_currency(registerable.non_club_member_price, unit: "€", format: "%n %u") %>
+              </div>
+            <% end %>
+
+            <!-- Infos club -->
+            <% if Club.first.present? %>
+              <% club = Club.first %>
+              <hr>
+              <h3 class="h6 fw-bold mb-3"><i class="fa-solid fa-circle-info me-2"></i>Informations</h3>
+              <p class="mb-1"><strong><%= club.name %></strong></p>
+
+              <% if club.address.present? %>
+                <p class="small mb-1"><i class="fas fa-map-marker-alt me-1"></i> <%= club.address %>, <%= club.post_code %> <%= club.town %></p>
+              <% end %>
+
+              <% if club.phone_number.present? %>
+                <p class="small mb-1"><i class="fas fa-phone me-1"></i> <%= club.phone_number %></p>
+              <% end %>
+
+              <% if club.email.present? %>
+                <p class="small mb-1"><i class="fas fa-envelope me-1"></i> <%= mail_to club.email %></p>
+              <% end %>
+
+              <% if club.address.present? && club.town.present? %>
+                <div class="ratio ratio-4x3 mt-2">
+                  <iframe
+                    src="https://www.google.com/maps?q=<%= CGI.escape("#{club.address}, #{club.post_code} #{club.town}") %>&output=embed"
+                    width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" class="rounded-4">
+                  </iframe>
+                </div>
+              <% end %>
+            <% end %>
+
+            <!-- Statut -->
+            <% if registerable.respond_to?(:status) && registerable.status.present? %>
+              <% status_badge =
+                   case registerable.status.to_s
+                   when "published","open" then "badge-validated"
+                   when "closed","archived" then "badge-rejected"
+                   else "badge-pending"
+                   end %>
+              <div><strong>Statut :</strong>
+                <span class="badge rounded-pill <%= status_badge %>"><%= registerable.status.to_s.humanize %></span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- Colonne droite -->
+    <div class="col-lg-8">
+      <!-- Description -->
+      <article class="card card-admin shadow-sm rounded-4 mb-4">
+        <div class="card-body">
+          <h3 class="h6 fw-bold mb-3"><i class="far fa-file-alt me-2"></i>Description</h3>
+          <div>
+            <%= simple_format(registerable.description.presence || "Aucune description fournie.") %>
+          </div>
+        </div>
+      </article>
+
+      <!-- Inscriptions -->
+<article class="card card-admin shadow-sm rounded-4">
+  <div class="card-body">
+    <% validated_scope =
+         if registerable.registrations.respond_to?(:validated)
+           registerable.registrations.validated
+         else
+           registerable.registrations.where(status: :validated) # ou "validated" selon ton enum
+         end %>
+
+    <% validated_count = validated_scope.count %>
+    <% registrations = validated_scope.includes(:user).limit(3) %>
+
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h3 class="h6 fw-bold mb-0">
+        <i class="fas fa-user-check me-2"></i> Inscriptions validées
+      </h3>
+      <span class="badge rounded-pill"><%= validated_count %></span>
+    </div>
+
+    <% if validated_count.zero? %>
+            <div class="text-center py-4">
+              <i class="far fa-clipboard fa-2x mb-2"></i>
+              <p class="mb-0">Aucune inscription pour le moment.</p>
+            </div>
+          <% else %>
+            <% registrations = registerable.registrations.includes(:user).limit(3) %>
+            <div class="row g-3">
+              <% registrations.each do |registration| %>
+                <% user = registration.user %>
+                <div class="col-md-6 col-xl-4">
+                  <article class="card shadow-sm rounded-4 h-100">
+                    <div class="card-body d-flex align-items-center gap-3 position-relative">
+                      <% if user.avatar.attached? %>
+                        <%= image_tag user.avatar, class: "rounded-circle", width: 50, height: 50, alt: "#{user.first_name} #{user.last_name}", style: "object-fit:cover;" %>
+                      <% else %>
+                        <%= image_tag "avatar_default.jpg", class: "rounded-circle", width: 50, height: 50, alt: "#{user.first_name} #{user.last_name}", style: "object-fit:contain;background:rgba(0,0,0,.05);" %>
+                      <% end %>
+
+                      <div class="flex-grow-1">
+                        <div class="fw-bold small"><%= user.first_name %> <%= user.last_name %></div>
+                        <div class="text-muted tiny">
+                          <i class="far fa-clock me-1"></i>
+                          <%= l(registration.created_at, format: :short) %>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>

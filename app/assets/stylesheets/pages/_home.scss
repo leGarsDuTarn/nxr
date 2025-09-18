@@ -1,1 +1,17 @@
 
+/* Par défaut (desktop/tablette) : aligné à gauche 
+
+/* Mobile-first: centrer les textes et CTA en <576px */
+@media (max-width: 575.98px) {
+  .home-hero {
+    text-align: center !important;            /* titre + sous-titre */
+  }
+  .home-hero-cta {
+    justify-content: center !important;       /* boutons */
+  }
+
+  /* Titres de sections en mobile */
+  .home-section > h2 {
+    text-align: center !important;
+  }
+}
