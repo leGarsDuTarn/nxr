@@ -5,7 +5,7 @@ module Public
     end
 
     def show
-      @gallerie = Gallery.find(params[:id])
+      @gallery = Gallery.find(params[:id])
     end
   end
 end
