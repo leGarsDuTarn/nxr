@@ -1,0 +1,134 @@
+
+/* Largeur bornée (corrigée Sass) */
+.lightbox-modal .modal-dialog {
+  max-width: clamp(0px, 96vw, 1200px);
+}
+
+/* Verre dépoli + ombre + CONTRAINTE DE TAILLE */
+.lightbox-modal .modal-content.glassy {
+  background: rgba(8,12,16,.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  border: 1px solid rgba(255,255,255,.06);
+  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+
+  /* Empêche tout dépassement vertical du viewport */
+  display: flex;
+  flex-direction: column;
+  max-height: 92vh;
+}
+
+/* Le body occupe l’espace flexible entre header et footer */
+.lightbox-modal .modal-body {
+  flex: 1 1 auto;
+  padding: 0;
+  overflow: hidden; /* pas de scroll parasite */
+}
+
+.dot-sep::before {
+  content: "•";
+  margin: 0 .4rem;
+  opacity: .5;
+  color: #fff;
+}
+
+/* Cadre image – prend 100% de la hauteur dispo du body */
+.lightbox-frame {
+  position: relative;
+  width: 100%;
+  height: 100%; /* au lieu d’une valeur fixe */
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,.02);
+}
+
+/* L’image reste TOUJOURS contenue, sans dépasser ni rogner */
+.lightbox-image {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 12px 36px rgba(0,0,0,.45);
+}
+
+/* (Optionnel) Aspect-ratio constant 16:9 – look très stable */
+/*
+.lightbox-frame {
+  aspect-ratio: 16 / 9;
+  height: auto; /* laisse l’aspect-ratio gérer la hauteur */
+/*  max-height: calc(92vh - 96px); /* marge si header/footer volumineux */
+/*}
+*/
+
+/* Dégradés lisibilité (titre/caption) */
+.lightbox-gradient {
+  position: absolute;
+  left: 0; right: 0;
+  height: 88px;
+  z-index: 2;
+  pointer-events: none;
+}
+.lightbox-gradient.top {
+  top: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,0));
+}
+.lightbox-gradient.bottom {
+  bottom: 0;
+  background: linear-gradient(0deg, rgba(0,0,0,.35), rgba(0,0,0,0));
+}
+
+/* Nav flèches */
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px; height: 44px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.25);
+  color: #fff; font-size: 28px; line-height: 1;
+  z-index: 3; cursor: pointer; user-select: none;
+  backdrop-filter: blur(6px);
+  transition: background .2s ease, transform .1s ease;
+}
+.lightbox-prev { left: 16px; }
+.lightbox-next { right: 16px; }
+.lightbox-nav:hover  { background: rgba(255,255,255,.2); }
+.lightbox-nav:active { transform: translateY(-50%) scale(.96); }
+
+/* Compteur */
+.lightbox-counter {
+  position: absolute;
+  bottom: 12px; left: 50%;
+  transform: translateX(-50%);
+  padding: .35rem .6rem;
+  border-radius: 999px;
+  font-size: .85rem;
+  color: #fff; z-index: 3;
+  background: rgba(0,0,0,.35);
+  border: 1px solid rgba(255,255,255,.18);
+}
+
+/* Close bouton */
+.btn-close.btn-close-white {
+  filter: invert(1) grayscale(100%);
+  opacity: .85;
+  transition: opacity .2s;
+}
+.btn-close.btn-close-white:hover { opacity: 1; }
+
+/* Backdrop renforcé */
+.modal-backdrop.show { opacity: .9; }
+
+/* Responsive */
+@media (max-width: 576px) {
+  .lightbox-modal .modal-header,
+  .lightbox-modal .modal-footer {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  .lightbox-nav { width: 40px; height: 40px; font-size: 24px; }
+}

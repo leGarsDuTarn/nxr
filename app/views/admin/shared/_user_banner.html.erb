@@ -3,7 +3,7 @@
 <section class="profile-user banner-dashboard">
   <div class="container py-5 text-center text-on-surface">
     <div class="d-flex flex-column align-items-center">
-      
+
       <div class="avatar-wrapper mb-3">
         <% if @user.avatar.attached? %>
           <%= image_tag @user.avatar, class: "rounded-circle shadow avatar-lg", alt: "#{@user.first_name} #{@user.last_name}" %>
