@@ -5,17 +5,17 @@ class PagesController < ApplicationController
     # Permet d'afficher les événements à venir
     races = Race.where("date >= ?", Date.today)
                 .order(:date)
-                .limit(1)
+                .limit(3)
                 .select("id, name, date, 'Race' as type")
 
     events = Event.where("date >= ?", Date.today)
                   .order(:date)
-                  .limit(1)
+                  .limit(3)
                   .select("id, name, date, 'Event' as type")
 
     trainings = Training.where("date >= ?", Date.today)
                         .order(:date)
-                        .limit(1)
+                        .limit(3)
                         .select("id, name, date, 'Training' as type")
 
     @upcoming_activities = (races + events + trainings)

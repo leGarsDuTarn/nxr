@@ -18,54 +18,61 @@
   </h2>
 
   <% if @upcoming_activities.present? %>
-    <div class="row g-4">
-      <% @upcoming_activities.each do |activity| %>
-        <div class="col-sm-6 col-lg-4 mx-auto">
-          <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+    <div class="home-carousel" data-controller="home-carousel" data-home-carousel-step-value="item">
+      <button type="button" class="home-carousel__nav home-carousel__nav--prev"
+              data-action="click->home-carousel#prev" aria-label="Précédent">‹</button>
+      <button type="button" class="home-carousel__nav home-carousel__nav--next"
+              data-action="click->home-carousel#next" aria-label="Suivant">›</button>
 
-            <!-- Image top -->
-            <div class="ratio ratio-4x3 bg-dark">
-              <% if activity.respond_to?(:image) && activity.image.attached? %>
-                <%= image_tag activity.image,
-                      class: "card-img-top object-cover",
-                      alt: activity.name %>
-              <% else %>
-                <% default_image =
-                  case activity.type
-                  when "Race"     then "race_flag.png"
-                  when "Training" then "training_img.png"
-                  when "Event"    then "logo_mcnc_3.png"
-                  else "logo_mcnc_3.png"
-                  end %>
-                <%= image_tag default_image,
-                      class: "card-img-top object-contain p-3",
-                      alt: activity.name %>
-              <% end %>
-            </div>
+      <div class="home-carousel__track" data-home-carousel-target="track">
+        <% @upcoming_activities.each do |activity| %>
+          <div class="home-carousel__item">
+            <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
 
-            <!-- Body -->
-            <div class="card-body d-flex flex-column">
-              <h3 class="h6 fw-bold mb-2"><%= activity.name %></h3>
+              <!-- Image top -->
+              <div class="ratio ratio-4x3 bg-dark">
+                <% if activity.respond_to?(:image) && activity.image.attached? %>
+                  <%= image_tag activity.image,
+                        class: "card-img-top object-cover",
+                        alt: activity.name %>
+                <% else %>
+                  <% default_image =
+                    case activity.type
+                    when "Race"     then "race_flag.png"
+                    when "Training" then "training_img.png"
+                    when "Event"    then "logo_mcnc_3.png"
+                    else "logo_mcnc_3.png"
+                    end %>
+                  <%= image_tag default_image,
+                        class: "card-img-top object-contain p-3",
+                        alt: activity.name %>
+                <% end %>
+              </div>
 
-              <% if activity.respond_to?(:date) && activity.date.present? %>
-                <p class="text-tertiary small mb-2">
-                  <i class="far fa-calendar-alt me-1"></i>
-                  <%= l(activity.date, format: :long) %>
-                </p>
-              <% end %>
+              <!-- Body -->
+              <div class="card-body d-flex flex-column">
+                <h3 class="h6 fw-bold mb-2"><%= activity.name %></h3>
 
-              <%# lien qui rend la card cliquable %>
-              <% view_path =
-                  case activity.type
-                  when "Race"     then public_race_path(activity.id)
-                  when "Event"    then public_event_path(activity.id)
-                  when "Training" then public_training_path(activity.id)
-                  end %>
-              <%= link_to "", view_path, class: "stretched-link text-decoration-none text-color-primary small" %>
-            </div>
-          </article>
-        </div>
-      <% end %>
+                <% if activity.respond_to?(:date) && activity.date.present? %>
+                  <p class="text-tertiary small mb-2">
+                    <i class="far fa-calendar-alt me-1"></i>
+                    <%= l(activity.date, format: :long) %>
+                  </p>
+                <% end %>
+
+                <%# lien qui rend la card cliquable %>
+                <% view_path =
+                    case activity.type
+                    when "Race"     then public_race_path(activity.id)
+                    when "Event"    then public_event_path(activity.id)
+                    when "Training" then public_training_path(activity.id)
+                    end %>
+                <%= link_to "", view_path, class: "stretched-link text-decoration-none text-color-primary small" %>
+              </div>
+            </article>
+          </div>
+        <% end %>
+      </div>
     </div>
   <% else %>
     <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
@@ -82,33 +89,38 @@
   </h2>
 
   <% if @articles.present? %>
-    <div class="row g-4">
-      <% @articles.each do |article| %>
-        <div class="col-sm-6 col-lg-4 mx-auto">
-          <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+    <div class="home-carousel" data-controller="home-carousel" data-home-carousel-step-value="item">
+      <button type="button" class="home-carousel__nav home-carousel__nav--prev"
+              data-action="click->home-carousel#prev" aria-label="Précédent">‹</button>
+      <button type="button" class="home-carousel__nav home-carousel__nav--next"
+              data-action="click->home-carousel#next" aria-label="Suivant">›</button>
 
-            <!-- Image top -->
-            <div class="ratio ratio-4x3 bg-dark">
-              <%= image_tag(article.image.attached? ? article.image : "default_article.jpeg",
-                    class: "card-img-top object-cover",
-                    alt: article.title) %>
-            </div>
+      <div class="home-carousel__track" data-home-carousel-target="track">
+        <% @articles.each do |article| %>
+          <div class="home-carousel__item">
+            <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
 
-            <!-- Body -->
-            <div class="card-body d-flex flex-column">
-              <h3 class="h6 fw-bold mb-2"><%= article.title %></h3>
-              <p class="text-tertiary small mb-2">
-                Publié le <%= l(article.created_at.to_date, format: :long) %>
-              </p>
-              <%# Optionnel: un petit extrait si tu as du contenu %>
-              <%# <p class="small flex-grow-1"><%= truncate(article.body_plain, length: 100, separator: ' ') %></p> %>
+              <!-- Image top -->
+              <div class="ratio ratio-4x3 bg-dark">
+                <%= image_tag(article.image.attached? ? article.image : "default_article.jpeg",
+                      class: "card-img-top object-cover",
+                      alt: article.title) %>
+              </div>
 
-              <%= link_to "", public_article_path(article),
-                    class: "stretched-link text-decoration-none text-color-primary small" %>
-            </div>
-          </article>
-        </div>
-      <% end %>
+              <!-- Body -->
+              <div class="card-body d-flex flex-column">
+                <h3 class="h6 fw-bold mb-2"><%= article.title %></h3>
+                <p class="text-tertiary small mb-2">
+                  Publié le <%= l(article.created_at.to_date, format: :long) %>
+                </p>
+
+                <%= link_to "", public_article_path(article),
+                      class: "stretched-link text-decoration-none text-color-primary small" %>
+              </div>
+            </article>
+          </div>
+        <% end %>
+      </div>
     </div>
   <% else %>
     <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
@@ -125,37 +137,44 @@
   </h2>
 
   <% if @galleries.present? %>
-    <div class="row g-4">
-      <% @galleries.each do |gallery| %>
-        <div class="col-sm-6 col-lg-4 mx-auto">
-          <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+    <div class="home-carousel" data-controller="home-carousel" data-home-carousel-step-value="item">
+      <button type="button" class="home-carousel__nav home-carousel__nav--prev"
+              data-action="click->home-carousel#prev" aria-label="Précédent">‹</button>
+      <button type="button" class="home-carousel__nav home-carousel__nav--next"
+              data-action="click->home-carousel#next" aria-label="Suivant">›</button>
 
-            <!-- Image top -->
-            <div class="ratio ratio-4x3 bg-dark">
-              <% if gallery.images.attached? %>
-                <%= image_tag gallery.images.first,
-                      class: "card-img-top object-cover",
-                      alt: gallery.title %>
-              <% else %>
-                <%= image_tag "logo_mcnc_3.png",
-                      class: "card-img-top object-contain p-3",
-                      alt: gallery.title %>
-              <% end %>
-            </div>
+      <div class="home-carousel__track" data-home-carousel-target="track">
+        <% @galleries.each do |gallery| %>
+          <div class="home-carousel__item">
+            <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
 
-            <!-- Body -->
-            <div class="card-body d-flex flex-column">
-              <h3 class="h6 fw-bold mb-2"><%= gallery.title %></h3>
-              <p class="text-tertiary small mb-2">
-                Publié le <%= l(gallery.created_at.to_date, format: :long) %>
-              </p>
+              <!-- Image top -->
+              <div class="ratio ratio-4x3 bg-dark">
+                <% if gallery.images.attached? %>
+                  <%= image_tag gallery.images.first,
+                        class: "card-img-top object-cover",
+                        alt: gallery.title %>
+                <% else %>
+                  <%= image_tag "logo_mcnc_3.png",
+                        class: "card-img-top object-contain p-3",
+                        alt: gallery.title %>
+                <% end %>
+              </div>
 
-              <%= link_to "", public_gallery_path(gallery),
-                    class: "stretched-link text-decoration-none text-color-primary small" %>
-            </div>
-          </article>
-        </div>
-      <% end %>
+              <!-- Body -->
+              <div class="card-body d-flex flex-column">
+                <h3 class="h6 fw-bold mb-2"><%= gallery.title %></h3>
+                <p class="text-tertiary small mb-2">
+                  Publié le <%= l(gallery.created_at.to_date, format: :long) %>
+                </p>
+
+                <%= link_to "", public_gallery_path(gallery),
+                      class: "stretched-link text-decoration-none text-color-primary small" %>
+              </div>
+            </article>
+          </div>
+        <% end %>
+      </div>
     </div>
   <% else %>
     <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
