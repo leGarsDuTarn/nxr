@@ -53,9 +53,14 @@
                 <%= l(training.date, format: "%d %B %Y") %>
               </p>
 
-              <div class="mb-4 d-flex align-items-center justify-content-between">
+              <div class="mb-2 d-flex align-items-center justify-content-between">
                 <% count = training.registrations.size %>
                 <span>Inscription en cours : <%= count %></span>
+              </div>
+
+              <div class="mb-4 d-flex align-items-center justify-content-between">
+                <% count_validated = training.registrations.validated.size %>
+                <span>Inscription validée : <%= count_validated %></span>
               </div>
 
               <div class="mt-auto d-flex align-items-center justify-content-between">
