@@ -1,0 +1,38 @@
+/* Carrousel horizontal */
+.carousel-track {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 1rem; /* espace pour shadow */
+  gap: 1rem;
+}
+
+.gallery-item {
+  scroll-snap-align: start;
+  width: 300px;
+}
+
+/* Flèches flottantes */
+.carousel-nav {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(0,0,0,.6);
+  color: $on-surface;
+  border: none;
+  font-size: 28px;
+  display: grid; place-items: center;
+  z-index: 5;
+  cursor: pointer;
+  transition: background .2s;
+}
+.carousel-nav:hover { background: rgba(0,0,0,.8); }
+.carousel-nav.prev { left: -40px; }
+.carousel-nav.next { right: -40px; }
+
+/* Mobile : masque les flèches (swipe natif suffit) */
+@media (max-width: 576px) {
+  .carousel-nav { display: none; }
+  .gallery-item { width: 80%; } /* items plus larges en mobile */
+}
