@@ -1,0 +1,42 @@
+<div class="modal fade lightbox-modal" id="lightboxModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content border-0 shadow-2xl rounded-4 glassy">
+      <div class="modal-header border-0 align-items-start py-3 px-3 px-sm-4">
+        <div class="d-flex flex-column w-100">
+          <h5 class="modal-title text-white mb-1" data-lightbox-target="title"></h5>
+          <div class="d-flex align-items-center gap-2 small text-white-50">
+            <span class="badge bg-light bg-opacity-10 border border-light border-opacity-25 rounded-pill">
+              <i class="fa-regular fa-images me-1"></i> Aperçu
+            </span>
+          </div>
+        </div>
+        <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+
+      <div class="modal-body p-0 position-relative">
+        <!-- Overlays dégradés -->
+        <div class="lightbox-gradient top"></div>
+        <div class="lightbox-gradient bottom"></div>
+
+        <!-- Zone image -->
+        <div class="lightbox-frame">
+          <img data-lightbox-target="image" alt="" class="lightbox-image">
+        </div>
+
+        <!-- Boutons flottants -->
+        <button type="button"
+                class="lightbox-nav lightbox-prev"
+                aria-label="Image précédente"
+                data-action="lightbox#prev">‹</button>
+
+        <button type="button"
+                class="lightbox-nav lightbox-next"
+                aria-label="Image suivante"
+                data-action="lightbox#next">›</button>
+
+        <!-- Compteur -->
+        <div class="lightbox-counter" data-lightbox-target="counter" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+</div>

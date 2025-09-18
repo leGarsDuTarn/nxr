@@ -3,6 +3,8 @@ import { Controller } from "@hotwired/stimulus";
 // data-controller="gallery-upload"
 // data-gallery-upload-target="container"
 // data-gallery-upload-max-value="10"   (optionnel : limite)
+
+// Pour charger plusieurs photos dans le form de gallerie et eviter le rechergement de page.
 export default class extends Controller {
   static targets = ["container"];
   static values = { max: Number };
