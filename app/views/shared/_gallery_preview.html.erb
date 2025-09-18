@@ -1,0 +1,51 @@
+<section class="profile-user banner-dashboard">
+  <div class="container py-5 text-center">
+    <h1 class="display-5 fw-bold mb-0">Toutes les galeries</h1>
+    <p class="lead">Revivez les meilleurs moments du club en images</p>
+  </div>
+</section>
+
+<section class="container my-5">
+  <% has_galleries = galleries.present? %>
+
+  <% if has_galleries %>
+    <div class="row g-4">
+      <% galleries.each do |gallery| %>
+        <div class="col-sm-6 col-lg-4 mx-auto">
+          <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+            <div class="ratio ratio-4x3 bg-dark">
+              <% if gallery.images.attached? %>
+                <%= image_tag gallery.images.first, class: "card-img-top object-cover", alt: gallery.title %>
+              <% else %>
+                <%= image_tag "logo_mcnc_3.png", class: "card-img-top object-contain p-3", alt: gallery.title %>
+              <% end %>
+            </div>
+
+            <div class="card-body d-flex flex-column">
+              <h5 class="fw-bold mb-2">
+                <%= link_to gallery.title, public_gallery_path(gallery), class: "stretched-link text-decoration-none text-color-primary" %>
+              </h5>
+
+              <small class="text-tertiary d-block mb-2">
+                <i class="far fa-calendar-alt me-1"></i>
+                Publiée le <%= l(gallery.created_at.to_date, format: :long) %>
+              </small>
+
+              <div class="mt-2 d-flex align-items-center justify-content-between">
+                <%= link_to public_gallery_path(gallery), class: "btn-nxr" do %>
+                  <i class="fa-regular fa-images me-1"></i> Voir la galerie
+                <% end %>
+              </div>
+            </div>
+          </article>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
+      <div class="mb-3"><i class="far fa-image fa-3x"></i></div>
+      <h3 class="h5 fw-bold mb-2">Aucune galerie disponible</h3>
+      <p class="mb-0">Soyez le premier à partager vos plus belles photos 📷</p>
+    </div>
+  <% end %>
+</section>

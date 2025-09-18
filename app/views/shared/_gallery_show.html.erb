@@ -1,13 +1,12 @@
 
-<section class="admin-dashboard banner-dashboard">
-  <div class="container py-5 text-center text-white">
-    <h1 class="display-5 fw-bold mb-1"><i class="fas fa-flag-checkered me-2"></i><%= @gallery.title %></h1>
+<section class="profile-user banner-dashboard animate-in">
+  <div class="container py-5 text-center">
+    <h1 class="display-5 fw-bold mb-1"><%= @gallery.title %></h1>
     <p class="lead mb-0"><%= l(@gallery.date, format: :long) %></p>
   </div>
 </section>
 
 <div class="container my-5">
-  <% if @gallery.images.attached? %>
     <div class="row g-4">
       <% @gallery.images.each do |image| %>
         <div class="col-12 col-sm-6 col-md-4">
@@ -17,9 +16,4 @@
         </div>
       <% end %>
     </div>
-  <% else %>
-    <div class="alert alert-info text-center">
-      Aucune image pour cette galerie
-    </div>
-  <% end %>
 </div>

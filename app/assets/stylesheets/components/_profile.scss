@@ -16,14 +16,47 @@
 
 .profile-user.banner-dashboard,
 .admin-dashboard.banner-dashboard {
-  /* voile très subtil de la couleur primaire sur le fond surface */
-  background:
-    linear-gradient(180deg,
-      rgba($color-primary, .20) 0%,
-      rgba($color-primary, .15) 45%,
-      rgba($color-primary, 0)   100%
+  position: relative;
+  overflow: hidden;
+
+  /* --- Fond principal : surface + léger dégradé de la couleur primaire --- */
+  background: linear-gradient(
+      135deg,
+      rgba($color-primary, 0.15) 0%,
+      rgba($color-primary, 0.05) 40%,
+      transparent 100%
     ),
     $surface;
+
   color: $on-surface;
-  border-bottom: 1px solid rgba(255,255,255,.06);
+
+  /* --- Bordures sobres --- */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  /* --- Ombre douce pour donner du relief --- */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  /* --- Padding confortable (responsive avec clamp si tu veux) --- */
+  padding: 2rem 1.5rem;
+
+  /* --- Coins arrondis en bas pour casser la rigidité --- */
+  border-radius: 0 0 1rem 1rem;
+
+  /* --- Liseré vert décoratif au-dessus de la banner --- */
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px; // épaisseur du liseré
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba($color-primary, 0.4) 20%,
+      rgba($color-primary, 0.6) 50%,
+      rgba($color-primary, 0.4) 80%,
+      transparent 100%
+    );
+  }
 }
