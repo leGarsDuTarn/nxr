@@ -60,14 +60,20 @@
                   </p>
                 <% end %>
 
-                <%# lien qui rend la card cliquable %>
-                <% view_path =
-                    case activity.type
-                    when "Race"     then public_race_path(activity.id)
-                    when "Event"    then public_event_path(activity.id)
-                    when "Training" then public_training_path(activity.id)
-                    end %>
-                <%= link_to "", view_path, class: "stretched-link text-decoration-none text-color-primary small" %>
+                <div class="mt-auto pt-2">
+                  <% view_path =
+                      case activity.type
+                      when "Race"     then public_race_path(activity.id)
+                      when "Event"    then public_event_path(activity.id)
+                      when "Training" then public_training_path(activity.id)
+                      end %>
+                  <%= link_to view_path,
+                        class: "btn-nxr d-inline-flex align-items-center gap-2 small",
+                        aria: { label: "En savoir plus sur « #{activity.name} »" } do %>
+                      <i class="fa-solid fa-circle-info"></i>
+                      <span>En savoir +</span>
+                  <% end %>
+                </div>
               </div>
             </article>
           </div>
@@ -114,8 +120,14 @@
                   Publié le <%= l(article.created_at.to_date, format: :long) %>
                 </p>
 
-                <%= link_to "", public_article_path(article),
-                      class: "stretched-link text-decoration-none text-color-primary small" %>
+                <div class="mt-auto pt-2">
+                  <%= link_to public_article_path(article),
+                        class: "btn-nxr d-inline-flex align-items-center gap-2 small",
+                        aria: { label: "Lire l’article « #{article.title} »" } do %>
+                    <i class="fa-regular fa-newspaper"></i>
+                    <span>Lire l’article</span>
+                  <% end %>
+                </div>
               </div>
             </article>
           </div>
@@ -146,30 +158,34 @@
       <div class="home-carousel__track" data-home-carousel-target="track">
         <% @galleries.each do |gallery| %>
           <div class="home-carousel__item">
-            <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
-
+            <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden position-relative">
               <!-- Image top -->
               <div class="ratio ratio-4x3 bg-dark">
                 <% if gallery.images.attached? %>
-                  <%= image_tag gallery.images.first,
-                        class: "card-img-top object-cover",
-                        alt: gallery.title %>
+                  <%= image_tag gallery.images.first, class: "card-img-top object-cover", alt: gallery.title %>
                 <% else %>
-                  <%= image_tag "logo_mcnc_3.png",
-                        class: "card-img-top object-contain p-3",
-                        alt: gallery.title %>
+                  <%= image_tag "logo_mcnc_3.png", class: "card-img-top object-contain p-3", alt: gallery.title %>
                 <% end %>
               </div>
 
-              <!-- Body -->
+              <!-- Body + bouton -->
               <div class="card-body d-flex flex-column">
                 <h3 class="h6 fw-bold mb-2"><%= gallery.title %></h3>
                 <p class="text-tertiary small mb-2">
                   Publié le <%= l(gallery.created_at.to_date, format: :long) %>
                 </p>
 
-                <%= link_to "", public_gallery_path(gallery),
-                      class: "stretched-link text-decoration-none text-color-primary small" %>
+                <div class="mt-auto pt-2">
+                  <%= link_to public_gallery_path(gallery),
+                      class: "btn-nxr d-inline-flex align-items-center gap-2 small",
+                      aria: { label: "Voir la galerie « #{gallery.title} »" } do %>
+                    <i class="fa-regular fa-images"></i>
+                    <span>Voir la galerie</span>
+                  <% end %>
+                </div>
+
+                <%# Lien étendu optionnel : rend toute la carte cliquable (laisser commenté si tu gardes le bouton)
+                <%#= link_to "", public_gallery_path(gallery), class: "stretched-link" %>
               </div>
             </article>
           </div>
