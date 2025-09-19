@@ -53,15 +53,38 @@
                 <%= l(training.date, format: "%d %B %Y") %>
               </p>
 
-              <div class="mb-2 d-flex align-items-center justify-content-between">
-                <% count = training.registrations.size %>
-                <span>Inscription en cours : <%= count %></span>
+              <%# ----- Card Inscription avec barre de progres ------- %>
+              <div class="mb-4 inscriptions-panel rounded-4 p-3">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <h6 class="fw-bold mb-0">Inscriptions</h6>
+                    <span class="badge-counter"><i class="far fa-user me-1"></i><%= training.registrations.size %></span>
               </div>
 
-              <div class="mb-4 d-flex align-items-center justify-content-between">
-                <% count_validated = training.registrations.validated.size %>
-                <span>Inscription validée : <%= count_validated %></span>
-              </div>
+                <ul class="list-unstyled mb-3">
+                  <li class="d-flex justify-content-between align-items-center py-1">
+                    <span>En cours</span>
+                    <span class="badge-pending-full-sm"><%= training.registrations.size - training.registrations.validated.size %></span>
+                  </li>
+                  <li class="d-flex justify-content-between align-items-center py-1">
+                    <span>Validées</span>
+                    <span class="badge-success-full-sm"><%= training.registrations.validated.size %></span>
+                  </li>
+                </ul>
+
+                <% total = training.registrations.size.to_f
+                validated = training.registrations.validated.size
+                pct = total.positive? ? ((validated / total) * 100).round : 0 %>
+
+                <div class="inscriptions-progress">
+                  <div class="progress" role="progressbar" aria-label="Taux de validations"
+                    aria-valuenow="<%= pct %>" aria-valuemin="0" aria-valuemax="100">
+                      <div class="progress-bar" style="width: <%= pct %>%"></div>
+                  </div>
+                      <small class="d-block mt-1"><%= pct %>% validées</small>
+                  </div>
+                </div>
+
+                <%# ------- Fin de la card Inscription avec barre de progres ------- %>
 
               <div class="mt-auto d-flex align-items-center justify-content-between">
                 <%= link_to admin_training_path(training),
@@ -156,15 +179,38 @@
                 <%= l(race.date, format: "%d %B %Y") %>
               </p>
 
-              <div class="mb-2 d-flex align-items-center justify-content-between">
-                <% count = race.registrations.size %>
-                <span>Inscription en cours : <%= count %></span>
+              <%# ----- Card Inscription avec barre de progres ------- %>
+              <div class="mb-4 inscriptions-panel rounded-4 p-3">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <h6 class="fw-bold mb-0">Inscriptions</h6>
+                    <span class="badge-counter"><i class="far fa-user me-1"></i><%= race.registrations.size %></span>
               </div>
 
-              <div class="mb-4 d-flex align-items-center justify-content-between">
-                <% count_validated = race.registrations.validated.size %>
-                <span>Inscription validée : <%= count_validated %></span>
-              </div>
+                <ul class="list-unstyled mb-3">
+                  <li class="d-flex justify-content-between align-items-center py-1">
+                    <span>En cours</span>
+                    <span class="badge-pending-full-sm"><%= race.registrations.size - race.registrations.validated.size %></span>
+                  </li>
+                  <li class="d-flex justify-content-between align-items-center py-1">
+                    <span>Validées</span>
+                    <span class="badge-success-full-sm"><%= race.registrations.validated.size %></span>
+                  </li>
+                </ul>
+
+                <% total = race.registrations.size.to_f
+                validated = race.registrations.validated.size
+                pct = total.positive? ? ((validated / total) * 100).round : 0 %>
+
+                <div class="inscriptions-progress">
+                  <div class="progress" role="progressbar" aria-label="Taux de validations"
+                    aria-valuenow="<%= pct %>" aria-valuemin="0" aria-valuemax="100">
+                      <div class="progress-bar" style="width: <%= pct %>%"></div>
+                  </div>
+                      <small class="d-block mt-1"><%= pct %>% validées</small>
+                  </div>
+                </div>
+
+                <%# ------- Fin de la card Inscription avec barre de progres ------- %>
 
               <div class="d-flex align-items-center justify-content-between">
                 <%= link_to admin_race_path(race),
@@ -259,19 +305,39 @@
                 <%= l(event.date, format: "%d %B %Y") %>
               </p>
 
-              <div class="mb-4">
-  <h6 class="fw-bold mb-3">Inscriptions</h6>
-  <ul class="list-unstyled mb-0">
-    <li class="d-flex justify-content-between align-items-center">
-      <span>En cours</span>
-      <span class="badge-pending-full-sm"><%= event.registrations.size %></span>
-    </li>
-    <li class="d-flex justify-content-between align-items-center">
-      <span>Validées</span>
-      <span class="badge-success-full-sm"><%= event.registrations.validated.size %></span>
-    </li>
-  </ul>
-</div>
+              <%# ----- Card Inscription avec barre de progres ------- %>
+              <div class="mb-4 inscriptions-panel rounded-4 p-3">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <h6 class="fw-bold mb-0">Inscriptions</h6>
+                    <span class="badge-counter"><i class="far fa-user me-1"></i><%= event.registrations.size %></span>
+              </div>
+
+                <ul class="list-unstyled mb-3">
+                  <li class="d-flex justify-content-between align-items-center py-1">
+                    <span>En cours</span>
+                    <span class="badge-pending-full-sm"><%= event.registrations.size - event.registrations.validated.size %></span>
+                  </li>
+                  <li class="d-flex justify-content-between align-items-center py-1">
+                    <span>Validées</span>
+                    <span class="badge-success-full-sm"><%= event.registrations.validated.size %></span>
+                  </li>
+                </ul>
+
+                <% total = event.registrations.size.to_f
+                validated = event.registrations.validated.size
+                pct = total.positive? ? ((validated / total) * 100).round : 0 %>
+
+                <div class="inscriptions-progress">
+                  <div class="progress" role="progressbar" aria-label="Taux de validations"
+                    aria-valuenow="<%= pct %>" aria-valuemin="0" aria-valuemax="100">
+                      <div class="progress-bar" style="width: <%= pct %>%"></div>
+                  </div>
+                      <small class="d-block mt-1"><%= pct %>% validées</small>
+                  </div>
+                </div>
+
+                <%# ------- Fin de la card Inscription avec barre de progres ------- %>
+
 
               <div class="mt-auto d-flex align-items-center justify-content-between">
                 <%= link_to admin_event_path(event),
