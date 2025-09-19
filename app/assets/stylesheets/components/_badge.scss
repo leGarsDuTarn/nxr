@@ -27,3 +27,29 @@
   text-decoration: none;
   padding: 0.25rem 0.5rem;
 }
+
+.badge-success-full-sm {
+  display: inline-block;
+  background-color: $color-primary; // ton primary
+  color: $on-primary; // ex: blanc
+  font-weight: 700;
+  font-size: 0.7rem;   // petit comme Bootstrap badge
+  line-height: 1;
+  border-radius: 50rem; // pill
+  padding: 0.25em 0.5em; // identique à bootstrap badge
+  text-align: center;
+  white-space: nowrap;
+}
+
+.badge-pending-full-sm {
+  display: inline-block;
+  background-color: $color-warning; // ton primary
+  color: $on-primary; // ex: blanc
+  font-weight: 700;
+  font-size: 0.7rem;   // petit comme Bootstrap badge
+  line-height: 1;
+  border-radius: 50rem; // pill
+  padding: 0.25em 0.5em; // identique à bootstrap badge
+  text-align: center;
+  white-space: nowrap;
+}

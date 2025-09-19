@@ -15,84 +15,111 @@
       <i class="far fa-hand-peace me-2"></i>Gestion des entraînements
     </h2>
 
-      <% if has_trainings %>
-        <div class="d-flex gap-2 flex-wrap">
-          <%= link_to new_admin_training_path, class: "btn-nxr d-inline-flex align-items-center" do %>
-            <i class="fas fa-plus me-2"></i> Créer un entraînement
-          <% end %>
+    <% if has_trainings %>
+      <div class="d-flex gap-2 flex-wrap">
+        <%= link_to new_admin_training_path, class: "btn-nxr d-inline-flex align-items-center" do %>
+          <i class="fas fa-plus me-2"></i> Créer un entraînement
+        <% end %>
 
-          <%= link_to admin_trainings_path, class: "btn-nxr-orange d-inline-flex align-items-center" do %>
+        <%= link_to admin_trainings_path, class: "btn-nxr-orange d-inline-flex align-items-center" do %>
           <i class="fas fa-list-ul me-2"></i> Voir tous les entraînements
-          <% end %>
-        </div>
-      <% end %>
-    </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 
   <% if has_trainings %>
-    <div class="row g-4">
-      <% @trainings.each do |training| %>
-        <div class="col-sm-6 col-lg-4 mx-auto">
-          <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
-            <!-- Media -->
-            <div class="ratio ratio-4x3 bg-dark">
-              <% if training.image.attached? %>
-                <%= image_tag training.image, class: "card-img-top object-cover", alt: training.name %>
-              <% else %>
-                <%= image_tag "training_img.png", class: "card-img-top object-contain p-3", alt: training.name %>
-              <% end %>
-            </div>
+    <div class="home-carousel" data-controller="carousel" data-carousel-step-value="item">
+      <button type="button" class="home-carousel__nav home-carousel__nav--prev"
+              data-action="click->carousel#prev" aria-label="Précédent">‹</button>
+      <button type="button" class="home-carousel__nav home-carousel__nav--next"
+              data-action="click->carousel#next" aria-label="Suivant">›</button>
 
-            <!-- Body -->
-            <div class="card-body d-flex flex-column">
-              <div class="d-flex align-items-start justify-content-between mb-2">
-                <h3 class="h6 fw-bold mb-0"><%= training.name %></h3>
-              </div>
-
-              <p class="text-tertiary small mb-3">
-                <i class="far fa-clock me-1"></i>
-                <%= l(training.date, format: "%d %B %Y") %>
-              </p>
-
-              <div class="mb-2 d-flex align-items-center justify-content-between">
-                <% count = training.registrations.size %>
-                <span>Inscription en cours : <%= count %></span>
-              </div>
-
-              <div class="mb-4 d-flex align-items-center justify-content-between">
-                <% count_validated = training.registrations.validated.size %>
-                <span>Inscription validée : <%= count_validated %></span>
-              </div>
-
-              <div class="mt-auto d-flex align-items-center justify-content-between">
-                <%= link_to admin_training_path(training),
-                      class: "stretched-link btn-nxr small" do %>
-                  <i class="fas fa-search me-1"></i> Voir la fiche
+      <div class="home-carousel__track" data-carousel-target="track">
+        <% @trainings.each do |training| %>
+          <div class="home-carousel__item">
+            <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+              <!-- Media -->
+              <div class="ratio ratio-4x3 bg-dark">
+                <% if training.image.attached? %>
+                  <%= image_tag training.image, class: "card-img-top object-cover", alt: training.name %>
+                <% else %>
+                  <%= image_tag "training_img.png", class: "card-img-top object-contain p-3", alt: training.name %>
                 <% end %>
+              </div>
 
-                <div class="btn-toolbar gap-2">
-                  <%= link_to edit_admin_training_path(training),
-                        class: "btn btn-icon btn-edit-orange",
-                        title: "Modifier #{training.name}",
-                        aria: { label: "Modifier l'événement #{training.name}" } do %>
-                    <i class="fas fa-edit"></i>
-                  <% end %>
+              <!-- Body -->
+              <div class="card-body d-flex flex-column">
+                <div class="d-flex align-items-start justify-content-between mb-2">
+                  <h3 class="h6 fw-bold mb-0"><%= training.name %></h3>
+                </div>
 
+                <p class="text-tertiary small mb-3">
+                  <i class="far fa-clock me-1"></i>
+                  <%= l(training.date, format: "%d %B %Y") %>
+                </p>
+
+                <%# ----- Card Inscription avec barre de progres ------- %>
+                <div class="mb-4 inscriptions-panel rounded-4 p-3">
+                  <div class="d-flex align-items-center justify-content-between mb-2">
+                    <h6 class="fw-bold mb-0">Inscriptions</h6>
+                    <span class="badge-counter"><i class="far fa-user me-1"></i><%= training.registrations.size %></span>
+                  </div>
+
+                  <ul class="list-unstyled mb-3">
+                    <li class="d-flex justify-content-between align-items-center py-1">
+                      <span>En cours</span>
+                      <span class="badge-pending-full-sm"><%= training.registrations.size - training.registrations.validated.size %></span>
+                    </li>
+                    <li class="d-flex justify-content-between align-items-center py-1">
+                      <span>Validées</span>
+                      <span class="badge-success-full-sm"><%= training.registrations.validated.size %></span>
+                    </li>
+                  </ul>
+
+                  <% total = training.registrations.size.to_f
+                     validated = training.registrations.validated.size
+                     pct = total.positive? ? ((validated / total) * 100).round : 0 %>
+
+                  <div class="inscriptions-progress">
+                    <div class="progress" role="progressbar" aria-label="Taux de validations"
+                         aria-valuenow="<%= pct %>" aria-valuemin="0" aria-valuemax="100">
+                      <div class="progress-bar" style="width: <%= pct %>%"></div>
+                    </div>
+                    <small class="d-block mt-1"><%= pct %>% validées</small>
+                  </div>
+                </div>
+                <%# ------- Fin de la card Inscription avec barre de progres ------- %>
+
+                <div class="mt-auto d-flex align-items-center justify-content-between">
                   <%= link_to admin_training_path(training),
-                        data: { turbo_method: :delete, turbo_confirm: "Supprimer cet entraînement ?" },
-                        class: "btn btn-icon btn-delete-red",
-                        title: "Supprimer #{training.name}",
-                        aria: { label: "Supprimer l'entraînement #{training.name}" } do %>
-                    <i class="fas fa-trash"></i>
+                        class: "stretched-link btn-nxr small" do %>
+                    <i class="fas fa-search me-1"></i> Voir la fiche
                   <% end %>
+
+                  <div class="btn-toolbar gap-2">
+                    <%= link_to edit_admin_training_path(training),
+                          class: "btn btn-icon btn-edit-orange",
+                          title: "Modifier #{training.name}",
+                          aria: { label: "Modifier l'événement #{training.name}" } do %>
+                      <i class="fas fa-edit"></i>
+                    <% end %>
+
+                    <%= link_to admin_training_path(training),
+                          data: { turbo_method: :delete, turbo_confirm: "Supprimer cet entraînement ?" },
+                          class: "btn btn-icon btn-delete-red",
+                          title: "Supprimer #{training.name}",
+                          aria: { label: "Supprimer l'entraînement #{training.name}" } do %>
+                      <i class="fas fa-trash"></i>
+                    <% end %>
+                  </div>
                 </div>
               </div>
-            </div>
-          </article>
-        </div>
-      <% end %>
+            </article>
+          </div>
+        <% end %>
+      </div>
     </div>
-
-
   <% else %>
     <!-- Empty state -->
     <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
@@ -109,7 +136,6 @@
 </section>
 
 <%# Races %>
-
 <section class="container my-5">
   <% has_races = @races.present? %>
 
@@ -118,78 +144,111 @@
       <i class="fas fa-flag-checkered me-2"></i>Gestion des courses
     </h2>
 
-      <% if has_races %>
-        <div class="d-flex gap-2 flex-wrap">
-          <%= link_to new_admin_race_path, class: "btn-nxr d-inline-flex align-items-center" do %>
-            <i class="fas fa-plus me-2"></i> Créer une course
-          <% end %>
+    <% if has_races %>
+      <div class="d-flex gap-2 flex-wrap">
+        <%= link_to new_admin_race_path, class: "btn-nxr d-inline-flex align-items-center" do %>
+          <i class="fas fa-plus me-2"></i> Créer une course
+        <% end %>
 
-          <%= link_to admin_races_path, class: "btn-nxr-orange d-inline-flex align-items-center" do %>
+        <%= link_to admin_races_path, class: "btn-nxr-orange d-inline-flex align-items-center" do %>
           <i class="fas fa-list-ul me-2"></i> Voir toutes les courses
-          <% end %>
-        </div>
-      <% end %>
-    </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 
   <% if has_races %>
-    <div class="row g-4">
-      <% @races.each do |race| %>
-        <div class="col-sm-6 col-lg-4 mx-auto">
-          <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
-            <!-- Media -->
-            <div class="ratio ratio-4x3 bg-dark">
-              <% if race.image.attached? %>
-                <%= image_tag race.image, class: "card-img-top object-cover", alt: race.name %>
-              <% else %>
-                <%= image_tag "race_flag.png", class: "card-img-top object-contain p-3", alt: race.name %>
-              <% end %>
-            </div>
+    <div class="home-carousel" data-controller="carousel" data-carousel-step-value="item">
+      <button type="button" class="home-carousel__nav home-carousel__nav--prev"
+              data-action="click->carousel#prev" aria-label="Précédent">‹</button>
+      <button type="button" class="home-carousel__nav home-carousel__nav--next"
+              data-action="click->carousel#next" aria-label="Suivant">›</button>
 
-            <!-- Body -->
-            <div class="card-body d-flex flex-column">
-              <div class="d-flex align-items-start justify-content-between mb-2">
-                <h3 class="h6 fw-bold mb-0"><%= race.name %></h3>
-              </div>
-
-              <p class="text-tertiary small mb-3">
-                <i class="far fa-clock me-1"></i>
-                <%= l(race.date, format: "%d %B %Y") %>
-              </p>
-
-              <div class="mb-4 d-flex align-items-center justify-content-between">
-                <% count = race.registrations.size %>
-                <span>Inscription en cours : <%= count %></span>
-              </div>
-
-              <div class="d-flex align-items-center justify-content-between">
-                <%= link_to admin_race_path(race),
-                      class: "stretched-link btn-nxr small" do %>
-                  <i class="fas fa-search me-1"></i> Voir la fiche
+      <div class="home-carousel__track" data-carousel-target="track">
+        <% @races.each do |race| %>
+          <div class="home-carousel__item">
+            <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+              <!-- Media -->
+              <div class="ratio ratio-4x3 bg-dark">
+                <% if race.image.attached? %>
+                  <%= image_tag race.image, class: "card-img-top object-cover", alt: race.name %>
+                <% else %>
+                  <%= image_tag "race_flag.png", class: "card-img-top object-contain p-3", alt: race.name %>
                 <% end %>
+              </div>
 
-                <div class="btn-toolbar gap-2">
-                  <%= link_to edit_admin_race_path(race),
-                        class: "btn btn-icon btn-edit-orange",
-                        title: "Modifier #{race.name}",
-                        aria: { label: "Modifier la course #{race.name}" } do %>
-                    <i class="fas fa-edit"></i>
-                  <% end %>
+              <!-- Body -->
+              <div class="card-body d-flex flex-column">
+                <div class="d-flex align-items-start justify-content-between mb-2">
+                  <h3 class="h6 fw-bold mb-0"><%= race.name %></h3>
+                </div>
 
+                <p class="text-tertiary small mb-3">
+                  <i class="far fa-clock me-1"></i>
+                  <%= l(race.date, format: "%d %B %Y") %>
+                </p>
+
+                <%# ----- Card Inscription avec barre de progres ------- %>
+                <div class="mb-4 inscriptions-panel rounded-4 p-3">
+                  <div class="d-flex align-items-center justify-content-between mb-2">
+                    <h6 class="fw-bold mb-0">Inscriptions</h6>
+                    <span class="badge-counter"><i class="far fa-user me-1"></i><%= race.registrations.size %></span>
+                  </div>
+
+                  <ul class="list-unstyled mb-3">
+                    <li class="d-flex justify-content-between align-items-center py-1">
+                      <span>En cours</span>
+                      <span class="badge-pending-full-sm"><%= race.registrations.size - race.registrations.validated.size %></span>
+                    </li>
+                    <li class="d-flex justify-content-between align-items-center py-1">
+                      <span>Validées</span>
+                      <span class="badge-success-full-sm"><%= race.registrations.validated.size %></span>
+                    </li>
+                  </ul>
+
+                  <% total = race.registrations.size.to_f
+                     validated = race.registrations.validated.size
+                     pct = total.positive? ? ((validated / total) * 100).round : 0 %>
+
+                  <div class="inscriptions-progress">
+                    <div class="progress" role="progressbar" aria-label="Taux de validations"
+                         aria-valuenow="<%= pct %>" aria-valuemin="0" aria-valuemax="100">
+                      <div class="progress-bar" style="width: <%= pct %>%"></div>
+                    </div>
+                    <small class="d-block mt-1"><%= pct %>% validées</small>
+                  </div>
+                </div>
+                <%# ------- Fin de la card Inscription avec barre de progres ------- %>
+
+                <div class="d-flex align-items-center justify-content-between">
                   <%= link_to admin_race_path(race),
-                        data: { turbo_method: :delete, turbo_confirm: "Supprimer cette course ?" },
-                        class: "btn btn-icon btn-delete-red",
-                        title: "Supprimer #{race.name}",
-                        aria: { label: "Supprimer la course #{race.name}" } do %>
-                    <i class="fas fa-trash"></i>
+                        class: "stretched-link btn-nxr small" do %>
+                    <i class="fas fa-search me-1"></i> Voir la fiche
                   <% end %>
+
+                  <div class="btn-toolbar gap-2">
+                    <%= link_to edit_admin_race_path(race),
+                          class: "btn btn-icon btn-edit-orange",
+                          title: "Modifier #{race.name}",
+                          aria: { label: "Modifier la course #{race.name}" } do %>
+                      <i class="fas fa-edit"></i>
+                    <% end %>
+
+                    <%= link_to admin_race_path(race),
+                          data: { turbo_method: :delete, turbo_confirm: "Supprimer cette course ?" },
+                          class: "btn btn-icon btn-delete-red",
+                          title: "Supprimer #{race.name}",
+                          aria: { label: "Supprimer la course #{race.name}" } do %>
+                      <i class="fas fa-trash"></i>
+                    <% end %>
+                  </div>
                 </div>
               </div>
-            </div>
-          </article>
-        </div>
-      <% end %>
+            </article>
+          </div>
+        <% end %>
+      </div>
     </div>
-
   <% else %>
     <!-- Empty state -->
     <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
@@ -206,88 +265,119 @@
 </section>
 
 <%# Events %>
-
 <section class="container my-5">
   <% has_events = @events.present? %>
-
 
   <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
     <h2 class="section-title mb-0">
       <i class="fas fa-calendar-alt me-2"></i>Gestion des événements
     </h2>
 
-      <% if has_events %>
-        <div class="d-flex gap-2 flex-wrap">
-          <%= link_to new_admin_event_path, class: "btn-nxr d-inline-flex align-items-center" do %>
-            <i class="fas fa-plus me-2"></i> Créer un événement
-          <% end %>
+    <% if has_events %>
+      <div class="d-flex gap-2 flex-wrap">
+        <%= link_to new_admin_event_path, class: "btn-nxr d-inline-flex align-items-center" do %>
+          <i class="fas fa-plus me-2"></i> Créer un événement
+        <% end %>
 
-          <%= link_to admin_events_path, class: "btn-nxr-orange d-inline-flex align-items-center" do %>
+        <%= link_to admin_events_path, class: "btn-nxr-orange d-inline-flex align-items-center" do %>
           <i class="fas fa-list-ul me-2"></i> Voir tous les événements
-          <% end %>
-        </div>
-      <% end %>
-    </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 
   <% if has_events %>
-    <div class="row g-4">
-      <% @events.each do |event| %>
-        <div class="col-sm-6 col-lg-4 mx-auto">
-          <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
-            <!-- Media -->
-            <div class="ratio ratio-4x3 bg-dark">
-              <% if event.image.attached? %>
-                <%= image_tag event.image, class: "card-img-top object-cover", alt: event.name %>
-              <% else %>
-                <%= image_tag "logo_mcnc_3.png", class: "card-img-top object-contain p-3", alt: event.name %>
-              <% end %>
-            </div>
+    <div class="home-carousel" data-controller="carousel" data-carousel-step-value="item">
+      <button type="button" class="home-carousel__nav home-carousel__nav--prev"
+              data-action="click->carousel#prev" aria-label="Précédent">‹</button>
+      <button type="button" class="home-carousel__nav home-carousel__nav--next"
+              data-action="click->carousel#next" aria-label="Suivant">›</button>
 
-            <!-- Body -->
-            <div class="card-body d-flex flex-column">
-              <div class="d-flex align-items-start justify-content-between mb-2">
-                <h5 class="fw-bold mb-0"><%= event.name %></h5>
-              </div>
-
-              <p class="text-tertiary small mb-3">
-                <i class="far fa-clock me-1"></i>
-                <%= l(event.date, format: "%d %B %Y") %>
-              </p>
-
-              <div class="mb-4 d-flex align-items-center justify-content-between">
-                <% count = event.registrations.size %>
-                <span>Inscription en cours : <%= count %></span>
-              </div>
-
-              <div class="mt-auto d-flex align-items-center justify-content-between">
-                <%= link_to admin_event_path(event),
-                      class: "stretched-link stretched-link btn-nxr small" do %>
-                  <i class="fas fa-search me-1"></i> Voir la fiche
+      <div class="home-carousel__track" data-carousel-target="track">
+        <% @events.each do |event| %>
+          <div class="home-carousel__item">
+            <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+              <!-- Media -->
+              <div class="ratio ratio-4x3 bg-dark">
+                <% if event.image.attached? %>
+                  <%= image_tag event.image, class: "card-img-top object-cover", alt: event.name %>
+                <% else %>
+                  <%= image_tag "logo_mcnc_3.png", class: "card-img-top object-contain p-3", alt: event.name %>
                 <% end %>
+              </div>
 
-                <div class="btn-toolbar gap-2">
-                  <%= link_to edit_admin_event_path(event),
-                        class: "btn btn-icon btn-edit-orange",
-                        title: "Modifier #{event.name}",
-                        aria: { label: "Modifier l'événement #{event.name}" } do %>
-                    <i class="fas fa-edit"></i>
-                  <% end %>
+              <!-- Body -->
+              <div class="card-body d-flex flex-column">
+                <div class="d-flex align-items-start justify-content-between mb-2">
+                  <h5 class="fw-bold mb-0"><%= event.name %></h5>
+                </div>
 
+                <p class="text-tertiary small mb-3">
+                  <i class="far fa-clock me-1"></i>
+                  <%= l(event.date, format: "%d %B %Y") %>
+                </p>
+
+                <%# ----- Card Inscription avec barre de progres ------- %>
+                <div class="mb-4 inscriptions-panel rounded-4 p-3">
+                  <div class="d-flex align-items-center justify-content-between mb-2">
+                    <h6 class="fw-bold mb-0">Inscriptions</h6>
+                    <span class="badge-counter"><i class="far fa-user me-1"></i><%= event.registrations.size %></span>
+                  </div>
+
+                  <ul class="list-unstyled mb-3">
+                    <li class="d-flex justify-content-between align-items-center py-1">
+                      <span>En cours</span>
+                      <span class="badge-pending-full-sm"><%= event.registrations.size - event.registrations.validated.size %></span>
+                    </li>
+                    <li class="d-flex justify-content-between align-items-center py-1">
+                      <span>Validées</span>
+                      <span class="badge-success-full-sm"><%= event.registrations.validated.size %></span>
+                    </li>
+                  </ul>
+
+                  <% total = event.registrations.size.to_f
+                     validated = event.registrations.validated.size
+                     pct = total.positive? ? ((validated / total) * 100).round : 0 %>
+
+                  <div class="inscriptions-progress">
+                    <div class="progress" role="progressbar" aria-label="Taux de validations"
+                         aria-valuenow="<%= pct %>" aria-valuemin="0" aria-valuemax="100">
+                      <div class="progress-bar" style="width: <%= pct %>%"></div>
+                    </div>
+                    <small class="d-block mt-1"><%= pct %>% validées</small>
+                  </div>
+                </div>
+                <%# ------- Fin de la card Inscription avec barre de progres ------- %>
+
+                <div class="mt-auto d-flex align-items-center justify-content-between">
                   <%= link_to admin_event_path(event),
-                        data: { turbo_method: :delete, turbo_confirm: "Supprimer cet événement ?" },
-                        class: "btn btn-icon btn-delete-red",
-                        title: "Supprimer #{event.name}",
-                        aria: { label: "Supprimer l'événement #{event.name}" } do %>
-                    <i class="fas fa-trash"></i>
+                        class: "stretched-link stretched-link btn-nxr small" do %>
+                    <i class="fas fa-search me-1"></i> Voir la fiche
                   <% end %>
+
+                  <div class="btn-toolbar gap-2">
+                    <%= link_to edit_admin_event_path(event),
+                          class: "btn btn-icon btn-edit-orange",
+                          title: "Modifier #{event.name}",
+                          aria: { label: "Modifier l'événement #{event.name}" } do %>
+                      <i class="fas fa-edit"></i>
+                    <% end %>
+
+                    <%= link_to admin_event_path(event),
+                          data: { turbo_method: :delete, turbo_confirm: "Supprimer cet événement ?" },
+                          class: "btn btn-icon btn-delete-red",
+                          title: "Supprimer #{event.name}",
+                          aria: { label: "Supprimer l'événement #{event.name}" } do %>
+                      <i class="fas fa-trash"></i>
+                    <% end %>
+                  </div>
                 </div>
               </div>
-            </div>
-          </article>
-        </div>
-      <% end %>
+            </article>
+          </div>
+        <% end %>
+      </div>
     </div>
-
   <% else %>
     <!-- Empty state -->
     <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
@@ -304,78 +394,83 @@
 </section>
 
 <%# Registrations %>
-
 <section class="container my-5">
   <% has_registrations = @recent_registrations.present? %>
 
-  <!-- Barre d’actions -->
   <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
     <h2 class="section-title mb-0">
       <i class="fas fa-user-plus me-2"></i>Les dernières inscriptions
     </h2>
-  </div> <!-- /barre d’actions -->
+  </div>
 
   <% if has_registrations %>
-    <div class="row g-4">
-      <% @recent_registrations.each do |registration| %>
-        <% user = registration.user %>
-        <div class="col-sm-6 col-lg-4 mx-auto">
-          <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
-            <!-- Media -->
-            <div class="ratio ratio-4x3 bg-dark">
-              <% if user.respond_to?(:avatar) && user.avatar.attached? %>
-                <%= image_tag user.avatar, class: "card-img-top object-cover", alt: "#{user.first_name} #{user.last_name}" %>
-              <% else %>
-                <%= image_tag "avatar_default.jpg", class: "card-img-top object-contain p-3", alt: "#{user.first_name} #{user.last_name}" %>
-              <% end %>
-            </div>
+    <div class="home-carousel" data-controller="carousel" data-carousel-step-value="item">
+      <button type="button" class="home-carousel__nav home-carousel__nav--prev"
+              data-action="click->carousel#prev" aria-label="Précédent">‹</button>
+      <button type="button" class="home-carousel__nav home-carousel__nav--next"
+              data-action="click->carousel#next" aria-label="Suivant">›</button>
 
-            <!-- Body -->
-            <div class="card-body d-flex flex-column">
-              <div class="d-flex align-items-start justify-content-between mb-2">
-                <h3 class="h6 fw-bold mb-0"><%= user.first_name %> <%= user.last_name %></h3>
+      <div class="home-carousel__track" data-carousel-target="track">
+        <% @recent_registrations.each do |registration| %>
+          <% user = registration.user %>
+          <div class="home-carousel__item">
+            <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+              <!-- Media -->
+              <div class="ratio ratio-4x3 bg-dark">
+                <% if user.respond_to?(:avatar) && user.avatar.attached? %>
+                  <%= image_tag user.avatar, class: "card-img-top object-cover", alt: "#{user.first_name} #{user.last_name}" %>
+                <% else %>
+                  <%= image_tag "avatar_default.jpg", class: "card-img-top object-contain p-3", alt: "#{user.first_name} #{user.last_name}" %>
+                <% end %>
               </div>
 
-              <p class="text-tertiary small mb-2">
-                <i class="far fa-id-card me-1"></i>
-                Inscription à
-                <strong><%= registration.registerable.try(:name) || registration.registerable_type %></strong>
-                le <%= l(registration.created_at, format: :short) %>
-              </p>
+              <!-- Body -->
+              <div class="card-body d-flex flex-column">
+                <div class="d-flex align-items-start justify-content-between mb-2">
+                  <h3 class="h6 fw-bold mb-0"><%= user.first_name %> <%= user.last_name %></h3>
+                </div>
 
-              <p class="text-tertiary small mb-3">
-                <i class="far fa-user me-1"></i>
-                Membre depuis le <%= l(user.created_at.to_date, format: "%d %B %Y") %>
-                <small class="text-tertiary">(<%= time_ago_in_words(user.created_at) %>)</small>
-              </p>
+                <p class="text-tertiary small mb-2">
+                  <i class="far fa-id-card me-1"></i>
+                  Inscription à
+                  <strong><%= registration.registerable.try(:name) || registration.registerable_type %></strong>
+                  le <%= l(registration.created_at, format: :short) %>
+                </p>
 
-              <div class="mt-auto d-flex align-items-center justify-content-between">
-                <%= link_to polymorphic_path([:admin, registration.registerable, registration]),
-                      class: "stretched-link btn-nxr small" do %>
-                  <i class="fas fa-search me-1"></i> Voir l'inscription
-                <% end %>
+                <p class="text-tertiary small mb-3">
+                  <i class="far fa-user me-1"></i>
+                  Membre depuis le <%= l(user.created_at.to_date, format: "%d %B %Y") %>
+                  <small class="text-tertiary">(<%= time_ago_in_words(user.created_at) %>)</small>
+                </p>
 
-                <div class="btn-toolbar gap-2">
+                <div class="mt-auto d-flex align-items-center justify-content-between">
                   <%= link_to polymorphic_path([:admin, registration.registerable, registration]),
-                        class: "btn btn-icon btn-edit-orange",
-                        title: "Voir l'inscription de #{user.first_name} #{user.last_name}",
-                        aria: { label: "Voir l'inscription de #{user.first_name} #{user.last_name}" } do %>
-                    <i class="fas fa-search"></i>
+                        class: "stretched-link btn-nxr small" do %>
+                    <i class="fas fa-search me-1"></i> Voir la fiche
                   <% end %>
 
-                  <%= link_to polymorphic_path([:admin, registration.registerable, registration]),
-                        data: { turbo_method: :delete, turbo_confirm: "Supprimer cette inscription ?" },
-                        class: "btn btn-icon btn-delete-red",
-                        title: "Supprimer l'inscription de #{user.first_name} #{user.last_name}",
-                        aria: { label: "Supprimer l'inscription de #{user.first_name} #{user.last_name}" } do %>
-                    <i class="fas fa-trash"></i>
-                  <% end %>
+                  <div class="btn-toolbar gap-2">
+                    <%= link_to polymorphic_path([:admin, registration.registerable, registration]),
+                          class: "btn btn-icon btn-edit-orange",
+                          title: "Voir l'inscription de #{user.first_name} #{user.last_name}",
+                          aria: { label: "Voir l'inscription de #{user.first_name} #{user.last_name}" } do %>
+                      <i class="fas fa-search"></i>
+                    <% end %>
+
+                    <%= link_to polymorphic_path([:admin, registration.registerable, registration]),
+                          data: { turbo_method: :delete, turbo_confirm: "Supprimer cette inscription ?" },
+                          class: "btn btn-icon btn-delete-red",
+                          title: "Supprimer l'inscription de #{user.first_name} #{user.last_name}",
+                          aria: { label: "Supprimer l'inscription de #{user.first_name} #{user.last_name}" } do %>
+                      <i class="fas fa-trash"></i>
+                    <% end %>
+                  </div>
                 </div>
               </div>
-            </div>
-          </article>
-        </div>
-      <% end %>
+            </article>
+          </div>
+        <% end %>
+      </div>
     </div>
   <% else %>
     <!-- Empty state -->
@@ -389,9 +484,7 @@
   <% end %>
 </section>
 
-
-<%# Les News %>
-
+<%# Les News (Articles) %>
 <section class="container my-5">
   <% has_articles = @articles.present? %>
 
@@ -400,73 +493,79 @@
       <i class="fas fa-newspaper me-2"></i>Gestion des articles
     </h2>
 
-      <% if has_articles %>
-        <div class="d-flex gap-2 flex-wrap">
-          <%= link_to new_admin_article_path, class: "btn-nxr d-inline-flex align-items-center" do %>
-            <i class="fas fa-plus me-2"></i> Créer un article
-          <% end %>
+    <% if has_articles %>
+      <div class="d-flex gap-2 flex-wrap">
+        <%= link_to new_admin_article_path, class: "btn-nxr d-inline-flex align-items-center" do %>
+          <i class="fas fa-plus me-2"></i> Créer un article
+        <% end %>
 
-          <%= link_to admin_articles_path, class: "btn-nxr-orange d-inline-flex align-items-center" do %>
+        <%= link_to admin_articles_path, class: "btn-nxr-orange d-inline-flex align-items-center" do %>
           <i class="fas fa-list-ul me-2"></i> Voir tous les articles
-          <% end %>
-        </div>
-      <% end %>
-    </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 
   <% if has_articles %>
-    <div class="row g-4">
-      <% @articles.each do |article| %>
-        <div class="col-sm-6 col-lg-4 mx-auto">
-          <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
-            <!-- Media -->
-            <div class="ratio ratio-4x3 bg-dark">
-              <% if article.image.attached? %>
-                <%= image_tag article.image, class: "card-img-top object-cover", alt: article.title %>
-              <% else %>
-                <%= image_tag "logo_mcnc_3.png", class: "card-img-top object-contain p-3", alt: article.title %>
-              <% end %>
-            </div>
+    <div class="home-carousel" data-controller="carousel" data-carousel-step-value="item">
+      <button type="button" class="home-carousel__nav home-carousel__nav--prev"
+              data-action="click->carousel#prev" aria-label="Précédent">‹</button>
+      <button type="button" class="home-carousel__nav home-carousel__nav--next"
+              data-action="click->carousel#next" aria-label="Suivant">›</button>
 
-            <!-- Body -->
-            <div class="card-body d-flex flex-column">
-              <div class="d-flex align-items-start justify-content-between mb-2">
-                <h3 class="h6 fw-bold mb-0"><%= article.title %></h3>
+      <div class="home-carousel__track" data-carousel-target="track">
+        <% @articles.each do |article| %>
+          <div class="home-carousel__item">
+            <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+              <!-- Media -->
+              <div class="ratio ratio-4x3 bg-dark">
+                <% if article.image.attached? %>
+                  <%= image_tag article.image, class: "card-img-top object-cover", alt: article.title %>
+                <% else %>
+                  <%= image_tag "logo_mcnc_3.png", class: "card-img-top object-contain p-3", alt: article.title %>
+                <% end %>
               </div>
 
-              <p class="text-tertiary small mb-3">
-                <i class="far fa-clock me-1"></i>
-                <%= l(article.date, format: "%d %B %Y") %>
-              </p>
+              <!-- Body -->
+              <div class="card-body d-flex flex-column">
+                <div class="d-flex align-items-start justify-content-between mb-2">
+                  <h3 class="h6 fw-bold mb-0"><%= article.title %></h3>
+                </div>
 
-              <div class="mt-auto d-flex align-items-center justify-content-between">
-                <%= link_to admin_article_path(article),
-                      class: "stretched-link btn-nxr small" do %>
-                  <i class="fas fa-search me-1"></i> Voir l'article
-                <% end %>
+                <p class="text-tertiary small mb-3">
+                  <i class="far fa-clock me-1"></i>
+                  <%= l(article.date, format: "%d %B %Y") %>
+                </p>
 
-                <div class="btn-toolbar gap-2">
-                  <%= link_to edit_admin_article_path(article),
-                        class: "btn btn-icon btn-edit-orange",
-                        title: "Modifier #{article.title}",
-                        aria: { label: "Modifier l'article' #{article.title}" } do %>
-                    <i class="fas fa-edit"></i>
-                  <% end %>
-
+                <div class="mt-auto d-flex align-items-center justify-content-between">
                   <%= link_to admin_article_path(article),
-                        data: { turbo_method: :delete, turbo_confirm: "Supprimer cet article ?" },
-                        class: "btn btn-icon btn-delete-red",
-                        title: "Supprimer #{article.title}",
-                        aria: { label: "Supprimer l'article' #{article.title}" } do %>
-                    <i class="fas fa-trash"></i>
+                        class: "stretched-link btn-nxr small" do %>
+                    <i class="fas fa-search me-1"></i> Voir l'article
                   <% end %>
+
+                  <div class="btn-toolbar gap-2">
+                    <%= link_to edit_admin_article_path(article),
+                          class: "btn btn-icon btn-edit-orange",
+                          title: "Modifier #{article.title}",
+                          aria: { label: "Modifier l'article' #{article.title}" } do %>
+                      <i class="fas fa-edit"></i>
+                    <% end %>
+
+                    <%= link_to admin_article_path(article),
+                          data: { turbo_method: :delete, turbo_confirm: "Supprimer cet article ?" },
+                          class: "btn btn-icon btn-delete-red",
+                          title: "Supprimer #{article.title}",
+                          aria: { label: "Supprimer l'article' #{article.title}" } do %>
+                      <i class="fas fa-trash"></i>
+                    <% end %>
+                  </div>
                 </div>
               </div>
-            </div>
-          </article>
-        </div>
-      <% end %>
+            </article>
+          </div>
+        <% end %>
+      </div>
     </div>
-
   <% else %>
     <!-- Empty state -->
     <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
@@ -483,7 +582,6 @@
 </section>
 
 <%# Galleries %>
-
 <section class="container my-5">
   <% has_galleries = @galleries.present? %>
 
@@ -492,73 +590,79 @@
       <i class="fas fa-camera-retro me-2"></i>Gestion des albums photo
     </h2>
 
-      <% if has_galleries %>
-        <div class="d-flex gap-2 flex-wrap">
-          <%= link_to new_admin_gallery_path, class: "btn-nxr d-inline-flex align-items-center" do %>
-            <i class="fas fa-plus me-2"></i> Créer un nouvel album
-          <% end %>
+    <% if has_galleries %>
+      <div class="d-flex gap-2 flex-wrap">
+        <%= link_to new_admin_gallery_path, class: "btn-nxr d-inline-flex align-items-center" do %>
+          <i class="fas fa-plus me-2"></i> Créer un nouvel album
+        <% end %>
 
-          <%= link_to admin_galleries_path, class: "btn-nxr-orange d-inline-flex align-items-center" do %>
+        <%= link_to admin_galleries_path, class: "btn-nxr-orange d-inline-flex align-items-center" do %>
           <i class="fas fa-list-ul me-2"></i> Voir tous les albums
-          <% end %>
-        </div>
-      <% end %>
-    </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 
   <% if has_galleries %>
-    <div class="row g-4">
-      <% @galleries.each do |gallery| %>
-        <div class="col-sm-6 col-lg-4 mx-auto">
-          <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
-            <!-- Media -->
-            <div class="ratio ratio-4x3 bg-dark">
-              <% if gallery.images.attached? %>
-                <%= image_tag gallery.images.first, class: "card-img-top object-cover", alt: gallery.title %>
-              <% else %>
-                <%= image_tag "logo_mcnc_3.png", class: "card-img-top object-contain p-3", alt: gallery.title %>
-              <% end %>
-            </div>
+    <div class="home-carousel" data-controller="carousel" data-carousel-step-value="item">
+      <button type="button" class="home-carousel__nav home-carousel__nav--prev"
+              data-action="click->carousel#prev" aria-label="Précédent">‹</button>
+      <button type="button" class="home-carousel__nav home-carousel__nav--next"
+              data-action="click->carousel#next" aria-label="Suivant">›</button>
 
-            <!-- Body -->
-            <div class="card-body d-flex flex-column">
-              <div class="d-flex align-items-start justify-content-between mb-2">
-                <h3 class="h6 fw-bold mb-0"><%= gallery.title %></h3>
+      <div class="home-carousel__track" data-carousel-target="track">
+        <% @galleries.each do |gallery| %>
+          <div class="home-carousel__item">
+            <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+              <!-- Media -->
+              <div class="ratio ratio-4x3 bg-dark">
+                <% if gallery.images.attached? %>
+                  <%= image_tag gallery.images.first, class: "card-img-top object-cover", alt: gallery.title %>
+                <% else %>
+                  <%= image_tag "logo_mcnc_3.png", class: "card-img-top object-contain p-3", alt: gallery.title %>
+                <% end %>
               </div>
 
-              <p class="text-tertiary small mb-3">
-                <i class="far fa-clock me-1"></i>
-                <%= l(gallery.date, format: "%d %B %Y") %>
-              </p>
+              <!-- Body -->
+              <div class="card-body d-flex flex-column">
+                <div class="d-flex align-items-start justify-content-between mb-2">
+                  <h3 class="h6 fw-bold mb-0"><%= gallery.title %></h3>
+                </div>
 
-              <div class="mt-auto d-flex align-items-center justify-content-between">
-                <%= link_to admin_gallery_path(gallery),
-                      class: "stretched-link btn-nxr small" do %>
-                  <i class="fas fa-search me-1"></i> Voir l'album photo
-                <% end %>
+                <p class="text-tertiary small mb-3">
+                  <i class="far fa-clock me-1"></i>
+                  <%= l(gallery.date, format: "%d %B %Y") %>
+                </p>
 
-                <div class="btn-toolbar gap-2">
-                  <%= link_to edit_admin_gallery_path(gallery),
-                        class: "btn btn-icon btn-edit-orange",
-                        title: "Modifier #{gallery.title}",
-                        aria: { label: "Modifier l'album photo' #{gallery.title}" } do %>
-                    <i class="fas fa-edit"></i>
-                  <% end %>
-
+                <div class="mt-auto d-flex align-items-center justify-content-between">
                   <%= link_to admin_gallery_path(gallery),
-                        data: { turbo_method: :delete, turbo_confirm: "Supprimer cet album photo ?" },
-                        class: "btn btn-icon btn-delete-red",
-                        title: "Supprimer #{gallery.title}",
-                        aria: { label: "Supprimer l'album photo' #{gallery.title}" } do %>
-                    <i class="fas fa-trash"></i>
+                        class: "stretched-link btn-nxr small" do %>
+                    <i class="fas fa-search me-1"></i> Voir l'album
                   <% end %>
+
+                  <div class="btn-toolbar gap-2">
+                    <%= link_to edit_admin_gallery_path(gallery),
+                          class: "btn btn-icon btn-edit-orange",
+                          title: "Modifier #{gallery.title}",
+                          aria: { label: "Modifier l'album photo' #{gallery.title}" } do %>
+                      <i class="fas fa-edit"></i>
+                    <% end %>
+
+                    <%= link_to admin_gallery_path(gallery),
+                          data: { turbo_method: :delete, turbo_confirm: "Supprimer cet album photo ?" },
+                          class: "btn btn-icon btn-delete-red",
+                          title: "Supprimer #{gallery.title}",
+                          aria: { label: "Supprimer l'album photo' #{gallery.title}" } do %>
+                      <i class="fas fa-trash"></i>
+                    <% end %>
+                  </div>
                 </div>
               </div>
-            </div>
-          </article>
-        </div>
-      <% end %>
+            </article>
+          </div>
+        <% end %>
+      </div>
     </div>
-
   <% else %>
     <!-- Empty state -->
     <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
@@ -574,9 +678,7 @@
   <% end %>
 </section>
 
-
 <%# Users -> Member %>
-
 <section class="container my-5">
   <% has_members = @users.present? %>
 
@@ -585,70 +687,76 @@
       <i class="fas fa-users me-2"></i>Gestion des membres
     </h2>
 
-      <% if has_members %>
-        <div class="d-flex flex-wrap">
-          <%= link_to admin_users_path, class: "btn-nxr-orange d-inline-flex align-items-center" do %>
+    <% if has_members %>
+      <div class="d-flex flex-wrap">
+        <%= link_to admin_users_path, class: "btn-nxr-orange d-inline-flex align-items-center" do %>
           <i class="fas fa-list-ul me-2"></i> Voir tous les membres
-          <% end %>
-        </div>
-      <% end %>
-    </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 
   <% if has_members %>
-    <div class="row g-4">
-      <% @users.each do |user| %>
-        <div class="col-sm-6 col-lg-4 mx-auto">
-          <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
-            <!-- Media -->
-            <div class="ratio ratio-4x3 bg-dark">
-              <% if user.avatar.attached? %>
-                <%= image_tag user.avatar, class: "card-img-top object-cover", alt: user.user_name %>
-              <% else %>
-                <%= image_tag "avatar_default.jpg", class: "card-img-top object-contain p-3", alt: user.user_name %>
-              <% end %>
-            </div>
+    <div class="home-carousel" data-controller="carousel" data-carousel-step-value="item">
+      <button type="button" class="home-carousel__nav home-carousel__nav--prev"
+              data-action="click->carousel#prev" aria-label="Précédent">‹</button>
+      <button type="button" class="home-carousel__nav home-carousel__nav--next"
+              data-action="click->carousel#next" aria-label="Suivant">›</button>
 
-            <!-- Body -->
-            <div class="card-body d-flex flex-column">
-              <div class="d-flex align-items-start justify-content-between mb-2">
-                <h3 class="h6 fw-bold mb-0"><%= user.first_name %>  <%= user.last_name %></h3>
+      <div class="home-carousel__track" data-carousel-target="track">
+        <% @users.each do |user| %>
+          <div class="home-carousel__item">
+            <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+              <!-- Media -->
+              <div class="ratio ratio-4x3 bg-dark">
+                <% if user.avatar.attached? %>
+                  <%= image_tag user.avatar, class: "card-img-top object-cover", alt: user.user_name %>
+                <% else %>
+                  <%= image_tag "avatar_default.jpg", class: "card-img-top object-contain p-3", alt: user.user_name %>
+                <% end %>
               </div>
 
-              <p class="text-tertiary small mb-3">
-                <i class="far fa-user me-1"></i>
-                Membre depuis le <%= l(user.created_at.to_date, format: "%d %B %Y") %>
-                <small class="text-tertiary">(<%= time_ago_in_words(user.created_at) %>)</small>
-              </p>
+              <!-- Body -->
+              <div class="card-body d-flex flex-column">
+                <div class="d-flex align-items-start justify-content-between mb-2">
+                  <h3 class="h6 fw-bold mb-0"><%= user.first_name %>  <%= user.last_name %></h3>
+                </div>
 
-              <div class="mt-auto d-flex align-items-center justify-content-between">
-                <%= link_to admin_user_path(user),
-                      class: "stretched-link btn-nxr small" do %>
-                  <i class="fas fa-search me-1"></i> Voir la fiche
-                <% end %>
+                <p class="text-tertiary small mb-3">
+                  <i class="far fa-user me-1"></i>
+                  Membre depuis le <%= l(user.created_at.to_date, format: "%d %B %Y") %>
+                  <small class="text-tertiary">(<%= time_ago_in_words(user.created_at) %>)</small>
+                </p>
 
-                <div class="btn-toolbar gap-2">
-                  <%= link_to edit_admin_user_path(user),
-                        class: "btn btn-icon btn-edit-orange",
-                        title: "Modifier les données de #{user.first_name} - #{user.last_name}" ,
-                        aria: { label: "Modifier les données de #{user.first_name} - #{user.last_name}" } do %>
-                    <i class="fas fa-edit"></i>
-                  <% end %>
-
+                <div class="mt-auto d-flex align-items-center justify-content-between">
                   <%= link_to admin_user_path(user),
-                        data: { turbo_method: :delete, turbo_confirm: "Supprimer cet utilisateur ?" },
-                        class: "btn btn-icon btn-delete-red",
-                        title: "Supprimer l'utilisateur #{user.first_name} - #{user.last_name}",
-                        aria: { label: "Supprimer l'utilisateur #{user.first_name} - #{user.last_name}" } do %>
-                    <i class="fas fa-trash"></i>
+                        class: "stretched-link btn-nxr small" do %>
+                    <i class="fas fa-search me-1"></i> Voir la fiche
                   <% end %>
+
+                  <div class="btn-toolbar gap-2">
+                    <%= link_to edit_admin_user_path(user),
+                          class: "btn btn-icon btn-edit-orange",
+                          title: "Modifier les données de #{user.first_name} - #{user.last_name}" ,
+                          aria: { label: "Modifier les données de #{user.first_name} - #{user.last_name}" } do %>
+                      <i class="fas fa-edit"></i>
+                    <% end %>
+
+                    <%= link_to admin_user_path(user),
+                          data: { turbo_method: :delete, turbo_confirm: "Supprimer cet utilisateur ?" },
+                          class: "btn btn-icon btn-delete-red",
+                          title: "Supprimer l'utilisateur #{user.first_name} - #{user.last_name}",
+                          aria: { label: "Supprimer l'utilisateur #{user.first_name} - #{user.last_name}" } do %>
+                      <i class="fas fa-trash"></i>
+                    <% end %>
+                  </div>
                 </div>
               </div>
-            </div>
-          </article>
-        </div>
-      <% end %>
+            </article>
+          </div>
+        <% end %>
+      </div>
     </div>
-
   <% else %>
     <!-- Empty state -->
     <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
@@ -661,16 +769,14 @@
     </div>
 </section>
 
-
 <%# Fiche identitée du club  %>
-
 <section class="container my-5">
   <!-- Barre d’actions -->
   <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
     <h2 class="section-title mb-0">
       <i class="fas fa-flag-checkered me-2"></i> Informations du club
     </h2>
-  </div> <!-- /barre d’actions -->
+  </div>
 
   <% if @clubs.present? %>
     <div class="row g-4">
@@ -740,7 +846,6 @@
       <%= link_to new_admin_club_path, class: "btn-nxr d-inline-flex align-items-center" do %>
         <i class="fas fa-plus me-2"></i>Créer la fiche du club
       <% end %>
-
     </div>
   <% end %>
 </section>
