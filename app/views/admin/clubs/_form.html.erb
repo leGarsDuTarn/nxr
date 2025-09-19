@@ -6,7 +6,8 @@
       </h1>
     </div>
 
-    <%= simple_form_for [:admin, @club], html: { multipart: true } do |f| %>
+    <%= simple_form_for [:admin, @club], url: @club.new_record? ? admin_club_path : admin_club_path do |f| %>
+
       <%= f.error_notification %>
 
       <!-- Informations générales -->
