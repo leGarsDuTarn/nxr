@@ -1,5 +1,9 @@
 class Gallery < ApplicationRecord
+  include Searchable # Voir models/concerns/searchable.rb
+  searchable_by text: %w[title], date: :date
+
   belongs_to :user
+  searchable_by text: %w[title], date: :date
 
   # Offre à l'admin la possibilté d'ajouter plusieurs images pour la création d'une galerie
   has_many_attached :images

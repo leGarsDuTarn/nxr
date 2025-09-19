@@ -21,7 +21,7 @@
         <%= f.label :q, "Rechercher", class: "visually-hidden" %>
         <%= f.search_field :q, value: params[:q],
               class: "form-control form-control-sm border-0 flex-grow-1",
-              placeholder: "Nom, description, date..." %>
+              placeholder: "Titre ou date" %>
         <%= button_tag type:"submit", class: "btn-nxr rounded-pill d-flex align-items-center justify-content-center ms-2 px-3" do %>
           <i class="fa-solid fa-magnifying-glass"></i>
         <% end %>
@@ -38,25 +38,24 @@
 
   <% if has_items %>
     <div class="row g-4">
-      <% registerables.each do |item| %>
+      <% @galleries.each do |item| %>
         <div class="col-sm-6 col-lg-4 mx-auto">
           <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
             <div class="ratio ratio-4x3 bg-dark">
-              <% if item.respond_to?(:image) && item.image.attached? %>
-                <%= image_tag registerable_image_url(item),
+              <% has_images = item.respond_to?(:images) && item.images.attached? %>
+              <% if has_images %>
+                <%= image_tag url_for(item.images.first),
                   class: "card-img-top object-cover",
-                  alt: item.name %>
+                  alt: item.title %>
               <% else %>
-                <%= image_tag registerable_image_url(item),
+                <%= image_tag "logo_mcnc_3.png",
                   class: "card-img-top object-contain p-3",
-                  alt: item.name %>
+                  alt: item.title %>
               <% end %>
             </div>
 
-
-
             <div class="card-body d-flex flex-column">
-              <h3 class="h6 fw-bold mb-2"><%= item.name %></h3>
+              <h3 class="h6 fw-bold mb-2"><%= item.title %></h3>
 
               <% if item.respond_to?(:date) && item.date.present? %>
                 <p class="text-tertiary small mb-2">
@@ -65,27 +64,23 @@
                 </p>
               <% end %>
 
-              <p class="small flex-grow-1">
-                <%= truncate(item.description, length: 100, separator: ' ') %>
-              </p>
-
               <div class="mt-auto d-flex justify-content-between align-items-center">
                 <%= link_to [:admin, item],
                       class: "stretched-link btn-nxr small me-2" do %>
-                  <i class="fas fa-search me-1"></i> Voir la fiche
+                  <i class="fas fa-search me-1"></i> Voir
                 <% end %>
 
                 <div class="btn-toolbar gap-2">
                   <%= link_to [:edit, :admin, item],
                         class: "btn btn-icon btn-edit-orange",
-                        title: "Modifier #{item.name}" do %>
+                        title: "Modifier #{item.title}" do %>
                     <i class="fas fa-edit"></i>
                   <% end %>
 
                   <%= link_to [:admin, item],
-                        data: { turbo_method: :delete, turbo_confirm: "Supprimer #{item.name} ?" },
+                        data: { turbo_method: :delete, turbo_confirm: "Supprimer #{item.title} ?" },
                         class: "btn btn-icon btn-delete-red",
-                        title: "Supprimer #{item.name}" do %>
+                        title: "Supprimer #{item.title}" do %>
                     <i class="fas fa-trash"></i>
                   <% end %>
                 </div>

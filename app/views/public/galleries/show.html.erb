@@ -1,1 +1,45 @@
-<%= render partial: "shared/gallery_show", locals: { gallery: @gallery, path: public_gallery_path(@gallery) } %>
+<% cover = @gallery.images.first %>
+
+<section class="banner-dashboard"
+         style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url('<%= cover.present? ? url_for(cover) : asset_path("logo_mcnc_3.png") %>');">
+  <div class="container py-5 text-center text-on-surface">
+    <h1 class="display-5 fw-bold mb-1"><%= @gallery.title %></h1>
+    <p class="lead mb-0">
+      <i class="far fa-calendar-alt me-1"></i>
+      <%= l(@gallery.date, format: :long) %> · <%= @gallery.images.size %> photo<%= "s" if @gallery.images.size > 1 %>
+    </p>
+  </div>
+</section>
+
+<div class="container my-5 position-relative" data-controller="carousel">
+  <!-- Flèches flottantes -->
+  <button type="button" class="carousel-nav prev" data-action="click->carousel#prev" aria-label="Précédent">‹</button>
+  <button type="button" class="carousel-nav next" data-action="click->carousel#next" aria-label="Suivant">›</button>
+
+  <!-- Conteneur scrollable -->
+ <div class="carousel-track d-flex overflow-auto" data-carousel-target="track">
+  <% @gallery.images.each do |image| %>
+    <div class="gallery-item flex-shrink-0 me-3">
+      <article class="card shadow-sm rounded-4 overflow-hidden h-100">
+        <div class="ratio ratio-4x3 bg-dark">
+          <%= link_to "#",
+                data: { lightbox_src: url_for(image), lightbox_alt: @gallery.title },
+                class: "d-block" do %>
+            <%= image_tag image,
+                  class: "card-img-top w-100 h-100 object-fit-cover",
+                  alt: @gallery.title,
+                  loading: "lazy" %>
+          <% end %>
+        </div>
+      </article>
+    </div>
+  <% end %>
+</div>
+
+
+  <div class="text-center mt-4">
+    <%= link_to public_galleries_path, class: "btn-nxr" do %>
+      <i class="fas fa-arrow-left me-2"></i> Retour
+    <% end %>
+  </div>
+</div>

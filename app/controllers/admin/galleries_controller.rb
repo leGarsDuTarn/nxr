@@ -1,10 +1,19 @@
 module Admin
   class GalleriesController < BaseController
+    include Paginable
     before_action :set_admin_gallery, only: %i[show edit update destroy]
     before_action :prepare_images_page, only: %i[edit show]  # charge @images pour la vue
 
     def index
       @galleries = Gallery.order(date: :desc).includes(images_attachments: :blob)
+      # Recherche
+      @galleries = @galleries.search(params[:q]) if params[:q].present?
+
+      # Préchargement ActiveStorage pour éviter les N+1
+      @galleries = @galleries.with_attached_images if Gallery.reflect_on_attachment(:images)
+
+      # Pagination Kaminari via concern
+      @galleries = apply_pagination(@galleries)
     end
 
     def show
