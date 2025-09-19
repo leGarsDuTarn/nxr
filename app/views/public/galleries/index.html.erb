@@ -12,9 +12,6 @@
   <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
     <h2 class="section-title mb-0">
       <i class="fa-regular fa-images me-2"></i> Galeries
-      <% if defined?(@pagy) && @pagy.present? %>
-        <small class="text-tertiary">(<%= @pagy.count %>)</small>
-      <% end %>
     </h2>
 
     <div class="d-flex flex-wrap gap-2 flex-grow-1 justify-content-md-end">
