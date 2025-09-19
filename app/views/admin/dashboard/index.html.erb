@@ -156,9 +156,14 @@
                 <%= l(race.date, format: "%d %B %Y") %>
               </p>
 
-              <div class="mb-4 d-flex align-items-center justify-content-between">
+              <div class="mb-2 d-flex align-items-center justify-content-between">
                 <% count = race.registrations.size %>
                 <span>Inscription en cours : <%= count %></span>
+              </div>
+
+              <div class="mb-4 d-flex align-items-center justify-content-between">
+                <% count_validated = race.registrations.validated.size %>
+                <span>Inscription validée : <%= count_validated %></span>
               </div>
 
               <div class="d-flex align-items-center justify-content-between">
@@ -254,10 +259,19 @@
                 <%= l(event.date, format: "%d %B %Y") %>
               </p>
 
-              <div class="mb-4 d-flex align-items-center justify-content-between">
-                <% count = event.registrations.size %>
-                <span>Inscription en cours : <%= count %></span>
-              </div>
+              <div class="mb-4">
+  <h6 class="fw-bold mb-3">Inscriptions</h6>
+  <ul class="list-unstyled mb-0">
+    <li class="d-flex justify-content-between align-items-center">
+      <span>En cours</span>
+      <span class="badge-pending-full-sm"><%= event.registrations.size %></span>
+    </li>
+    <li class="d-flex justify-content-between align-items-center">
+      <span>Validées</span>
+      <span class="badge-success-full-sm"><%= event.registrations.validated.size %></span>
+    </li>
+  </ul>
+</div>
 
               <div class="mt-auto d-flex align-items-center justify-content-between">
                 <%= link_to admin_event_path(event),
