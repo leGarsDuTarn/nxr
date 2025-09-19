@@ -6,7 +6,7 @@
 </section>
 
 <section class="container my-5">
-  <% has_items = registerables.present? %>
+  <% has_items = items.present? %>
 
   <!-- Barre d’actions -->
   <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
@@ -38,29 +38,37 @@
 
   <% if has_items %>
     <div class="row g-4">
-      <% @galleries.each do |item| %>
+      <% items.each do |item| %>
         <div class="col-sm-6 col-lg-4 mx-auto">
           <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+            <%# ——— Gestion d'image : has_one_attached :image OU has_many_attached :images ——— %>
+            <% has_single_image = item.respond_to?(:image)  && item.image.attached? %>
+            <% has_many_images  = item.respond_to?(:images) && item.images.attached? %>
+            <% img =
+                 if has_single_image
+                   url_for(item.image)
+                 elsif has_many_images
+                   url_for(item.images.first)
+                 else
+                   asset_path("logo_mcnc_3.png")
+                 end %>
+            <% has_media = has_single_image || has_many_images %>
+
             <div class="ratio ratio-4x3 bg-dark">
-              <% has_images = item.respond_to?(:images) && item.images.attached? %>
-              <% if has_images %>
-                <%= image_tag url_for(item.images.first),
-                  class: "card-img-top object-cover",
-                  alt: item.title %>
-              <% else %>
-                <%= image_tag "logo_mcnc_3.png",
-                  class: "card-img-top object-contain p-3",
-                  alt: item.title %>
-              <% end %>
+              <%= image_tag img,
+                    class: ['card-img-top', 'w-100', 'h-100', (has_media ? 'object-cover' : 'object-contain p-3')],
+                    alt: (item.try(:title).presence || 'Média') %>
             </div>
 
             <div class="card-body d-flex flex-column">
-              <h3 class="h6 fw-bold mb-2"><%= item.title %></h3>
+              <h3 class="h6 fw-bold mb-2"><%= item.try(:title) || "Sans titre" %></h3>
 
-              <% if item.respond_to?(:date) && item.date.present? %>
+              <%# ——— Date tolérante : date || published_at || created_at ——— %>
+              <% display_date = item.try(:date) || item.try(:published_at) || item.try(:created_at) %>
+              <% if display_date.present? %>
                 <p class="text-tertiary small mb-2">
                   <i class="far fa-calendar-alt me-1"></i>
-                  <%= l(item.date, format: "%d %B %Y") %>
+                  <%= l(display_date.to_date, format: "%d %B %Y") %>
                 </p>
               <% end %>
 
@@ -73,14 +81,14 @@
                 <div class="btn-toolbar gap-2">
                   <%= link_to [:edit, :admin, item],
                         class: "btn btn-icon btn-edit-orange",
-                        title: "Modifier #{item.title}" do %>
+                        title: "Modifier #{item.try(:title)}" do %>
                     <i class="fas fa-edit"></i>
                   <% end %>
 
                   <%= link_to [:admin, item],
-                        data: { turbo_method: :delete, turbo_confirm: "Supprimer #{item.title} ?" },
+                        data: { turbo_method: :delete, turbo_confirm: "Supprimer #{item.try(:title)} ?" },
                         class: "btn btn-icon btn-delete-red",
-                        title: "Supprimer #{item.title}" do %>
+                        title: "Supprimer #{item.try(:title)}" do %>
                     <i class="fas fa-trash"></i>
                   <% end %>
                 </div>
@@ -91,8 +99,10 @@
       <% end %>
     </div>
 
-    <%= render "shared/pagination", pagy_object: pagy if defined?(pagy) %>
-
+    <%# ——— Pagination (Pagy si fourni) ——— %>
+    <% if local_assigns[:pagy_object].present? %>
+      <%= render "shared/pagination", pagy_object: pagy_object %>
+    <% end %>
   <% else %>
     <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
       <div class="mb-3"><i class="fas fa-inbox fa-3x"></i></div>
