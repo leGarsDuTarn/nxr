@@ -1,9 +1,19 @@
 module Admin
   class ArticlesController < BaseController
+    include Paginable
     before_action :set_admin_article, only: %i[show edit update destroy]
 
     def index
-      @articles = Article.all
+      @articles = Article.order(date: :asc)
+
+      # Recherche
+      @articles = @articles.search(params[:q]) if params[:q].present?
+
+      # Préchargement ActiveStorage pour éviter les N+1
+      @articles = @articles.with_attached_image if Gallery.reflect_on_attachment(:images)
+
+      # Pagination Kaminari via concern
+      @articles = apply_pagination(@articles)
     end
 
     def show

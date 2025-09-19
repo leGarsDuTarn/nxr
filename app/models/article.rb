@@ -1,4 +1,7 @@
 class Article < ApplicationRecord
+  include Searchable # Voir models/concerns/searchable.rb
+  searchable_by text: %w[title], date: :date
+
   belongs_to :user
 
   # Offre à l'admin la possibilité d'ajouter des images pour la création d'un article

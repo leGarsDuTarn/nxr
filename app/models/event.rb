@@ -1,5 +1,7 @@
 class Event < ApplicationRecord
   include HasPrices # Voir models/concerns/has_prices.rb
+  include Searchable # Voir models/concerns/searchable.rb
+  searchable_by text: %w[name description], date: :date
 
   belongs_to :user
   has_many :registrations, as: :registerable, dependent: :destroy

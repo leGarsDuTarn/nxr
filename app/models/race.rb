@@ -1,16 +1,11 @@
 class Race < ApplicationRecord
   include HasPrices # Voir models/concerns/has_prices.rb
+  include Searchable # Voir models/concerns/searchable.rb
+  searchable_by text: %w[name description], date: :date
 
   belongs_to :user
   has_many :registrations, as: :registerable, dependent: :destroy
   has_many :users, through: :registrations
-
-  # Permet de faire une rechercher au niveau de races/index.html.erb
-  scope :search, lambda { |q|
-    next all if q.blank?
-
-    where("name ILIKE :q OR description ILIKE :q", q: "%#{q.strip}%")
-  }
 
   # Offre à l'admin la possibilté d'ajouter une image pour la création d'une course
   has_one_attached :image
