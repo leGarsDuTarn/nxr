@@ -60,3 +60,13 @@
     );
   }
 }
+
+.profile-avatar {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  object-fit: cover; /* propre si l’avatar n’est pas carré */
+  box-shadow: 0 2px 8px rgba(0,0,0,.12);
+}
+@media (min-width: 768px) {
+  .profile-avatar { width: 96px; height: 96px; }
+}

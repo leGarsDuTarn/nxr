@@ -1,134 +1,335 @@
-<h1>Bienvenue <%= current_user.first_name %> !</h1>
-<p>Voici ton tableau de bord membre. Tu pourras retrouver ici tes prochaines activités, inscriptions et actualités !</p>
+<!-- HERO cohérente avec l’admin -->
+<section class="admin-dashboard banner-dashboard banner-dashboard">
+  <div class="container py-5">
+    <h1 class="display-5 fw-bold mb-1">Bonjour <%= current_user.first_name %></h1>
+    <p class="lead mb-0">Bienvenue sur ton espace membre</p>
+  </div>
+</section>
 
-<h2>Mes inscriptions</h2>
+<!-- Mes inscriptions -->
+<section class="container my-5">
+  <% has_registrations = @registrations.present? %>
 
-<% if @registrations.any? %>
-  <ul>
-    <% @registrations.each do |registration| %>
-      <li>
-        <% registerable = registration.registerable %>
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <h2 class="section-title mb-0">
+      <i class="fas fa-user-check me-2"></i>Mes inscriptions
+    </h2>
+  </div>
 
-        <%# Lien vers l’activité selon son type %>
-        <% case registration.registerable_type %>
-        <% when 'Event' %>
-          <%= link_to registerable.name, members_event_path(registerable) %>
-        <% when 'Race' %>
-          <%= link_to registerable.name, members_race_path(registerable) %>
-        <% when 'Training' %>
-          <%= link_to registerable.name, members_training_path(registerable) %>
+  <% if has_registrations %>
+    <div class="home-carousel" data-controller="carousel" data-carousel-step-value="item">
+      <button type="button" class="home-carousel__nav home-carousel__nav--prev"
+              data-action="click->carousel#prev" aria-label="Précédent">‹</button>
+      <button type="button" class="home-carousel__nav home-carousel__nav--next"
+              data-action="click->carousel#next" aria-label="Suivant">›</button>
+
+      <div class="home-carousel__track" data-carousel-target="track">
+        <% @registrations.each do |registration| %>
+          <% reg = registration.registerable %>
+          <div class="home-carousel__item">
+            <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+              <!-- Media -->
+              <div class="ratio ratio-4x3 bg-dark">
+                <% if reg.respond_to?(:image) && reg.image&.attached? %>
+                  <%= image_tag reg.image, class: "card-img-top object-cover", alt: (reg.respond_to?(:name) ? reg.name : reg.try(:title)) %>
+                <% else %>
+                  <%# fallback par type pour garder la cohérence visuelle %>
+                  <% fallback =
+                       case registration.registerable_type
+                       when 'Race'     then 'race_flag.png'
+                       when 'Training' then 'training_img.png'
+                       else 'logo_mcnc_3.png'
+                       end %>
+                  <%= image_tag fallback, class: "card-img-top object-contain p-3",
+                        alt: (reg.respond_to?(:name) ? reg.name : reg.try(:title) || registration.registerable_type) %>
+                <% end %>
+              </div>
+
+              <!-- Body -->
+              <div class="card-body d-flex flex-column">
+                <h3 class="h6 fw-bold mb-2"><%= reg.respond_to?(:name) ? reg.name : reg.try(:title) || registration.registerable_type %></h3>
+
+                <% if reg.respond_to?(:date) && reg.date.present? %>
+                  <p class="text-tertiary small mb-1">
+                    <i class="far fa-calendar-alt me-1"></i>
+                    <%= l(reg.date, format: "%d %B %Y") %>
+                  </p>
+                <% end %>
+
+                <p class="text-tertiary small mb-3">
+                  <i class="far fa-clipboard me-1"></i>
+                  Inscrit le <%= l(registration.created_at, format: :short) %>
+                  <%# Status si dispo %>
+                  <% if registration.respond_to?(:status) && registration.status.present? %>
+                    <% badge = registration.status.to_s == "validated" ? "badge-success-full-sm" : "badge-pending-full-sm" %>
+                    <span class="<%= badge %> ms-2"><%= registration.status %></span>
+                  <% end %>
+                </p>
+
+                <div class="mt-auto d-flex align-items-center justify-content-between">
+                  <%= link_to polymorphic_path([:members, reg]),
+                        class: "stretched-link btn-nxr small" do %>
+                    <i class="fas fa-search me-1"></i> Voir la fiche
+                  <% end %>
+
+                  <div class="btn-toolbar gap-2">
+                    <%= link_to polymorphic_path([:members, reg, registration]),
+                          class: "btn btn-icon btn-edit-orange",
+                          title: "Voir mon inscription",
+                          aria: { label: "Voir mon inscription" } do %>
+                      <i class="fas fa-ticket-alt"></i>
+                    <% end %>
+
+                    <%= link_to polymorphic_path([:members, reg, registration]),
+                          data: { turbo_method: :delete, turbo_confirm: "Es-tu sûr de vouloir annuler ton inscription ?" },
+                          class: "btn btn-icon btn-delete-red",
+                          title: "Annuler mon inscription",
+                          aria: { label: "Annuler mon inscription" } do %>
+                      <i class="fas fa-times"></i>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
         <% end %>
-
-        <br>
-        <%# Attention ici ne pas enlever le 'l' avant(registration.created_at)
-        <%# car le 'l' est un allias pour localize(...) -> donc erreur syntaxe %>
-        <em>Inscrit le <%= l(registration.created_at, format: :short) %></em>
-            <%# registration.registerable -> L'événement auquel members est inscrit soit l'objet lié à l'inscription %>
-            <%# Donc (registration.registerable, registration) %>
-            <%# ==> Je passe en premier l’événement auquel le membre est inscrit, puis l’inscription elle-même %>
-            <%# Ainsi Rails peut construire la bonne route imbriquée %>
-            <%= link_to "voir mon inscription",
-            polymorphic_path([:members, registration.registerable, registration]),
-            class: "btn btn-primary" %>
-
-            <%= link_to "Annuler mon inscription", members_race_registration_path(registration.registerable, registration),
-            data: { turbo_method: :delete, turbo_confirm: "Es-tu sûr de vouloir d'annuler ton inscription ?" },
-            class: "btn btn-danger",
-            aria: { label: "Annuler l'inscription #{registration.registerable.name}" }%>
-      </li>
-    <% end %>
-  </ul>
-<% else %>
-  <p>Vous n’êtes inscrit à aucune activité pour le moment.</p>
-<% end %>
-
-
-<hr>
-
-<h3>Les courses</h3>
-
-<% if @races.empty? %>
-  <p>Il n'y a pas de course pour l'instant</p>
-<% else %>
-  <ul>
-    <% @races.each do |race| %>
-      <li><%= race.name %>
-          <%= link_to members_race_path(race), class: "btn btn-primary", aria: { label: "Voir la course #{race.name}" } do %>
-            <i class="fas fa-search"></i>
-          <% end %>
-      </li>
-    <% end %>
-  </ul>
-<% end %>
-
-<hr>
-
-<h3>Les entraînements</h3>
-
-<% if @trainings.empty? %>
-  <p>Il n'y a pas d'entraînement pour l'instant</p>
-<% else %>
-  <ul>
-    <% @trainings.each do |training| %>
-      <li><%= training.name %>
-          <%= link_to members_training_path(training), class: "btn btn-primary", aria: { label: "Voir l'entraînement #{training.name}" } do %>
-            <i class="fas fa-search"></i>
-          <% end %>
-      </li>
-    <% end %>
-  </ul>
-<% end %>
-
-<hr>
-
-<h3>Les événements du club</h3>
-
-<% if @events.empty? %>
-  <p>Il n'y a pas d'événement pour l'instant</p>
-<% else %>
-  <ul>
-    <% @events.each do |event| %>
-      <li><%= event.name %>
-          <%= link_to members_event_path(event), class: "btn btn-primary", aria: { label: "Voir l'événement #{event.name}" } do %>
-            <i class="fas fa-search"></i>
-          <% end %>
-      </li>
-    <% end %>
-  </ul>
-<% end %>
-
-<hr>
-
-<h3>Mon profil</h3>
-<div>
-  <% if current_user.avatar.attached? %>
-    <%= image_tag(current_user.avatar, size: "100x100", class: "rounded-circle me-3") %>
+      </div>
+    </div>
   <% else %>
-    <ul>
-      <li><p>Aucun avatar défini</p></li>
-    </ul>
+    <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
+      <div class="mb-3"><i class="far fa-clipboard fa-3x"></i></div>
+      <h3 class="h5 fw-bold mb-2">Aucune inscription</h3>
+      <p class="mb-0">Inscris-toi à une activité pour la voir apparaître ici.</p>
+    </div>
   <% end %>
-</div>
-<div>
-  <ul>
-    <li><strong>Pseudo :</strong> <%= current_user.user_name %></li>
-    <li><strong>Prénom :</strong> <%= current_user.first_name %></li>
-    <li><strong>Nom :</strong> <%= current_user.last_name %></li>
-    <li><strong>Date de naissance :</strong> <%= current_user.birth_date %></li>
+</section>
 
-    <% if current_user.phone_number.blank? %>
-      <li><strong>Téléphone :</strong> Aucun numéro de téléphone renseigné</li>
-    <% else %>
-    <li><strong>Téléphone :</strong> <%= current_user.phone_number %></li>
-    <% end %>
+<!-- Courses -->
+<section class="container my-5">
+  <% has_races = @races.present? %>
 
-    <li><strong>Email :</strong> <%= current_user.email %></li>
-    <li><strong>Adresse :</strong> <%= current_user.address %></li>
-    <li><strong>Code postal :</strong> <%= current_user.post_code %></li>
-    <li><strong>Ville :</strong> <%= current_user.town %></li>
-    <li><strong>Code de ma licence :</strong> <%= current_user.license_code %></li>
-    <li><strong>Numéro de ma licence :</strong> <%= current_user.license_number %></li>
-    <li><strong>Mon club actuel :</strong> <%= current_user.club_name %></li>
-  </ul>
-  <%= link_to "Modifier mon profil", edit_user_registration_path, class: "btn btn-primary" %>
-</div>
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <h2 class="section-title mb-0">
+      <i class="fas fa-flag-checkered me-2"></i>Courses
+    </h2>
+  </div>
+
+  <% if has_races %>
+    <div class="home-carousel" data-controller="carousel" data-carousel-step-value="item">
+      <button type="button" class="home-carousel__nav home-carousel__nav--prev"
+              data-action="click->carousel#prev" aria-label="Précédent">‹</button>
+      <button type="button" class="home-carousel__nav home-carousel__nav--next"
+              data-action="click->carousel#next" aria-label="Suivant">›</button>
+
+      <div class="home-carousel__track" data-carousel-target="track">
+        <% @races.each do |race| %>
+          <div class="home-carousel__item">
+            <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+              <div class="ratio ratio-4x3 bg-dark">
+                <% if race.image&.attached? %>
+                  <%= image_tag race.image, class: "card-img-top object-cover", alt: race.name %>
+                <% else %>
+                  <%= image_tag "race_flag.png", class: "card-img-top object-contain p-3", alt: race.name %>
+                <% end %>
+              </div>
+
+              <div class="card-body d-flex flex-column">
+                <h3 class="h6 fw-bold mb-2"><%= race.name %></h3>
+                <p class="text-tertiary small mb-3">
+                  <i class="far fa-clock me-1"></i>
+                  <%= l(race.date, format: "%d %B %Y") %>
+                </p>
+
+                <div class="mt-auto d-flex align-items-center justify-content-between">
+                  <%= link_to members_race_path(race), class: "stretched-link btn-nxr small" do %>
+                    <i class="fas fa-search me-1"></i> Voir la fiche
+                  <% end %>
+                </div>
+              </div>
+            </article>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
+      <div class="mb-3"><i class="far fa-calendar-times fa-3x"></i></div>
+      <h3 class="h5 fw-bold mb-2">Aucune course pour le moment</h3>
+      <p class="mb-0">Reviens vite, ça va chauffer sur la piste 🏁</p>
+    </div>
+  <% end %>
+</section>
+
+<!-- Entraînements -->
+<section class="container my-5">
+  <% has_trainings = @trainings.present? %>
+
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <h2 class="section-title mb-0">
+      <i class="far fa-hand-peace me-2"></i>Entraînements
+    </h2>
+  </div>
+
+  <% if has_trainings %>
+    <div class="home-carousel" data-controller="carousel" data-carousel-step-value="item">
+      <button type="button" class="home-carousel__nav home-carousel__nav--prev"
+              data-action="click->carousel#prev" aria-label="Précédent">‹</button>
+      <button type="button" class="home-carousel__nav home-carousel__nav--next"
+              data-action="click->carousel#next" aria-label="Suivant">›</button>
+
+      <div class="home-carousel__track" data-carousel-target="track">
+        <% @trainings.each do |training| %>
+          <div class="home-carousel__item">
+            <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+              <div class="ratio ratio-4x3 bg-dark">
+                <% if training.image&.attached? %>
+                  <%= image_tag training.image, class: "card-img-top object-cover", alt: training.name %>
+                <% else %>
+                  <%= image_tag "training_img.png", class: "card-img-top object-contain p-3", alt: training.name %>
+                <% end %>
+              </div>
+
+              <div class="card-body d-flex flex-column">
+                <h3 class="h6 fw-bold mb-2"><%= training.name %></h3>
+                <p class="text-tertiary small mb-3">
+                  <i class="far fa-clock me-1"></i>
+                  <%= l(training.date, format: "%d %B %Y") %>
+                </p>
+
+                <div class="mt-auto d-flex align-items-center justify-content-between">
+                  <%= link_to members_training_path(training), class: "stretched-link btn-nxr small" do %>
+                    <i class="fas fa-search me-1"></i> Voir la fiche
+                  <% end %>
+                </div>
+              </div>
+            </article>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
+      <div class="mb-3"><i class="far fa-calendar-times fa-3x"></i></div>
+      <h3 class="h5 fw-bold mb-2">Aucun entraînement pour le moment</h3>
+      <p class="mb-0">Les créneaux s’afficheront ici.</p>
+    </div>
+  <% end %>
+</section>
+
+<!-- Événements -->
+<section class="container my-5">
+  <% has_events = @events.present? %>
+
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <h2 class="section-title mb-0">
+      <i class="fas fa-calendar-alt me-2"></i>Événements du club
+    </h2>
+  </div>
+
+  <% if has_events %>
+    <div class="home-carousel" data-controller="carousel" data-carousel-step-value="item">
+      <button type="button" class="home-carousel__nav home-carousel__nav--prev"
+              data-action="click->carousel#prev" aria-label="Précédent">‹</button>
+      <button type="button" class="home-carousel__nav home-carousel__nav--next"
+              data-action="click->carousel#next" aria-label="Suivant">›</button>
+
+      <div class="home-carousel__track" data-carousel-target="track">
+        <% @events.each do |event| %>
+          <div class="home-carousel__item">
+            <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+              <div class="ratio ratio-4x3 bg-dark">
+                <% if event.image&.attached? %>
+                  <%= image_tag event.image, class: "card-img-top object-cover", alt: event.name %>
+                <% else %>
+                  <%= image_tag "logo_mcnc_3.png", class: "card-img-top object-contain p-3", alt: event.name %>
+                <% end %>
+              </div>
+
+              <div class="card-body d-flex flex-column">
+                <h3 class="h6 fw-bold mb-2"><%= event.name %></h3>
+                <p class="text-tertiary small mb-3">
+                  <i class="far fa-clock me-1"></i>
+                  <%= l(event.date, format: "%d %B %Y") %>
+                </p>
+
+                <div class="mt-auto d-flex align-items-center justify-content-between">
+                  <%= link_to members_event_path(event), class: "stretched-link btn-nxr small" do %>
+                    <i class="fas fa-search me-1"></i> Voir la fiche
+                  <% end %>
+                </div>
+              </div>
+            </article>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
+      <div class="mb-3"><i class="far fa-calendar-times fa-3x"></i></div>
+      <h3 class="h5 fw-bold mb-2">Aucun événement pour le moment</h3>
+      <p class="mb-0">Dès qu’un événement est publié, il s’affiche ici.</p>
+    </div>
+  <% end %>
+</section>
+
+<!-- Mon profil -->
+<% required = {
+  "Téléphone" => current_user.phone_number,
+  "Adresse"   => current_user.address,
+  "Code postal" => current_user.post_code,
+  "Ville"     => current_user.town,
+  "N° licence" => current_user.license_number
+} %>
+<% missing = required.select { |_, v| v.blank? }.keys %>
+<% total = required.size; done = total - missing.size %>
+<% pct = total.zero? ? 0 : ((done.to_f / total) * 100).round %>
+
+<section class="container my-5">
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <h2 class="section-title mb-0">
+      <i class="far fa-user-circle me-2"></i>Mon profil
+    </h2>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-sm-10 col-md-8 col-lg-6 mx-auto">
+      <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+        <div class="card-body">
+          <div class="d-flex align-items-center gap-3">
+            <% if current_user.avatar&.attached? %>
+              <%= image_tag current_user.avatar, class: "profile-avatar", alt: current_user.user_name %>
+            <% else %>
+              <%= image_tag "avatar_default.jpg", class: "profile-avatar", alt: current_user.user_name %>
+            <% end %>
+
+            <div class="flex-grow-1">
+              <h3 class="h6 fw-bold mb-1"><%= current_user.first_name %> <%= current_user.last_name %></h3>
+              <div class="inscriptions-progress">
+                <div class="progress" role="progressbar" aria-label="Complétion du profil"
+                     aria-valuenow="<%= pct %>" aria-valuemin="0" aria-valuemax="100">
+                  <div class="progress-bar-green" style="width:<%= pct %>%"></div>
+                </div>
+                <small class="text-tertiary d-block mt-1">Profil complété à <%= pct %>%</small>
+              </div>
+            </div>
+          </div>
+
+          <% if missing.any? %>
+            <hr class="my-3">
+            <p class="small mb-2 text-tertiary">Champs à compléter :</p>
+            <ul class="small mb-3 mb-0">
+              <% missing.each do |label| %>
+                <li><i class="far fa-circle-xmark me-1"></i><%= label %></li>
+              <% end %>
+            </ul>
+          <% end %>
+
+          <hr class="my-3">
+          <%= link_to edit_user_registration_path, class: "btn-nxr d-inline-flex align-items-center" do %>
+            <i class="fas fa-user-edit me-2"></i> Mettre à jour mes infos
+          <% end %>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
