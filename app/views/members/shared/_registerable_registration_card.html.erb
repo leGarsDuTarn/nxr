@@ -24,6 +24,10 @@
           else "fa-hourglass-half"
         end %>
 
+        <span class="small text-tertiary">
+          <i class="fas fa-traffic-light me-2"></i>Statut de l'inscription
+        </span>
+
         <span class="badge rounded-pill d-inline-flex align-items-center gap-1 <%= status_color %>"
               title="<%= status.humanize %>">
           <i class="fas <%= status_icon %>"></i>
@@ -58,8 +62,8 @@
                 turbo_method: :delete,
                 turbo_confirm: "Êtes-vous sûr de vouloir annuler votre inscription ?"
               },
-              class: "btn btn-outline-danger btn-sm rounded-pill d-inline-flex align-items-center" do %>
-          <i class="fas fa-times me-1"></i>Annuler
+              class: "btn-rejected rounded-pill d-inline-flex align-items-center" do %>
+          <i class="fas fa-times me-1"></i>Se désinscrire
         <% end %>
       </div>
     <% else %>

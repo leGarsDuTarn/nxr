@@ -24,6 +24,11 @@ fr:
         plate_number: "Numéro de plaque"
         race_number: "Numéro de course"
         avatar: "Avatar"
+      registration:
+        status:
+          pending: "En attente"
+          validated: "Validée"
+          rejected: "Refusée"
   simple_form:
     labels:
       user:
@@ -100,4 +105,3 @@ fr:
       - oct.
       - nov.
       - déc.
-
