@@ -1,13 +1,13 @@
-<% if registerable.respond_to?(:image) && registerable.image.attached? %>
+<% if @training.respond_to?(:image) && @training.image.attached? %>
   <!-- Cas 1 : existant avec image -->
   <section class="banner-dashboard"
-    style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url('<%= banner_image_url(registerable) %>');">
+    style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url('<%= banner_image_url(@training) %>');">
     <div class="container py-5 text-center">
-      <h1 class="display-5 fw-bold mb-0"><%= registerable.name %></h1>
-      <% if registerable.respond_to?(:date) && registerable.date.present? %>
+      <h1 class="display-5 fw-bold mb-0"><%= @training.name %></h1>
+      <% if @training.respond_to?(:date) && @training.date.present? %>
           <div class=" w-bold mt-2 text-on-surface">
             <i class="far fa-calendar-alt me-1"></i>
-            <%= l(registerable.date, format: "%d %B %Y") %>
+            <%= l(@training.date, format: "%d %B %Y") %>
           </div>
         <% end %>
     </div>
@@ -17,11 +17,11 @@
   <!-- Cas 2 : existant sans image -->
   <section class="profile-user banner-dashboard">
     <div class="container py-5 text-center">
-      <h1 class="display-5 fw-bold mb-0"><%= registerable.name %></h1>
-      <% if registerable.respond_to?(:date) && registerable.date.present? %>
+      <h1 class="display-5 fw-bold mb-0"><%= @training.name %></h1>
+      <% if @training.respond_to?(:date) && @training.date.present? %>
           <div class="fw-bold mt-2 text-on-surface">
             <i class="far fa-calendar-alt me-1"></i>
-            <%= l(registerable.date, format: "%d %B %Y") %>
+            <%= l(@training.date, format: "%d %B %Y") %>
           </div>
         <% end %>
     </div>
@@ -44,12 +44,12 @@
           <h3 class="h6 fw-bold mb-3"><i class="fa-solid fa-euro-sign me-2"></i>Tarifs</h3>
 
           <div class="vstack gap-2">
-            <% if registerable.respond_to?(:club_member_price) %>
+            <% if @training.respond_to?(:club_member_price) %>
               <div><strong>Tarif adhérent :</strong>
-                <%= number_to_currency(registerable.club_member_price, unit: "€", format: "%n %u") %>
+                <%= number_to_currency(@training.club_member_price, unit: "€", format: "%n %u") %>
               </div>
               <div><strong>Tarif non adhérent :</strong>
-                <%= number_to_currency(registerable.non_club_member_price, unit: "€", format: "%n %u") %>
+                <%= number_to_currency(@training.non_club_member_price, unit: "€", format: "%n %u") %>
               </div>
             <% end %>
 
@@ -83,15 +83,15 @@
             <% end %>
 
             <!-- Statut -->
-            <% if registerable.respond_to?(:status) && registerable.status.present? %>
+            <% if @training.respond_to?(:status) && @training.status.present? %>
               <% status_badge =
-                   case registerable.status.to_s
+                   case @training.status.to_s
                    when "published","open" then "badge-validated"
                    when "closed","archived" then "badge-rejected"
                    else "badge-pending"
                    end %>
               <div><strong>Statut :</strong>
-                <span class="badge rounded-pill <%= status_badge %>"><%= registerable.status.to_s.humanize %></span>
+                <span class="badge rounded-pill <%= status_badge %>"><%= @training.status.to_s.humanize %></span>
               </div>
             <% end %>
           </div>
@@ -106,7 +106,7 @@
         <div class="card-body">
           <h3 class="h6 fw-bold mb-3"><i class="far fa-file-alt me-2"></i>Description</h3>
           <div>
-            <%= simple_format(registerable.description.presence || "Aucune description fournie.") %>
+            <%= simple_format(@training.description.presence || "Aucune description fournie.") %>
           </div>
         </div>
       </article>
@@ -115,10 +115,10 @@
 <article class="card card-admin shadow-sm rounded-4">
   <div class="card-body">
     <% validated_scope =
-         if registerable.registrations.respond_to?(:validated)
-           registerable.registrations.validated
+         if @training.registrations.respond_to?(:validated)
+            @training.registrations.validated
          else
-           registerable.registrations.where(status: :validated) # ou "validated" selon ton enum
+           @training.registrations.where(status: :validated)
          end %>
 
     <% validated_count = validated_scope.count %>
@@ -137,7 +137,7 @@
               <p class="mb-0">Aucune inscription pour le moment.</p>
             </div>
           <% else %>
-            <% registrations = registerable.registrations.includes(:user).limit(3) %>
+            <% registrations = @training.registrations.includes(:user).limit(3) %>
             <div class="row g-3">
               <% registrations.each do |registration| %>
                 <% user = registration.user %>

@@ -7,13 +7,6 @@ class Event < ApplicationRecord
   has_many :registrations, as: :registerable, dependent: :destroy
   has_many :users, through: :registrations
 
-  # Permet de faire une rechercher au niveau de races/index.html.erb
-  scope :search, lambda { |q|
-    next all if q.blank?
-
-    where("name ILIKE :q OR description ILIKE :q", q: "%#{q.strip}%")
-  }
-
   # Offre à l'admin la possibilté d'ajouter une image pour la création d'un événement
   has_one_attached :image
   # Permet de supprimer l'image via la partiale view/event/_form.html.erb
