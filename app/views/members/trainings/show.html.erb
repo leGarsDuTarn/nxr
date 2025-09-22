@@ -1,5 +1,3 @@
-
-
 <% if @training.respond_to?(:image) && @training.image.attached? %>
   <!-- Cas 1 : existant avec image -->
   <section class="banner-dashboard"
@@ -11,8 +9,7 @@
             <i class="far fa-calendar-alt me-1"></i>
             <%= l(@training.date, format: "%d %B %Y") %>
           </div>
-          <%= registration_link(@training) %>
-        <% end %>
+      <% end %>
     </div>
   </section>
 
@@ -26,7 +23,7 @@
             <i class="far fa-calendar-alt me-1"></i>
             <%= l(@training.date, format: "%d %B %Y") %>
           </div>
-        <% end %>
+      <% end %>
     </div>
   </section>
 <% end %>
@@ -35,7 +32,7 @@
   <!-- Barre d’actions -->
   <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
     <h2 class="section-title mb-0">
-      <i class="fa-solid fa-list-check"></i> Fiche d'escriptive
+      <i class="fa-solid fa-list-check"></i> Fiche descriptive
     </h2>
   </div>
 
@@ -104,6 +101,9 @@
 
     <!-- Colonne droite -->
     <div class="col-lg-8">
+      <!-- Carte d’inscription -->
+      <%= render "members/shared/registerable_registration_card", registerable: @training %>
+
       <!-- Description -->
       <article class="card card-admin shadow-sm rounded-4 mb-4">
         <div class="card-body">
@@ -115,26 +115,26 @@
       </article>
 
       <!-- Inscriptions -->
-<article class="card card-admin shadow-sm rounded-4">
-  <div class="card-body">
-    <% validated_scope =
-         if @training.registrations.respond_to?(:validated)
-            @training.registrations.validated
-         else
-           @training.registrations.where(status: :validated)
-         end %>
+      <article class="card card-admin shadow-sm rounded-4">
+        <div class="card-body">
+          <% validated_scope =
+               if @training.registrations.respond_to?(:validated)
+                  @training.registrations.validated
+               else
+                 @training.registrations.where(status: :validated)
+               end %>
 
-    <% validated_count = validated_scope.count %>
-    <% registrations = validated_scope.includes(:user).limit(3) %>
+          <% validated_count = validated_scope.count %>
+          <% registrations = validated_scope.includes(:user).limit(3) %>
 
-    <div class="d-flex align-items-center justify-content-between mb-3">
-      <h3 class="h6 fw-bold mb-0">
-        <i class="fas fa-user-check me-2"></i> Inscriptions validées
-      </h3>
-      <span class="badge rounded-pill"><%= validated_count %></span>
-    </div>
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <h3 class="h6 fw-bold mb-0">
+              <i class="fas fa-user-check me-2"></i> Inscriptions validées
+            </h3>
+            <span class="badge rounded-pill"><%= validated_count %></span>
+          </div>
 
-    <% if validated_count.zero? %>
+          <% if validated_count.zero? %>
             <div class="text-center py-4">
               <i class="far fa-clipboard fa-2x mb-2"></i>
               <p class="mb-0">Aucune inscription pour le moment.</p>
@@ -171,7 +171,6 @@
     </div>
   </div>
 </section>
-
 
 <%= link_to members_dashboard_path, class: "btn btn-primary", aria: { label: "Retour au tableau de bord"} do %>
   <i class="fas fa-home"></i>
