@@ -1,0 +1,11 @@
+<%= render "shared/activity_index",
+           title: "Les événements",
+           subtitle: "Tous les événements organisées par le club",
+           title_action: "Les événements à venir",
+           icon: "fas fa-calendar-alt me-2",
+           registerables: @events,
+           search_path: public_events_path,
+           empty_title: "Aucun événement",
+           empty_message: "Oupss aucun événement n'a été trouvé" %>
+
+<%= render "shared/pagination", paginated: @events %>
