@@ -140,7 +140,7 @@
               <p class="mb-0">Aucune inscription pour le moment.</p>
             </div>
           <% else %>
-            <% registrations = @training.registrations.includes(:user).limit(3) %>
+            <% registrations = @training.registrations.validated.includes(:user).limit(3) %>
             <div class="row g-3">
               <% registrations.each do |registration| %>
                 <% user = registration.user %>

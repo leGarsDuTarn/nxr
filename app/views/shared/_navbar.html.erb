@@ -10,7 +10,7 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ms-auto">
-        <% if user_signed_in? %>
+        <% if user_signed_in? && current_user.admin? %>
           <li class="nav-item">
             <%= link_to "Accueil", root_path, class: "nav-link" %>
           </li>
@@ -34,7 +34,7 @@
               <% if current_user.avatar.attached? %>
                 <%= image_tag current_user.avatar, class: "avatar me-2", alt: "Mon avatar" %>
               <% else %>
-                <%= image_tag "https://cdn.pixabay.com/photo/2017/08/29/23/49/abstract-background-2695347_1280.jpg", class: "avatar me-2", alt: "Mon avatar" %>
+                <%= image_tag "avatar_default.jpg", class: "avatar me-2", alt: "Mon avatar" %>
               <% end %>
               <span class="d-lg-none">Menu</span>
             </a>
@@ -44,6 +44,43 @@
               <%= link_to "Se déconnecter", destroy_user_session_path, data: {turbo_method: :delete}, class: "dropdown-item text-danger" %>
             </div>
           </li>
+
+          <% elsif user_signed_in? && current_user.member? %>
+          <li class="nav-item">
+            <%= link_to "Accueil", root_path, class: "nav-link" %>
+          </li>
+          <li class="nav-item">
+            <%= link_to "Photos", public_galleries_path, class: "nav-link" %>
+          </li>
+          <li class="nav-item">
+            <%= link_to "Actualités", public_articles_path, class: "nav-link" %>
+          </li>
+          <li class="nav-item">
+            <%= link_to "Événements", members_events_path, class: "nav-link" %>
+          </li>
+          <li class="nav-item">
+            <%= link_to "Entraînements", members_trainings_path, class: "nav-link" %>
+          </li>
+          <li class="nav-item">
+            <%= link_to "Courses", members_races_path, class: "nav-link" %>
+          </li>
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" id="navbarDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <% if current_user.avatar.attached? %>
+                <%= image_tag current_user.avatar, class: "avatar me-2", alt: "Mon avatar" %>
+              <% else %>
+                <%= image_tag "avatar_default.jpg", class: "avatar me-2", alt: "Mon avatar" %>
+              <% end %>
+              <span class="d-lg-none">Menu</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+              <%= link_to "Profil", edit_user_registration_path, class: "dropdown-item" %>
+              <%= link_to "Tableau de bord", current_user.admin? ? admin_dashboard_path : members_dashboard_path, class: "dropdown-item" %>
+              <%= link_to "Se déconnecter", destroy_user_session_path, data: {turbo_method: :delete}, class: "dropdown-item text-danger" %>
+            </div>
+          </li>
+
+
         <% else %>
           <li class="nav-item">
             <%= link_to "Accueil", root_path, class: "nav-link" %>
