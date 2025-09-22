@@ -1,0 +1,11 @@
+<%= render "members/shared/registerable_member_index",
+           title: "Les événements",
+           subtitle: "Tous les événements organisés par le club",
+           title_action: "Les événements",
+           icon: "fas fa-list-ul me-2",
+           registerables: @events,
+           search_path: members_events_path,
+           empty_title: "Aucun événement",
+           empty_message: "Oups, pas d'événement pour l'instant, revenez plus tard." %>
+
+<%= render "shared/pagination", paginated: @events %>

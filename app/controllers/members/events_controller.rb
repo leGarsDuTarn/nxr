@@ -1,7 +1,17 @@
 module Members
   class EventsController < BaseController
+    include Paginable
     def index
-      @events = Event.all
+      @events = Event.order(date: :asc)
+
+      # Recherche
+      @events = @events.search(params[:q]) if params[:q].present?
+
+      # Préchargement ActiveStorage pour éviter les N+1
+      @events = @events.with_attached_image if Event.reflect_on_attachment(:image)
+
+      # Pagination Kaminari via concern
+      @events = apply_pagination(@events)
     end
 
     def show
