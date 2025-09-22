@@ -1,5 +1,5 @@
-<!-- HERO cohérente avec l’admin -->
-<section class="admin-dashboard banner-dashboard banner-dashboard">
+<!-- HERO -->
+<section class="admin-dashboard banner-dashboard">
   <div class="container py-5">
     <h1 class="display-5 fw-bold mb-1">Bonjour <%= current_user.first_name %></h1>
     <p class="lead mb-0">Bienvenue sur ton espace membre</p>
@@ -47,46 +47,83 @@
 
               <!-- Body -->
               <div class="card-body d-flex flex-column">
-                <h3 class="h6 fw-bold mb-2"><%= reg.respond_to?(:name) ? reg.name : reg.try(:title) || registration.registerable_type %></h3>
+                <!-- Titre -->
+                <h3 class="h6 fw-bold mb-2 text-truncate">
+                  <%= reg.respond_to?(:name) ? reg.name : reg.try(:title) || registration.registerable_type %>
+                </h3>
 
+                <!-- Date de l'événement -->
                 <% if reg.respond_to?(:date) && reg.date.present? %>
-                  <p class="text-tertiary small mb-1">
+                  <p class="text-tertiary small mb-2">
                     <i class="far fa-calendar-alt me-1"></i>
                     <%= l(reg.date, format: "%d %B %Y") %>
                   </p>
                 <% end %>
 
-                <p class="text-tertiary small mb-3">
-                  <i class="far fa-clipboard me-1"></i>
-                  Inscrit le <%= l(registration.created_at, format: :short) %>
-                  <%# Status si dispo %>
+                <!-- Informations de statut et inscription -->
+                <div class="mb-3">
+                  <!-- Date d'inscription -->
+                  <div class="text-tertiary small mb-2">
+                    <i class="far fa-clipboard me-1"></i>
+                    Inscrit le <%= l(registration.created_at, format: :short) %>
+                  </div>
+
+                  <!-- Statut -->
                   <% if registration.respond_to?(:status) && registration.status.present? %>
-                    <% badge = registration.status.to_s == "validated" ? "badge-success-full-sm" : "badge-pending-full-sm" %>
-                    <span class="<%= badge %> ms-2"><%= registration.status %></span>
-                  <% end %>
-                </p>
+                    <% status = registration.status.to_s %>
+                    <% status_color = case status
+                      when "validated" then "badge-validated"
+                      when "rejected"  then "badge-rejected"
+                      else "badge-pending"
+                    end %>
+                    <% status_icon = case status
+                      when "validated" then "fa-check-circle"
+                      when "rejected"  then "fa-times-circle"
+                      else "fa-hourglass-half"
+                    end %>
 
-                <div class="mt-auto d-flex align-items-center justify-content-between">
-                  <%= link_to polymorphic_path([:members, reg]),
-                        class: "stretched-link btn-nxr small" do %>
-                    <i class="fas fa-search me-1"></i> Voir la fiche
+                    <div class="d-flex align-items-center gap-5">
+                      <span class="small text-tertiary me-2">
+                        <i class="fas fa-traffic-light me-2"></i>Statut
+                      </span>
+                      <span class="badge rounded-pill d-inline-flex align-items-center gap-1 <%= status_color %>"
+                            title="<%= status.humanize %>">
+                        <i class="fas <%= status_icon %>"></i>
+                        <%= status.humanize %>
+                      </span>
+                    </div>
                   <% end %>
+                </div>
 
-                  <div class="btn-toolbar gap-2">
-                    <%= link_to polymorphic_path([:members, reg, registration]),
-                          class: "btn btn-icon btn-edit-orange",
-                          title: "Voir mon inscription",
-                          aria: { label: "Voir mon inscription" } do %>
-                      <i class="fas fa-ticket-alt"></i>
+                <!-- Actions (CTA en bas) -->
+                <div class="mt-auto">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <!-- Bouton principal -->
+                    <%= link_to polymorphic_path([:members, reg]),
+                          class: "btn-nxr small d-inline-flex align-items-center" do %>
+                      <i class="fas fa-search me-1"></i>Voir
                     <% end %>
 
-                    <%= link_to polymorphic_path([:members, reg, registration]),
-                          data: { turbo_method: :delete, turbo_confirm: "Es-tu sûr de vouloir annuler ton inscription ?" },
-                          class: "btn btn-icon btn-delete-red",
-                          title: "Annuler mon inscription",
-                          aria: { label: "Annuler mon inscription" } do %>
-                      <i class="fas fa-times"></i>
-                    <% end %>
+                    <!-- Actions secondaires -->
+                    <div class="btn-toolbar gap-2">
+                      <%= link_to polymorphic_path([:members, reg, registration]),
+                            class: "btn btn-icon btn-edit-orange",
+                            title: "Voir mon inscription",
+                            aria: { label: "Voir mon inscription" } do %>
+                        <i class="fa-solid fa-pen-to-square"></i>
+                      <% end %>
+
+                      <%= link_to polymorphic_path([:members, reg, registration]),
+                            data: {
+                              turbo_method: :delete,
+                              turbo_confirm: "Es-tu sûr de vouloir annuler ton inscription ?"
+                            },
+                            class: "btn btn-icon btn-delete-red",
+                            title: "Annuler mon inscription",
+                            aria: { label: "Annuler mon inscription" } do %>
+                        <i class="fas fa-times"></i>
+                      <% end %>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -97,9 +134,11 @@
     </div>
   <% else %>
     <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
-      <div class="mb-3"><i class="far fa-clipboard fa-3x"></i></div>
+      <div class="mb-3">
+        <i class="far fa-clipboard fa-3x text-muted"></i>
+      </div>
       <h3 class="h5 fw-bold mb-2">Aucune inscription</h3>
-      <p class="mb-0">Inscris-toi à une activité pour la voir apparaître ici.</p>
+      <p class="text-muted mb-0">Inscris-toi à une activité pour la voir apparaître ici.</p>
     </div>
   <% end %>
 </section>
@@ -283,6 +322,7 @@
 <% missing = required.select { |_, v| v.blank? }.keys %>
 <% total = required.size; done = total - missing.size %>
 <% pct = total.zero? ? 0 : ((done.to_f / total) * 100).round %>
+<% bar_class = pct == 100 ? "progress-bar progress-bar-green" : "progress-bar progress-bar-orange" %>
 
 <section class="container my-5">
   <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
@@ -307,7 +347,7 @@
               <div class="inscriptions-progress">
                 <div class="progress" role="progressbar" aria-label="Complétion du profil"
                      aria-valuenow="<%= pct %>" aria-valuemin="0" aria-valuemax="100">
-                  <div class="progress-bar-green" style="width:<%= pct %>%"></div>
+                  <div class="<%= bar_class %>" style="width:<%= pct %>%"></div>
                 </div>
                 <small class="text-tertiary d-block mt-1">Profil complété à <%= pct %>%</small>
               </div>
