@@ -1,0 +1,91 @@
+<%
+  # Vérifier si l'utilisateur est connecté et s'il y a une inscription
+  current_registration = current_user&.registrations&.find_by(registerable: registerable) if defined?(current_user)
+  is_registered = current_registration.present?
+%>
+
+<article class="card card-admin shadow-sm rounded-4 mb-4">
+  <div class="card-body">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h3 class="h6 fw-bold mb-0">
+        <i class="fa-regular fa-address-card me-2"></i>Inscription
+      </h3>
+
+      <% if is_registered && current_registration.respond_to?(:status) && current_registration.status.present? %>
+        <% status = current_registration.status.to_s %>
+        <% status_color = case status
+          when "validated" then "badge-validated"
+          when "rejected"  then "badge-rejected"
+          else "badge-pending"
+        end %>
+        <% status_icon = case status
+          when "validated" then "fa-check-circle"
+          when "rejected"  then "fa-times-circle"
+          else "fa-hourglass-half"
+        end %>
+
+        <span class="small text-tertiary">
+          <i class="fas fa-traffic-light me-2"></i>Statut de l'inscription
+        </span>
+
+        <span class="badge rounded-pill d-inline-flex align-items-center gap-1 <%= status_color %>"
+              title="<%= status.humanize %>">
+          <i class="fas <%= status_icon %>"></i>
+          <%= status.humanize %>
+        </span>
+      <% end %>
+    </div>
+
+    <% if is_registered %>
+      <!-- Utilisateur inscrit -->
+      <div class="d-flex align-items-start gap-3 p-3 bg-light rounded-4 mb-3">
+        <div class="flex-shrink-0">
+          <i class="fas fa-check-circle text-color-primary fa-lg"></i>
+        </div>
+        <div class="flex-grow-1">
+          <div class="fw-bold text-surface mb-1">Vous êtes inscrit à cette activité</div>
+          <div class="text-muted small">
+            <i class="far fa-calendar me-1"></i>
+            Inscrit le <%= l(current_registration.created_at, format: :short) %>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-wrap gap-2">
+        <%= link_to polymorphic_path([:members, registerable, current_registration]),
+              class: "btn-nxr sm rounded-pill d-inline-flex align-items-center" do %>
+          <i class="fas fa-search me-1"></i>Voir mon inscription
+        <% end %>
+
+        <%= link_to polymorphic_path([:members, registerable, current_registration]),
+              data: {
+                turbo_method: :delete,
+                turbo_confirm: "Êtes-vous sûr de vouloir annuler votre inscription ?"
+              },
+              class: "btn-rejected rounded-pill d-inline-flex align-items-center" do %>
+          <i class="fas fa-times me-1"></i>Se désinscrire
+        <% end %>
+      </div>
+    <% else %>
+      <!-- Utilisateur non inscrit -->
+      <div class="d-flex align-items-start gap-3 p-3 bg-light rounded-4 mb-3">
+        <div class="flex-shrink-0">
+          <i class="fas fa-info-circle text-color-primary fa-lg"></i>
+        </div>
+        <div class="flex-grow-1">
+          <div class="fw-bold text-surface mb-1">Vous voulez participer à cette activité ?</div>
+          <div class="text-muted small">
+            Inscrivez-vous !
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <%= link_to new_polymorphic_path([:members, registerable, :registration]),
+              class: "btn-nxr rounded-pill px-4 d-inline-flex align-items-center" do %>
+          <i class="fas fa-plus me-2"></i>S'inscrire maintenant
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</article>
