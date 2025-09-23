@@ -72,20 +72,35 @@
 
             <%# Statut d’inscription si dispo %>
             <% if registration.respond_to?(:status) && registration.status.present? %>
-              <% badge =
-                   case registration.status.to_s
-                   when "validated" then "badge-validated"
-                   when "pending"   then "badge-pending"
-                   when "rejected"  then "badge-rejected"
-                   else "badge-pending"
-                   end %>
-              <hr>
-              <div><strong>Statut :</strong>
-                <span class="badge rounded-pill <%= badge %>">
-                  <%= registration.status.to_s.humanize %>
+              <% status = registration.status.to_s %>
+                <% status_color = case status
+                when "validated" then "badge-validated"
+                when "rejected"  then "badge-rejected"
+                else "badge-pending"
+                end %>
+                <% status_icon = case status
+                when "validated" then "fa-check-circle"
+                when "rejected"  then "fa-times-circle"
+                else "fa-hourglass-half"
+                end %>
+                  <hr>
+              <div>
+                <span class="small text-tertiary">
+                  <i class="fas fa-traffic-light me-2"></i>Statut de l'inscription
                 </span>
+                <span class="badge rounded-pill ms-5 d-inline-flex align-items-center gap-1 <%= status_color %>"
+                  title="<%= status.humanize %>">
+                  <i class="fas <%= status_icon %>"></i>
+                  <%= status.humanize %>
+                  </span>
               </div>
             <% end %>
+            <% if @user.respond_to?(:avatar) && @user.avatar.attached? %>
+            <%= image_tag @user.avatar, class: "card-img-top object-cover" %>
+          <% else %>
+            <%= image_tag "avatar_default.jpg", class: "card-img-top object-contain p-3" %>
+          <% end %>
+
           </div>
         </div>
       </article>
