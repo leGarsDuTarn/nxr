@@ -55,6 +55,8 @@
       <%= f.error_notification %>
 
       <!-- Infos -->
+    <fieldset class="form-section my-4">
+      <legend class="section-title">Informations</legend>
       <div class="row g-3">
         <div class="col-md-6"><%= f.input :name, label: "Nom" %></div>
         <div class="col-md-6"><%= f.input :hour, as: :time, label: "Heure" %></div>
@@ -65,6 +67,8 @@
         </div>
         <div class="col-12"><%= f.input :description, label: "Description" %></div>
       </div>
+      </legend>
+      </fieldset>
 
       <!-- Tarifs -->
       <fieldset class="form-section my-4">

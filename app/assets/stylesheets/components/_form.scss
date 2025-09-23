@@ -4,3 +4,21 @@ input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration {
   display: none;
 }
+
+.form-section {
+  padding: 1rem 1.25rem;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 0.75rem;
+  background-color: lighten($surface, 3%);
+}
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: $color-primary;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  border-bottom: 2px solid $color-primary;
+  display: inline-block;
+  padding-bottom: 0.25rem;
+}
+

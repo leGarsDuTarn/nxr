@@ -1,0 +1,121 @@
+<%# app/views/members/shared/_registerable_member_new.html.erb %>
+<%# locals attendus: registerable (Race/Training/Event), registration (@registration) %>
+<% reg = local_assigns[:registerable] || @registration.registerable %>
+<% modal_id = "reglementModal-#{dom_id(reg)}" %>
+
+<% if reg.respond_to?(:image) && reg.image.attached? %>
+  <section class="banner-dashboard"
+    style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url('<%= banner_image_url(reg) %>');">
+    <div class="container py-5 text-center">
+      <h1 class="display-5 fw-bold mb-0"><%= reg.name %></h1>
+      <% if reg.respond_to?(:date) && reg.date.present? %>
+        <div class="fw-bold mt-2 text-on-surface">
+          <i class="far fa-calendar-alt me-1"></i>
+          <%= l(reg.date, format: "%d %B %Y") %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+<% else %>
+  <section class="profile-user banner-dashboard">
+    <div class="container py-5 text-center">
+      <h1 class="display-5 fw-bold mb-0"><%= reg.name %></h1>
+      <% if reg.respond_to?(:date) && reg.date.present? %>
+        <div class="fw-bold mt-2 text-on-surface">
+          <i class="far fa-calendar-alt me-1"></i>
+          <%= l(reg.date, format: "%d %B %Y") %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+<% end %>
+
+<div class="container d-flex justify-content-center align-items-start py-5">
+  <div class="card-signup shadow p-4 p-md-5 rounded-4 w-100">
+    <div class="d-flex justify-content-center mb-4">
+      <h2 class="h1 text-center mb-0">
+        <i class="fa-solid fa-list-check me-2"></i>
+        Fiche d’inscription
+      </h2>
+    </div>
+
+    <%= simple_form_for registration,
+          url: polymorphic_path([:members, registration.registerable, :registrations]) do |f| %>
+
+      <%= f.error_notification message: "Veuillez corriger les erreurs ci-dessous." %>
+
+      <!-- Informations personnelles (lecture seule) -->
+      <fieldset class="form-section mb-4">
+        <legend class="section-title">Informations personnelles</legend>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <%= f.input :first_name, label: "Prénom",
+                  input_html: { value: current_user.first_name, readonly: true } %>
+          </div>
+          <div class="col-md-6">
+            <%= f.input :last_name, label: "Nom",
+                  input_html: { value: current_user.last_name, readonly: true } %>
+          </div>
+          <div class="col-md-6">
+            <%= f.input :birth_date, label: "Date de naissance",
+                  input_html: { value: current_user.birth_date, readonly: true } %>
+          </div>
+          <div class="col-md-6">
+            <%= f.input :phone_number, label: "Téléphone",
+                  input_html: { value: current_user.phone_number, readonly: true } %>
+          </div>
+          <div class="col-md-6">
+            <%= f.input :email, label: "Email",
+                  input_html: { value: current_user.email, readonly: true } %>
+          </div>
+          <div class="col-12">
+            <p class="small mb-0">
+              Besoin de mettre à jour ces informations ?
+              <%= link_to "Modifier votre profil", edit_user_registration_path, class: "badge-success-full-sm text-decoration-none" %>
+            </p>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Bloc TRAINING / EVENT : léger -->
+      <fieldset class="form-section mb-3">
+        <legend class="section-title">
+          <%= reg.is_a?(Training) ? "Informations entraînement" : "Informations événement" %>
+        </legend>
+        <p class="mb-0 small">
+          Votre identité est déjà préremplie depuis votre profil. Cliquez sur “Je m’inscris” pour confirmer votre participation.
+        </p>
+      </fieldset>
+
+      <!-- Consentement + lien modal règlement -->
+      <div class="form-check mb-3">
+        <%= f.check_box :terms_accepted, required: true, class: "form-check-input", id: "registration_terms_accepted" %>
+        <label class="form-check-label" for="registration_terms_accepted">
+          Je confirme l’exactitude des informations fournies et je m’engage à respecter le règlement du club,
+          le code sportif de la FFM et les règles environnementales.
+          <% if Club.first&.participation_terms.present? %>
+            <a href="#reglementModal"
+              data-bs-toggle="modal"
+              class="ms-1 d-inline-flex align-items-center gap-2 btn-nxr-sm-reverse-green">
+                <i class="fa-regular fa-newspaper"></i>
+                <span>Lire le règlement</span>
+            </a>
+
+            <%= regulation_modal(id: "reglementModal", title: "Règlement du club") %>
+          <% else %>
+            <span class="ms-1 text-muted small">(Règlement à venir)</span>
+          <% end %>
+        </label>
+      </div>
+
+
+
+      <%= f.hidden_field :registerable_id %>
+      <%= f.hidden_field :registerable_type %>
+
+      <div class="d-grid mt-4">
+        <%= f.button :submit, "Je m’inscris", class: "btn-nxr btn-lg", data: { disable_with: "Envoi…" } %>
+      </div>
+    <% end %>
+  </div>
+</div>
