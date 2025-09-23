@@ -32,4 +32,9 @@ module RegistrationHelper
       link_to "Je m'inscris", path, class: "btn btn-success" if path
     end
   end
+
+  # Permet d'afficher dans les inscriptions aux activités le reglement du club
+  def club_regulation_text
+    Club.first.participation_terms.last&.content.to_s
+  end
 end

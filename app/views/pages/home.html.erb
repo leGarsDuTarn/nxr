@@ -61,7 +61,22 @@
                 <% end %>
 
                 <div class="mt-auto pt-2">
-                  <% view_path =
+                  <% if user_signed_in? && current_user.member?%>
+                    <% view_path =
+                        case activity.type
+                        when "Race"     then members_race_path(activity.id)
+                        when "Event"    then members_event_path(activity.id)
+                        when "Training" then members_training_path(activity.id)
+                        end %>
+                  <%= link_to view_path,
+                        class: "btn-nxr d-inline-flex align-items-center gap-2 small",
+                        aria: { label: "En savoir plus sur « #{activity.name} »" } do %>
+                      <i class="fa-solid fa-circle-info"></i>
+                      <span>En savoir +</span>
+                  <% end %>
+
+                  <% else %>
+                      <% view_path =
                       case activity.type
                       when "Race"     then public_race_path(activity.id)
                       when "Event"    then public_event_path(activity.id)
@@ -73,6 +88,7 @@
                       <i class="fa-solid fa-circle-info"></i>
                       <span>En savoir +</span>
                   <% end %>
+                <% end %>
                 </div>
               </div>
             </article>

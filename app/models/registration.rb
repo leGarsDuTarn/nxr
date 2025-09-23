@@ -50,6 +50,13 @@ class Registration < ApplicationRecord
     rejected: "rejected"
   }
 
+  # Permet de valider le formulaire d'inscription a une course
+  # uniquement si la checkbox des condition générale est cochée
+  # attribut virtuel (pas en DB)
+  attribute :terms_accepted, :boolean, default: false
+  # validation côté serveur
+  validates :terms_accepted, acceptance: { accept: true, message: "doit être acceptée" }
+
   private
 
   def activity_open

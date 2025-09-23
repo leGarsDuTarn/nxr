@@ -56,6 +56,20 @@
         <% end %>
       </fieldset>
 
+      <!-- Règlement -->
+      <fieldset class="form-section mb-4">
+        <legend class="section-title">
+          <i class="fa-solid fa-scroll me-2"></i>Règlement type du club
+        </legend>
+        <%= f.text_area :participation_terms,
+              rows: 12,
+              class: "form-control",
+              placeholder: "Conditions de participation, code sportif FFM, règles environnementales…" %>
+        <p class="small text-muted mt-2">
+          Ce texte sera affiché sur toutes les inscriptions (courses, entraînements, événements).
+        </p>
+      </fieldset>
+
       <div class="d-grid mt-4">
         <%= f.button :submit, "Valider", class: "btn-nxr btn-lg" %>
       </div>
