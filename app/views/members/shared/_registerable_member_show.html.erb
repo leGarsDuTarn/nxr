@@ -1,0 +1,155 @@
+<%# app/views/members/shared/_registerable_member_show.html.erb %>
+<%# locals attendus: registration (@registration) %>
+<% reg = local_assigns[:registration]&.registerable || @registration.registerable %>
+<% registration = local_assigns[:registration] || @registration %>
+
+<%# ----- Banner (avec/sans image) ----- %>
+<% if reg.respond_to?(:image) && reg.image.attached? %>
+  <section class="banner-dashboard"
+    style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url('<%= banner_image_url(reg) %>');">
+    <div class="container py-5 text-center">
+      <h1 class="display-5 fw-bold mb-0"><%= reg.name %></h1>
+      <% if reg.respond_to?(:date) && reg.date.present? %>
+        <div class="fw-bold mt-2 text-on-surface">
+          <i class="far fa-calendar-alt me-1"></i>
+          <%= l(reg.date, format: "%d %B %Y") %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+<% else %>
+  <section class="profile-user banner-dashboard">
+    <div class="container py-5 text-center">
+      <h1 class="display-5 fw-bold mb-0"><%= reg.name %></h1>
+      <% if reg.respond_to?(:date) && reg.date.present? %>
+        <div class="fw-bold mt-2 text-on-surface">
+          <i class="far fa-calendar-alt me-1"></i>
+          <%= l(reg.date, format: "%d %B %Y") %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+<% end %>
+
+<section class="container my-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0 text-start fs-2 fw-bold text-uppercase">
+      <i class="fa-solid fa-id-card-clip me-2"></i> Votre inscription
+    </h2>
+
+    <div class="d-flex gap-2">
+      <%# Lien retour à la page de l’activité (membres) %>
+      <%= link_to polymorphic_path([:members, reg]),
+                  class: "btn-nxr-orange d-inline-flex align-items-center" do %>
+        <i class="fa-solid fa-arrow-left-long me-2"></i> Retour à l’activité
+      <% end %>
+
+      <%# Lien édition de l’inscription (nested) %>
+      <%= link_to edit_polymorphic_path([:members, reg, registration]),
+                  class: "btn-nxr d-inline-flex align-items-center" do %>
+        <i class="fa-solid fa-pen-to-square me-2"></i> Modifier mon inscription
+      <% end %>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <%# ----- Colonne gauche : résumé activité + statut inscription ----- %>
+    <div class="col-lg-4">
+      <article class="card card-admin shadow-sm rounded-4 h-100">
+        <div class="card-body small">
+          <h3 class="h6 fw-bold mb-3">
+            <i class="fa-solid fa-circle-info me-2"></i>Résumé de l’activité
+          </h3>
+
+          <div class="vstack gap-2">
+            <div><strong>Nom :</strong> <%= reg.name %></div>
+            <% if reg.respond_to?(:date) && reg.date.present? %>
+              <div><strong>Date :</strong> <%= l(reg.date, format: :long) %></div>
+            <% end %>
+            <% if reg.respond_to?(:place) && reg.place.present? %>
+              <div><strong>Lieu :</strong> <%= reg.place %></div>
+            <% end %>
+
+            <%# Statut d’inscription si dispo %>
+            <% if registration.respond_to?(:status) && registration.status.present? %>
+              <% badge =
+                   case registration.status.to_s
+                   when "validated" then "badge-validated"
+                   when "pending"   then "badge-pending"
+                   when "rejected"  then "badge-rejected"
+                   else "badge-pending"
+                   end %>
+              <hr>
+              <div><strong>Statut :</strong>
+                <span class="badge rounded-pill <%= badge %>">
+                  <%= registration.status.to_s.humanize %>
+                </span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <%# ----- Colonne droite : détails d’inscription ----- %>
+    <div class="col-lg-8">
+      <article class="card card-admin shadow-sm rounded-4 mb-4">
+        <div class="card-body">
+          <h3 class="h6 fw-bold mb-3">
+            <i class="fa-solid fa-user me-2"></i>Informations personnelles
+          </h3>
+
+          <div class="row small g-3">
+            <div class="col-md-6"><strong>Prénom :</strong> <%= registration.user.first_name %></div>
+            <div class="col-md-6"><strong>Nom :</strong> <%= registration.user.last_name %></div>
+            <div class="col-md-6"><strong>Date de naissance :</strong> <%= l(registration.user.birth_date) if registration.user.birth_date %></div>
+            <div class="col-md-6"><strong>Téléphone :</strong> <%= registration.user.phone_number %></div>
+            <div class="col-12">
+              <strong>Adresse :</strong>
+              <%= [registration.user.address, registration.user.post_code, registration.user.town].compact_blank.join(" • ") %>
+            </div>
+          </div>
+
+          <hr class="my-4">
+
+          <h3 class="h6 fw-bold mb-3">
+            <i class="fa-solid fa-flag-checkered me-2"></i>Informations <%= reg.is_a?(Race) ? "course" : (reg.is_a?(Training) ? "entraînement" : "événement") %>
+          </h3>
+
+          <div class="row small g-3">
+            <div class="col-md-4"><strong>Code licence :</strong> <%= registration.user.license_code %></div>
+            <div class="col-md-4"><strong>N° licence :</strong> <%= registration.user.license_number %></div>
+            <div class="col-md-4"><strong>Club :</strong> <%= registration.user.club_name %></div>
+
+            <% if reg.is_a?(Race) %>
+              <div class="col-md-4"><strong>N° de course :</strong> <%= registration.race_number %></div>
+            <% end %>
+          </div>
+
+          <% if reg.is_a?(Race) %>
+            <hr class="my-4">
+            <h3 class="h6 fw-bold mb-3">
+              <i class="fa-solid fa-motorcycle me-2"></i>Informations véhicule
+            </h3>
+            <div class="row small g-3">
+              <div class="col-md-4"><strong>Marque :</strong> <%= registration.bike_brand %></div>
+              <div class="col-md-4"><strong>Cylindrée :</strong> <%= registration.cylinder_capacity %></div>
+              <div class="col-md-4"><strong>Type moteur :</strong>
+                <%= registration.stroke_type == "two_stroke" ? "2 temps" : (registration.stroke_type == "four_stroke" ? "4 temps" : registration.stroke_type) %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </article>
+
+      <%# Bloc aide profil %>
+      <article class="card card-admin shadow-sm rounded-4">
+        <div class="card-body small">
+          <i class="fa-regular fa-circle-question me-2"></i>
+          Besoin de mettre à jour vos informations personnelles ?
+          <%= link_to "Modifier votre profil", edit_user_registration_path, class: "badge-success-full-sm text-decoration-none ms-1" %>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
