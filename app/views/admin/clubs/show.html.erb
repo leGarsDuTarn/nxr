@@ -58,7 +58,9 @@
 
       <% if @club.participation_terms.present? %>
         <div class="prose">
-          <%= simple_format(@club.participation_terms) %>
+          <div class="prose">
+  <%= club_participation_terms_html %>
+</div>
         </div>
       <% else %>
         <div class="text-muted">

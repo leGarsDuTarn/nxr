@@ -59,6 +59,7 @@ gem "activestorage-cloudinary-service"
 gem "kaminari"
 gem "prawn"
 gem "prawn-table"
+# Permet d'avoir des lien clickable dans une modale
 gem "rails_autolink"
 group :development, :test do
   gem "dotenv-rails"
