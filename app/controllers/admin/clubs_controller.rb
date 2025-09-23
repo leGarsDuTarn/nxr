@@ -46,7 +46,7 @@ module Admin
       params.require(:club).permit(
         :name, :affiliation_number, :address, :post_code, :town,
         :phone_number, :email, :president_name, :responsable_communication_name,
-        :logo, :remove_logo
+        :logo, :remove_logo, :participation_terms
       )
     end
   end

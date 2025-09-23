@@ -113,20 +113,26 @@
         </div>
       </fieldset>
 
-      <!-- Consentement -->
-      <%= f.input :terms_accepted, as: :boolean, required: true, label: false,
-      input_html: { required: true, aria: { describedby: "raceRulesHelp" } }, class:"text-secondary" %>
-      <label class="form-check-label" for="registration_terms_accepted">
-        Je confirme l’exactitude des informations fournies et je m’engage à respecter le règlement particulier de l’épreuve,
-        le code sportif de la FFM et les règles environnementales.
-      <%# Lien vers la section Règlement (voir partie 2) %>
-      <a href="#race-regulation"
-        class="ms-1 d-inline-flex align-items-center gap-2 btn-nxr-sm-reverse-green">
+     <!-- Consentement -->
+<div class="form-check mb-3">
+  <%= f.check_box :terms_accepted, required: true, class: "form-check-input", id: "registration_terms_accepted" %>
+  <label class="form-check-label" for="registration_terms_accepted">
+    Je confirme l’exactitude des informations fournies et je m’engage à respecter le règlement particulier de l’épreuve,
+    le code sportif de la FFM et les règles environnementales.
+    <% if Club.first&.participation_terms.present? %>
+      <a href="#reglementModal"
+         data-bs-toggle="modal"
+         role="button"
+         class="ms-1 d-inline-flex align-items-center gap-2 btn-nxr-sm-reverse-green">
         <i class="fa-regular fa-newspaper"></i>
         <span>Lire le règlement</span>
       </a>
+    <% else %>
+      <span class="ms-1 text-muted small">(Règlement à venir)</span>
+    <% end %>
+  </label>
+</div>
 
-      </label>
 
 
       <%= f.hidden_field :registerable_id %>
@@ -138,3 +144,32 @@
     <% end %>
   </div>
 </div>
+
+<% if Club.first&.participation_terms.present? %>
+  <div class="modal fade" id="reglementModal" tabindex="-1" aria-labelledby="reglementModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content rounded-4">
+        <div class="modal-header">
+          <h5 class="modal-title" id="reglementModalLabel">
+            <i class="fa-solid fa-scroll me-2"></i>Règlement du club
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="prose">
+            <%= simple_format(Club.first.participation_terms) %>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary d-inline-flex align-items-center"
+                  onclick="window.print()">
+            <i class="fa-solid fa-print me-2"></i>Imprimer
+          </button>
+          <button type="button" class="btn btn-nxr" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

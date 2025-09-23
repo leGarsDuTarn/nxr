@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_09_12_075944) do
+ActiveRecord::Schema[7.1].define(version: 2025_09_23_085913) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -64,6 +64,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_12_075944) do
     t.string "responsable_communication_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "participation_terms"
     t.index ["affiliation_number"], name: "index_clubs_on_affiliation_number", unique: true
   end
 
