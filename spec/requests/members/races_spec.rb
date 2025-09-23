@@ -40,7 +40,8 @@ RSpec.describe 'Members::Races', type: :request do
       registerable: race,
       bike_brand: "KTM",
       cylinder_capacity: 50,
-      race_number: "153"
+      race_number: "153",
+      terms_accepted: '1'
     )
   end
 

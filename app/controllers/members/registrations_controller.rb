@@ -113,7 +113,7 @@ module Members
           base + %i[cylinder_capacity stroke_type bike_brand race_number terms_accepted]
         )
       when "Training", "Event"
-        params.require(:registration).permit(base)
+        params.require(:registration).permit(base + %i[terms_accepted])
       end
     end
   end

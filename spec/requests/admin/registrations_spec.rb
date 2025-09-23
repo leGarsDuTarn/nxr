@@ -122,7 +122,7 @@ RSpec.describe "Admin::Registrations", type: :request do
     context "Quand un admin est connecté et affiche les détails des inscriptions à un événement de type event" do
       it "retourne un status 200, affiche les informations des users inscrit" do
         # Crée une inscription qui sera visible pour l'admin
-        registration = Registration.create!(user: user, registerable: event)
+        registration = Registration.create!(user: user, registerable: event, terms_accepted: '1')
         get admin_event_registration_path(event, registration)
         expect(response).to have_http_status(:ok)
         expect(response.body).to include(user.last_name)
@@ -140,7 +140,8 @@ RSpec.describe "Admin::Registrations", type: :request do
           registerable: race,
           bike_brand: "KTM",
           cylinder_capacity: 50,
-          race_number: "153"
+          race_number: "153",
+          terms_accepted: '1'
         )
         get admin_race_registration_path(race, registration)
         expect(response).to have_http_status(:ok)
@@ -154,7 +155,7 @@ RSpec.describe "Admin::Registrations", type: :request do
     context "Quand un admin est connecté et affiche les détails des inscriptions à un événement de type training" do
       it "retourne un status 200, affiche les informations des users inscrit" do
         # Crée une inscription qui sera visible pour l'admin
-        registration = Registration.create!(user: user, registerable: training)
+        registration = Registration.create!(user: user, registerable: training, terms_accepted: '1')
         get admin_training_registration_path(training, registration)
         expect(response).to have_http_status(:ok)
         expect(response.body).to include(user.last_name)
@@ -167,7 +168,7 @@ RSpec.describe "Admin::Registrations", type: :request do
     context "Quand l'admin delete une inscription lié à événement de type event" do
       it "supprime l'inscription, redirige l'user (302), et valide le test" do
         # Crée une inscription qui sera supprimée pour le test
-        registration = Registration.create!(user: user, registerable: event)
+        registration = Registration.create!(user: user, registerable: event, terms_accepted: '1')
         # expect {...} permet de tester un changement d'état, test les créations et suppressions
         expect {
           delete admin_event_registration_path(event, registration)
@@ -186,7 +187,8 @@ RSpec.describe "Admin::Registrations", type: :request do
           registerable: race,
           bike_brand: "KTM",
           cylinder_capacity: 50,
-          race_number: "153"
+          race_number: "153",
+          terms_accepted: '1'
         )
         # expect {...} permet de tester un changement d'état, test les créations et suppressions
         expect {
@@ -201,7 +203,7 @@ RSpec.describe "Admin::Registrations", type: :request do
     context "Quand l'admin delete une inscription lié à événement de type training" do
       it "supprime l'inscription, redirige l'user (302), et valide le test" do
         # Crée une inscription qui sera supprimée pour le test
-        registration = Registration.create!(user: user, registerable: training)
+        registration = Registration.create!(user: user, registerable: training, terms_accepted: '1')
         # expect {...} permet de tester un changement d'état, test les créations et suppressions
         expect {
           delete admin_training_registration_path(training, registration)

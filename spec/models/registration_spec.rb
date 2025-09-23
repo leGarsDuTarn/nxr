@@ -36,7 +36,7 @@ RSpec.describe Registration, type: :model do
 
   context "Quand l'utilisateur est inscrit à un événement" do
     it "Le test est valide avec un user lié à un événement" do
-      registration = Registration.new(user: user, registerable: event)
+      registration = Registration.new(user: user, registerable: event, terms_accepted: '1')
       expect(registration).to be_valid
     end
   end
