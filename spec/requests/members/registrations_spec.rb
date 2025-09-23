@@ -124,7 +124,11 @@ RSpec.describe "Members::Registrations", type: :request do
         # expect {...} permet de tester un changement d'état, test les créations et suppressions
         expect {
           post members_event_registrations_path(event), params: {
-            registration: { registerable_id: event.id, registerable_type: "Event" }
+            registration: {
+              registerable_id: event.id,
+              registerable_type: "Event",
+              terms_accepted: true
+            }
           }
         }.to change(Registration, :count).by(1) # Ici permet de vérifier que l'inscription à un event est bien créé en DB
         expect(response).to have_http_status(:redirect) # Vérifie que l'user est bien redirigé (302)
@@ -144,7 +148,8 @@ RSpec.describe "Members::Registrations", type: :request do
               registerable_type: "Race",
               bike_brand: "KTM",
               cylinder_capacity: 50,
-              race_number: "153"
+              race_number: "153",
+              terms_accepted: '1'
             }
           }
         }.to change(Registration, :count).by(1) # Ici permet de vérifier que l'inscription à une race est bien créé en DB
@@ -161,7 +166,11 @@ RSpec.describe "Members::Registrations", type: :request do
         # expect {...} permet de tester un changement d'état, test les créations et suppressions
         expect {
           post members_training_registrations_path(training), params: {
-            registration: { registerable_id: training.id, registerable_type: "Training" }
+            registration: {
+              registerable_id: training.id,
+              registerable_type: "Training",
+              terms_accepted: true
+            }
           }
         }.to change(Registration, :count).by(1) # Ici permet de vérifier que l'inscription à un training est bien créé en DB
         expect(response).to have_http_status(:redirect) # Vérifie que l'user est bien redirigé (302)
@@ -174,7 +183,7 @@ RSpec.describe "Members::Registrations", type: :request do
     context "Quand le membre supprime son inscription lié à événement de type event" do
       it "supprime l'inscription, redirige l'user (302), et valide le test" do
         # Crée une inscription qui sera supprimée pour le test
-        registration = Registration.create!(user: member, registerable: event)
+        registration = Registration.create!(user: member, registerable: event, terms_accepted: '1')
         # expect {...} permet de tester un changement d'état, test les créations et suppressions
         expect {
           delete members_event_registration_path(event, registration)
@@ -193,7 +202,8 @@ RSpec.describe "Members::Registrations", type: :request do
           registerable: race,
           bike_brand: "KTM",
           cylinder_capacity: 50,
-          race_number: "153"
+          race_number: "153",
+          terms_accepted: '1'
         )
         # expect {...} permet de tester un changement d'état, test les créations et suppressions
         expect {
@@ -208,7 +218,7 @@ RSpec.describe "Members::Registrations", type: :request do
     context "Quand le membre supprime son inscription lié à événement de type training" do
       it "supprime l'inscription, redirige l'user (302), et valide le test" do
         # Crée une inscription qui sera supprimée pour le test
-        registration = Registration.create!(user: member, registerable: training)
+        registration = Registration.create!(user: member, registerable: training, terms_accepted: '1')
         # expect {...} permet de tester un changement d'état, test les créations et suppressions
         expect {
           delete members_training_registration_path(training, registration)
