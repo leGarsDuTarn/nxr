@@ -146,3 +146,21 @@ input[type="submit"].btn-warning {
     transform: scale(1.03);
   }
 }
+
+.btn-nxr-sm-reverse-green {
+  background-color: $on-background;
+  color: $color-primary;
+  text-decoration: none;
+  display: inline-block;
+  border: $color-primary 1px solid;
+  font-weight: 700;
+  font-size: 0.8rem;   // petit comme Bootstrap badge
+  line-height: 1;
+  border-radius: 50rem; // pill
+  padding: 0.25em 0.5em; // identique à bootstrap badge
+  text-align: center;
+  white-space: nowrap;
+  &:hover {
+    transform: scale(1.05);
+  }
+}

@@ -71,3 +71,16 @@
   background: $color-primary;
   border-radius: 9999px;
 }
+
+/* style appliqué à : app/assets/stylesheets/components/_registration.scss */
+.card-form {
+  .form-section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .02em;
+    margin-bottom: 1rem;
+    color: var(--bs-secondary-color, #6c757d);
+  }
+}
+.sticky-summary { position: sticky; top: 1rem; }

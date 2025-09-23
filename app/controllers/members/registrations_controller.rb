@@ -110,7 +110,7 @@ module Members
       case params[:registration][:registerable_type]
       when "Race"
         params.require(:registration).permit(
-          base + %i[cylinder_capacity stroke_type bike_brand race_number]
+          base + %i[cylinder_capacity stroke_type bike_brand race_number terms_accepted]
         )
       when "Training", "Event"
         params.require(:registration).permit(base)
