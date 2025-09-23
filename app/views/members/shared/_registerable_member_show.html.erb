@@ -32,12 +32,12 @@
 <% end %>
 
 <section class="container my-5">
-  <div class="d-flex justify-content-between align-items-center mb-4">
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
     <h2 class="mb-0 text-start fs-2 fw-bold text-uppercase">
       <i class="fa-solid fa-id-card-clip me-2"></i> Votre inscription
     </h2>
 
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 flex-wrap">
       <%# Lien retour à la page de l’activité (membres) %>
       <%= link_to polymorphic_path([:members, reg]),
                   class: "btn-nxr-orange d-inline-flex align-items-center" do %>
