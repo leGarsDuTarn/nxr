@@ -44,13 +44,21 @@
         <i class="fa-solid fa-arrow-left-long me-2"></i> Retour à l’activité
       <% end %>
 
-      <%# Lien édition de l’inscription (nested) %>
-      <%= link_to edit_polymorphic_path([:members, reg, registration]),
+      <% if @registration.registerable.is_a?(Race) %>
+        <%= link_to edit_polymorphic_path([:members, reg, registration]),
                   class: "btn-nxr d-inline-flex align-items-center" do %>
-        <i class="fa-solid fa-pen-to-square me-2"></i> Modifier mon inscription
+          <i class="fa-solid fa-pen-to-square me-2"></i> Modifier mon inscription
+          <% end %>
+
+      <% else %>
+        <%= link_to edit_user_registration_path,
+                  class: "btn-nxr d-inline-flex align-items-center" do %>
+          <i class="fa-solid fa-pen-to-square me-2"></i> Modifier mon inscription
       <% end %>
+  <% end %>
     </div>
   </div>
+
 
   <div class="row g-4">
     <%# ----- Colonne gauche : résumé activité + statut inscription ----- %>
@@ -85,7 +93,7 @@
                 end %>
                   <hr>
               <div>
-                <span class="small text-tertiary">
+                <span class="text-tertiary">
                   <i class="fas fa-traffic-light me-2"></i>Statut de l'inscription
                 </span>
                 <span class="badge rounded-pill ms-5 d-inline-flex align-items-center gap-1 <%= status_color %>"
@@ -95,11 +103,33 @@
                   </span>
               </div>
             <% end %>
-            <% if @user.respond_to?(:avatar) && @user.avatar.attached? %>
-            <%= image_tag @user.avatar, class: "card-img-top object-cover" %>
-          <% else %>
-            <%= image_tag "avatar_default.jpg", class: "card-img-top object-contain p-3" %>
-          <% end %>
+            <% if Club.first.present? %>
+              <% club = Club.first %>
+              <hr>
+              <h3 class="h6 fw-bold mb-2"><i class="fa-solid fa-circle-info me-2"></i>Informations relative au club</h3>
+              <p class="mb-1"><strong><%= club.name %></strong></p>
+
+              <% if club.address.present? %>
+                <p class="small mb-1"><i class="fas fa-map-marker-alt me-1"></i> <%= club.address %>, <%= club.post_code %> <%= club.town %></p>
+              <% end %>
+
+              <% if club.phone_number.present? %>
+                <p class="small mb-1"><i class="fas fa-phone me-1"></i> <%= club.phone_number %></p>
+              <% end %>
+
+              <% if club.email.present? %>
+                <p class="small mb-1"><i class="fas fa-envelope me-1"></i> <%= mail_to club.email %></p>
+              <% end %>
+            <% if club.address.present? && club.town.present? %>
+                <div class="ratio ratio-4x3 mt-2">
+                  <iframe
+                    src="https://www.google.com/maps?q=<%= CGI.escape("#{club.address}, #{club.post_code} #{club.town}") %>&output=embed"
+                    width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" class="rounded-4">
+                  </iframe>
+                </div>
+              <% end %>
+              <% end %>
+
 
           </div>
         </div>
