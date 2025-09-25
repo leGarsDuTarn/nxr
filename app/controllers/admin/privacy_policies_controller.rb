@@ -2,8 +2,13 @@ module Admin
   class PrivacyPoliciesController < BaseController
     before_action :set_privacy_policy, only: [:show, :edit, :update]
 
-    def show; end
-    def edit; end
+    def show
+      # @privacy_policy défini dans :set_privacy_policy
+    end
+
+    def edit
+      # @privacy_policy défini dans :set_privacy_policy
+    end
 
     def new
       if PrivacyPolicy.exists?
@@ -47,7 +52,7 @@ module Admin
     end
 
     def doc_params
-      params.require(:privacy_policy).permit(:title, :body, :published_at)
+      params.require(:privacy_policy).permit(:title, :body, :published_at, :image, :remove_image)
     end
   end
 end

@@ -1,12 +1,16 @@
 module Admin
   class LegalNoticesController < BaseController
-    before_action :set_legal_notice, only: [:show, :edit, :update]
+    before_action :set_legal_notice, only: %i[show edit update]
 
-    def show; end
-    def edit; end
+    def show
+      # @legal_notice défini dans :set_legal_notice
+    end
+
+    def edit
+      # @legal_notice défini dans :set_legal_notice
+    end
 
     def new
-      # si déjà créé, on redirige vers edit (on veut un seul doc)
       if LegalNotice.exists?
         redirect_to edit_admin_legal_notice_path, alert: "Les mentions légales existent déjà."
       else
@@ -42,13 +46,13 @@ module Admin
     end
 
     private
-    
+
     def set_legal_notice
       @legal_notice = LegalNotice.first! # on suppose qu’elle existe dès qu’on est en show/edit/update
     end
 
     def doc_params
-      params.require(:legal_notice).permit(:title, :body, :published_at)
+      params.require(:legal_notice).permit(:title, :body, :published_at, :image, :remove_image)
     end
   end
 end
