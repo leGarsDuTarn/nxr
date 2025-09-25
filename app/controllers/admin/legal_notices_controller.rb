@@ -39,11 +39,12 @@ module Admin
     def set_legal_notice
       @legal_notice = LegalNotice.first
       redirect_to new_admin_legal_notice_path, alert: "Aucune mention légale encore créée." unless @legal_notice
+
+
     end
 
     def doc_params
       params.require(:legal_notice).permit(:title, :body, :image, :remove_image)
-      # Remplacez :body par :content si besoin
     end
 
     def purge_image_if_requested(record)

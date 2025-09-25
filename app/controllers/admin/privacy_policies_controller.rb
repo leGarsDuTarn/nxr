@@ -1,6 +1,6 @@
 module Admin
   class PrivacyPoliciesController < BaseController
-    before_action :set_privacy_policy, only: [:show, :edit, :update, :destroy]
+    before_action :set_privacy_policy, only: %i[show edit update]
 
     def show
       # @privacy_policy défini dans :set_privacy_policy
@@ -34,20 +34,12 @@ module Admin
       end
     end
 
-    def destroy
-      @privacy_policy.destroy
-      redirect_to admin_root_path, notice: "Politique de confidentialité supprimée."
-    end
-
     private
 
     def set_privacy_policy
-      # Option 1: Si vous voulez toujours le premier (singleton pattern)
       @privacy_policy = PrivacyPolicy.first
-      redirect_to new_admin_privacy_policy_path, alert: "Aucune politique de confidentialité trouvée." if @privacy_policy.nil?
+      redirect_to new_admin_privacy_policy_path, alert: "Aucune politique de confidentialité trouvée." unless @privacy_policy
 
-      # Option 2: Si vous voulez gérer par ID (recommandé)
-      # @privacy_policy = PrivacyPolicy.find(params[:id])
     end
 
     def doc_params

@@ -9,7 +9,7 @@ module Admin
       @users = User.all.order(created_at: :asc).limit(3)
       @recent_registrations = Registration.includes(:user, :registerable).order(created_at: :desc).limit(3)
       @club = Club.first
-      @privacy_policie = PrivacyPolicy.first
+      @privacy_policy = PrivacyPolicy.first
       @legal_notice = LegalNotice.first
     end
   end
