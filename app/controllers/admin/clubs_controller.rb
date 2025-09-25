@@ -3,7 +3,7 @@ module Admin
     before_action :set_club, only: %i[show edit update]
 
     def index
-      @clubs = Club.all
+      @club = Club.first
     end
 
     def show

@@ -769,187 +769,171 @@
     </div>
 </section>
 
-<%# Fiche identitée du club  %>
+<%# ================================
+    Club identity + Legal documents
+    ================================ %>
 <section class="container my-5">
-  <!-- Barre d’actions -->
   <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
     <h2 class="mb-0 text-start fs-2 fw-bold text-uppercase">
       <i class="fa-solid fa-screwdriver-wrench me-2"></i> Administration du club
     </h2>
   </div>
 
-  <% if @clubs.present? %>
-    <div class="row g-4">
-      <div class="col-sm-6 col-lg-4 mx-auto">
-        <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
-          <!-- Media -->
-          <div class="ratio ratio-4x3 bg-light d-flex align-items-center justify-content-center bg-dark">
-            <% if @clubs.logo.attached? %>
-              <%= image_tag @clubs.logo, class: "card-img-top object-contain p-3", alt: @clubs.name %>
-            <% else %>
-              <i class="fas fa-building fa-3x text-muted"></i>
-            <% end %>
-          </div>
+  <% has_club    = @club.present? %>
+  <% has_privacy = @privacy_policy.present? %>
+  <% has_legal   = @legal_notice.present? %>
 
-          <!-- Body -->
-          <div class="card-body d-flex flex-column">
-            <div class="d-flex align-items-start justify-content-between mb-2">
-              <h3 class="h6 fw-bold mb-0"><%= @clubs.name %></h3>
-            </div>
+  <div class="row g-4">
 
+    <%# Club card %>
+    <div class="col-sm-6 col-lg-4 mx-auto">
+      <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+        <div class="ratio ratio-4x3 d-flex align-items-center justify-content-center bg-dark">
+          <% if has_club && @club.logo.attached? %>
+            <%= image_tag @club.logo, class: "card-img-top object-contain p-3", alt: @club.name %>
+          <% else %>
+            <%= image_tag "logo_mcnc_3.png", class: "card-img-top object-contain p-3", alt: @club.name %>
+          <% end %>
+        </div>
+
+        <div class="card-body d-flex flex-column">
+          <h3 class="h6 fw-bold mb-2"><%= has_club ? @club.name : "Fiche du club" %></h3>
+
+          <% if has_club %>
             <p class="text-tertiary small mb-2">
               <i class="fas fa-id-card me-1"></i>
-              N° d’affiliation : <strong><%= @clubs.affiliation_number %></strong>
+              N° d’affiliation : <strong><%= @club.affiliation_number %></strong>
             </p>
 
-            <% if @clubs.phone_number.present? %>
+            <% if @club.phone_number.present? %>
               <p class="text-tertiary small mb-2">
-                <i class="fas fa-phone me-1"></i>
-                <%= @clubs.phone_number %>
+                <i class="fas fa-phone me-1"></i> <%= @club.phone_number %>
               </p>
             <% end %>
 
-            <% if @clubs.email.present? %>
+            <% if @club.email.present? %>
               <p class="text-tertiary small mb-3">
-                <i class="fas fa-envelope me-1"></i>
-                <%= mail_to @clubs.email %>
+                <i class="fas fa-envelope me-1"></i> <%= mail_to @club.email %>
               </p>
             <% end %>
+          <% else %>
+            <p class="small mb-3">Aucune information de club pour l’instant.</p>
+          <% end %>
 
-            <div class="mt-auto d-flex align-items-center justify-content-between">
-              <%= link_to admin_club_path,
-                    class: "stretched-link small btn-nxr" do %>
+          <div class="mt-auto d-flex align-items-center justify-content-between">
+            <% if has_club %>
+              <%= link_to admin_club_path, class: "stretched-link small btn-nxr" do %>
                 <i class="fa-solid fa-gear me-1"></i> Administrer
               <% end %>
-
               <div class="btn-toolbar gap-2">
-                <%= link_to edit_admin_club_path,
-                      class: "btn btn-icon btn-edit-orange",
-                      title: "Modifier le club",
-                      aria: { label: "Modifier le club" } do %>
+                <%= link_to edit_admin_club_path, class: "btn btn-icon btn-edit-orange",
+                            title: "Modifier le club", aria: { label: "Modifier le club" } do %>
                   <i class="fas fa-edit"></i>
                 <% end %>
               </div>
-            </div>
-          </div>
-        </article>
-      </div>
-    </div>
-  <% else %>
-    <!-- Empty state -->
-    <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
-      <div class="mb-3">
-        <i class="far fa-clipboard fa-3x"></i>
-      </div>
-      <h3 class="h5 fw-bold mb-2">Aucune information de club</h3>
-      <p class="mb-2">Ajoutez les informations du club pour les voir apparaître ici.</p>
-      <%= link_to new_admin_club_path, class: "btn-nxr d-inline-flex align-items-center" do %>
-        <i class="fas fa-plus me-2"></i>Créer la fiche du club
-      <% end %>
-    </div>
-  <% end %>
-
-  <% elsif @privacy_policies.present? %>
-    <div class="row g-4">
-      <div class="col-sm-6 col-lg-4 mx-auto">
-        <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
-          <!-- Media -->
-          <div class="ratio ratio-4x3 bg-light d-flex align-items-center justify-content-center bg-dark">
-            <% if @privacy_policies.image.attached? %>
-              <%= image_tag @privacy_policies.image, class: "card-img-top object-contain p-3", alt: @privacy_policies.title %>
             <% else %>
-              <%= image_tag "RGPD.png", class: "card-img-top object-contain p-3", alt: @privacy_policies.title %>
+              <div class="w-100 text-center">
+                <%= link_to new_admin_club_path, class: "btn-nxr d-inline-flex align-items-center" do %>
+                  <i class="fas fa-plus me-2"></i> Créer la fiche du club
+                <% end %>
+              </div>
             <% end %>
           </div>
+        </div>
+      </article>
+    </div>
 
-          <!-- Body -->
-          <div class="card-body d-flex flex-column">
-            <div class="d-flex align-items-start justify-content-between mb-2">
-              <h3 class="h6 fw-bold mb-0"><%= @privacy_policies.title %></h3>
-            </div>
+    <%# ---------- Privacy Policy card ---------- %>
+    <div class="col-sm-6 col-lg-4 mx-auto">
+      <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+        <div class="ratio ratio-4x3 d-flex align-items-center justify-content-center bg-dark">
+          <% if has_privacy && @privacy_policy.respond_to?(:image) && @privacy_policy.image.attached? %>
+            <%= image_tag @privacy_policy.image, class: "card-img-top object-contain p-3", alt: (@privacy_policy.title.presence || "Politique de confidentialité") %>
+          <% else %>
+            <%= image_tag "RGPD.png", class: "card-img-top object-contain p-3", alt: "Politique de confidentialité" %>
+          <% end %>
+        </div>
 
-            <div class="mt-auto d-flex align-items-center justify-content-between">
-              <%= link_to admin_privacy_policy_path,
-                    class: "stretched-link small btn-nxr" do %>
+        <div class="card-body d-flex flex-column">
+          <h3 class="h6 fw-bold mb-2"><%= has_privacy ? @privacy_policy.title : "Politique de confidentialité" %></h3>
+          <% if has_privacy && @privacy_policy.published_at.present? %>
+            <p class="text-tertiary small mb-3">
+              <i class="far fa-clock me-1"></i>
+              Dernière mise à jour : <%= l(@privacy_policy.published_at, format: :long) %>
+            </p>
+          <% end %>
+
+          <div class="mt-auto d-flex align-items-center justify-content-between">
+            <% if has_privacy %>
+              <%= link_to admin_privacy_policy_path, class: "stretched-link small btn-nxr" do %>
                 <i class="fa-solid fa-gear me-1"></i> Administrer
               <% end %>
-
               <div class="btn-toolbar gap-2">
-                <%= link_to edit_admin_privacy_policy_path,
-                      class: "btn btn-icon btn-edit-orange",
-                      title: "Modifier la politique de confidantialitée",
-                      aria: { label: "Modifier la politique de confidantialité" } do %>
+                <%= link_to edit_admin_privacy_policy_path, class: "btn btn-icon btn-edit-orange",
+                            title: "Modifier la politique de confidentialité",
+                            aria: { label: "Modifier la politique de confidentialité" } do %>
                   <i class="fas fa-edit"></i>
                 <% end %>
               </div>
-            </div>
-          </div>
-        </article>
-      </div>
-    </div>
-  <% elsif %>
-    <!-- Empty state -->
-    <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
-      <div class="mb-3">
-        <i class="far fa-clipboard fa-3x"></i>
-      </div>
-      <h3 class="h5 fw-bold mb-2">Aucune politique de confidentialité</h3>
-      <p class="mb-2">Ajoutez la politique de confidentialité pour la voir apparaître ici.</p>
-      <%= link_to new_admin_privacy_policy_path, class: "btn-nxr d-inline-flex align-items-center" do %>
-        <i class="fas fa-plus me-2"></i>Créer la politique de confidentialité
-      <% end %>
-    </div>
-  <% end %>
-
-  <% elsif @legal_notice.present? %>
-    <div class="row g-4">
-      <div class="col-sm-6 col-lg-4 mx-auto">
-        <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
-          <!-- Media -->
-          <div class="ratio ratio-4x3 bg-light d-flex align-items-center justify-content-center bg-dark">
-            <% if @legal_notice.image.attached? %>
-              <%= image_tag @legal_notice.image, class: "card-img-top object-contain p-3", alt: @legal_notice.title %>
             <% else %>
-              <%= image_tag "mention_legal.png", class: "card-img-top object-contain p-3", alt: @legal_notice.title %>
+              <div class="w-100 text-center">
+                <%# If you kept new/create on the singular resource: %>
+                <%= link_to new_admin_privacy_policy_path, class: "btn-nxr d-inline-flex align-items-center" do %>
+                  <i class="fas fa-plus me-2"></i> Créer la politique de confidentialité
+                <% end %>
+                <%# If you removed new/create, point to edit_admin_privacy_policy_path instead. %>
+              </div>
             <% end %>
           </div>
+        </div>
+      </article>
+    </div>
 
-          <!-- Body -->
-          <div class="card-body d-flex flex-column">
-            <div class="d-flex align-items-start justify-content-between mb-2">
-              <h3 class="h6 fw-bold mb-0"><%= @privacy_policies.title %></h3>
-            </div>
+    <%# ---------- Legal Notice card ---------- %>
+    <div class="col-sm-6 col-lg-4 mx-auto">
+      <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+        <div class="ratio ratio-4x3 d-flex align-items-center justify-content-center bg-dark">
+          <% if has_legal && @legal_notice.respond_to?(:image) && @legal_notice.image.attached? %>
+            <%= image_tag @legal_notice.image, class: "card-img-top object-contain p-3", alt: (@legal_notice.title.presence || "Mentions légales") %>
+          <% else %>
+            <%= image_tag "mention_legal.png", class: "card-img-top object-contain p-3", alt: "Mentions légales" %>
+          <% end %>
+        </div>
 
-            <div class="mt-auto d-flex align-items-center justify-content-between">
-              <%= link_to admin_privacy_policy_path,
-                    class: "stretched-link small btn-nxr" do %>
+        <div class="card-body d-flex flex-column">
+          <h3 class="h6 fw-bold mb-2"><%= has_legal ? @legal_notice.title : "Mentions légales" %></h3>
+          <% if has_legal && @legal_notice.published_at.present? %>
+            <p class="text-tertiary small mb-3">
+              <i class="far fa-clock me-1"></i>
+              Dernière mise à jour : <%= l(@legal_notice.published_at, format: :long) %>
+            </p>
+          <% end %>
+
+          <div class="mt-auto d-flex align-items-center justify-content-between">
+            <% if has_legal %>
+              <%= link_to admin_legal_notice_path, class: "stretched-link small btn-nxr" do %>
                 <i class="fa-solid fa-gear me-1"></i> Administrer
               <% end %>
-
               <div class="btn-toolbar gap-2">
-                <%= link_to edit_admin_privacy_policy_path,
-                      class: "btn btn-icon btn-edit-orange",
-                      title: "Modifier la politique de confidantialitée",
-                      aria: { label: "Modifier la politique de confidantialité" } do %>
+                <%= link_to edit_admin_legal_notice_path, class: "btn btn-icon btn-edit-orange",
+                            title: "Modifier les mentions légales",
+                            aria: { label: "Modifier les mentions légales" } do %>
                   <i class="fas fa-edit"></i>
                 <% end %>
               </div>
-            </div>
+            <% else %>
+              <div class="w-100 text-center">
+                <%# If you kept new/create on the singular resource: %>
+                <%= link_to new_admin_legal_notice_path, class: "btn-nxr d-inline-flex align-items-center" do %>
+                  <i class="fas fa-plus me-2"></i> Créer les mentions légales
+                <% end %>
+                <%# If you removed new/create, point to edit_admin_legal_notice_path instead. %>
+              </div>
+            <% end %>
           </div>
-        </article>
-      </div>
+        </div>
+      </article>
     </div>
-  <% else %>
-    <!-- Empty state -->
-    <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
-      <div class="mb-3">
-        <i class="far fa-clipboard fa-3x"></i>
-      </div>
-      <h3 class="h5 fw-bold mb-2">Aucune politique de confidentialité</h3>
-      <p class="mb-2">Ajoutez la politique de confidentialité pour la voir apparaître ici.</p>
-      <%= link_to new_admin_privacy_policy_path, class: "btn-nxr d-inline-flex align-items-center" do %>
-        <i class="fas fa-plus me-2"></i>Créer la politique de confidentialité
-      <% end %>
-    </div>
-  <% end %>
+
+  </div>
 </section>
