@@ -11,22 +11,11 @@ module Admin
     end
 
     def new
-      if LegalNotice.exists?
-        redirect_to edit_admin_legal_notice_path, alert: "Les mentions légales existent déjà."
-      else
-        @legal_notice = LegalNotice.new
-      end
+      @legal_notice = LegalNotice.new
     end
 
     def create
-      if LegalNotice.exists?
-        redirect_to edit_admin_legal_notice_path, alert: "Les mentions légales existent déjà."
-        return
-      end
-
-      attrs = doc_params
-      attrs[:published_at] ||= Time.current
-      @legal_notice = LegalNotice.new(attrs)
+      @legal_notice = LegalNotice.new(doc_params)
 
       if @legal_notice.save
         redirect_to admin_legal_notice_path, notice: "Les mentions légales ont été créées."
@@ -36,9 +25,9 @@ module Admin
     end
 
     def update
-      attrs = doc_params
-      attrs[:published_at] ||= @legal_notice.published_at || Time.current
-      if @legal_notice.update(attrs)
+      purge_image_if_requested(@legal_notice)
+
+      if @legal_notice.update(doc_params)
         redirect_to admin_legal_notice_path, notice: "Mentions légales mises à jour."
       else
         render :edit, status: :unprocessable_entity
@@ -48,11 +37,19 @@ module Admin
     private
 
     def set_legal_notice
-      @legal_notice = LegalNotice.first! # on suppose qu’elle existe dès qu’on est en show/edit/update
+      @legal_notice = LegalNotice.first
+      redirect_to new_admin_legal_notice_path, alert: "Aucune mention légale encore créée." unless @legal_notice
     end
 
     def doc_params
-      params.require(:legal_notice).permit(:title, :body, :published_at, :image, :remove_image)
+      params.require(:legal_notice).permit(:title, :body, :image, :remove_image)
+      # Remplacez :body par :content si besoin
+    end
+
+    def purge_image_if_requested(record)
+      return unless params.dig(:legal_notice, :remove_image) == "1"
+
+      record.image.purge_later if record.respond_to?(:image) && record.image.attached?
     end
   end
 end

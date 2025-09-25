@@ -1,6 +1,6 @@
 module Admin
   class PrivacyPoliciesController < BaseController
-    before_action :set_privacy_policy, only: [:show, :edit, :update]
+    before_action :set_privacy_policy, only: [:show, :edit, :update, :destroy]
 
     def show
       # @privacy_policy défini dans :set_privacy_policy
@@ -11,22 +11,11 @@ module Admin
     end
 
     def new
-      if PrivacyPolicy.exists?
-        redirect_to edit_admin_privacy_policy_path, alert: "La politique de confidentialité existe déjà."
-      else
-        @privacy_policy = PrivacyPolicy.new
-      end
+      @privacy_policy = PrivacyPolicy.new
     end
 
     def create
-      if PrivacyPolicy.exists?
-        redirect_to edit_admin_privacy_policy_path, alert: "La politique de confidentialité existe déjà."
-        return
-      end
-
-      attrs = doc_params
-      attrs[:published_at] ||= Time.current
-      @privacy_policy = PrivacyPolicy.new(attrs)
+      @privacy_policy = PrivacyPolicy.new(doc_params)
 
       if @privacy_policy.save
         redirect_to admin_privacy_policy_path, notice: "Politique de confidentialité créée."
@@ -36,23 +25,39 @@ module Admin
     end
 
     def update
-      attrs = doc_params
-      attrs[:published_at] ||= @privacy_policy.published_at || Time.current
-      if @privacy_policy.update(attrs)
+      purge_image_if_requested(@privacy_policy)
+
+      if @privacy_policy.update(doc_params)
         redirect_to admin_privacy_policy_path, notice: "Politique de confidentialité mise à jour."
       else
         render :edit, status: :unprocessable_entity
       end
     end
 
+    def destroy
+      @privacy_policy.destroy
+      redirect_to admin_root_path, notice: "Politique de confidentialité supprimée."
+    end
+
     private
 
     def set_privacy_policy
-      @privacy_policy = PrivacyPolicy.first!
+      # Option 1: Si vous voulez toujours le premier (singleton pattern)
+      @privacy_policy = PrivacyPolicy.first
+      redirect_to new_admin_privacy_policy_path, alert: "Aucune politique de confidentialité trouvée." if @privacy_policy.nil?
+
+      # Option 2: Si vous voulez gérer par ID (recommandé)
+      # @privacy_policy = PrivacyPolicy.find(params[:id])
     end
 
     def doc_params
-      params.require(:privacy_policy).permit(:title, :body, :published_at, :image, :remove_image)
+      params.require(:privacy_policy).permit(:title, :body, :image, :remove_image)
+    end
+
+    def purge_image_if_requested(record)
+      return unless params.dig(:privacy_policy, :remove_image) == "1"
+
+      record.image.purge_later if record.respond_to?(:image) && record.image.attached?
     end
   end
 end

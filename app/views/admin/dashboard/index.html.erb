@@ -790,6 +790,7 @@
             data-action="click->carousel#next" aria-label="Suivant">›</button>
 
     <div class="home-carousel__track" data-carousel-target="track">
+
       <!-- ITEM 1 : Club -->
       <div class="home-carousel__item">
         <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
@@ -807,7 +808,7 @@
             </div>
 
             <% if has_club %>
-               <p class="text-tertiary small mb-2">
+              <p class="text-tertiary small mb-2">
                 <i class="fa-solid fa-id-badge me-1"></i>
                 <strong><%= @club.name %></strong>
               </p>
@@ -870,10 +871,10 @@
               <h3 class="h6 fw-bold mb-0"><%= has_privacy ? @privacy_policy.title : "Politique de confidentialité" %></h3>
             </div>
 
-            <% if has_privacy && @privacy_policy.published_at.present? %>
+            <% if has_privacy && @privacy_policy.updated_at.present? %>
               <p class="text-tertiary small mb-3">
                 <i class="far fa-clock me-1"></i>
-                Dernière mise à jour : <%= l(@privacy_policy.published_at, format: :long) %>
+                Dernière mise à jour : <%= l(@privacy_policy.updated_at, format: :long) %>
               </p>
             <% else %>
               <p class="text-tertiary small mb-3">
@@ -921,15 +922,15 @@
               <h3 class="h6 fw-bold mb-0"><%= has_legal ? @legal_notice.title : "Mentions légales" %></h3>
             </div>
 
-            <% if has_legal && @legal_notice.published_at.present? %>
+            <% if has_legal && @legal_notice.updated_at.present? %>
               <p class="text-tertiary small mb-3">
                 <i class="far fa-clock me-1"></i>
-                Dernière mise à jour : <%= l(@legal_notice.published_at, format: :long) %>
+                Dernière mise à jour : <%= l(@legal_notice.updated_at, format: :long) %>
               </p>
             <% else %>
               <p class="text-tertiary small mb-3">
                 <i class="far fa-clock me-1"></i>
-                Aucunes mentions légales pour l'instant.
+                Aucune mention légale pour l'instant.
               </p>
             <% end %>
 
