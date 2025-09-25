@@ -848,4 +848,108 @@
       <% end %>
     </div>
   <% end %>
+
+  <% elsif @privacy_policies.present? %>
+    <div class="row g-4">
+      <div class="col-sm-6 col-lg-4 mx-auto">
+        <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+          <!-- Media -->
+          <div class="ratio ratio-4x3 bg-light d-flex align-items-center justify-content-center bg-dark">
+            <% if @privacy_policies.image.attached? %>
+              <%= image_tag @privacy_policies.image, class: "card-img-top object-contain p-3", alt: @privacy_policies.title %>
+            <% else %>
+              <%= image_tag "RGPD.png", class: "card-img-top object-contain p-3", alt: @privacy_policies.title %>
+            <% end %>
+          </div>
+
+          <!-- Body -->
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex align-items-start justify-content-between mb-2">
+              <h3 class="h6 fw-bold mb-0"><%= @privacy_policies.title %></h3>
+            </div>
+
+            <div class="mt-auto d-flex align-items-center justify-content-between">
+              <%= link_to admin_privacy_policy_path,
+                    class: "stretched-link small btn-nxr" do %>
+                <i class="fa-solid fa-gear me-1"></i> Administrer
+              <% end %>
+
+              <div class="btn-toolbar gap-2">
+                <%= link_to edit_admin_privacy_policy_path,
+                      class: "btn btn-icon btn-edit-orange",
+                      title: "Modifier la politique de confidantialitée",
+                      aria: { label: "Modifier la politique de confidantialité" } do %>
+                  <i class="fas fa-edit"></i>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  <% elsif %>
+    <!-- Empty state -->
+    <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
+      <div class="mb-3">
+        <i class="far fa-clipboard fa-3x"></i>
+      </div>
+      <h3 class="h5 fw-bold mb-2">Aucune politique de confidentialité</h3>
+      <p class="mb-2">Ajoutez la politique de confidentialité pour la voir apparaître ici.</p>
+      <%= link_to new_admin_privacy_policy_path, class: "btn-nxr d-inline-flex align-items-center" do %>
+        <i class="fas fa-plus me-2"></i>Créer la politique de confidentialité
+      <% end %>
+    </div>
+  <% end %>
+
+  <% elsif @legal_notice.present? %>
+    <div class="row g-4">
+      <div class="col-sm-6 col-lg-4 mx-auto">
+        <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
+          <!-- Media -->
+          <div class="ratio ratio-4x3 bg-light d-flex align-items-center justify-content-center bg-dark">
+            <% if @legal_notice.image.attached? %>
+              <%= image_tag @legal_notice.image, class: "card-img-top object-contain p-3", alt: @legal_notice.title %>
+            <% else %>
+              <%= image_tag "mention_legal.png", class: "card-img-top object-contain p-3", alt: @legal_notice.title %>
+            <% end %>
+          </div>
+
+          <!-- Body -->
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex align-items-start justify-content-between mb-2">
+              <h3 class="h6 fw-bold mb-0"><%= @privacy_policies.title %></h3>
+            </div>
+
+            <div class="mt-auto d-flex align-items-center justify-content-between">
+              <%= link_to admin_privacy_policy_path,
+                    class: "stretched-link small btn-nxr" do %>
+                <i class="fa-solid fa-gear me-1"></i> Administrer
+              <% end %>
+
+              <div class="btn-toolbar gap-2">
+                <%= link_to edit_admin_privacy_policy_path,
+                      class: "btn btn-icon btn-edit-orange",
+                      title: "Modifier la politique de confidantialitée",
+                      aria: { label: "Modifier la politique de confidantialité" } do %>
+                  <i class="fas fa-edit"></i>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  <% else %>
+    <!-- Empty state -->
+    <div class="card-homepage shadow-sm rounded-4 text-center p-5 mx-auto" style="max-width: 640px;">
+      <div class="mb-3">
+        <i class="far fa-clipboard fa-3x"></i>
+      </div>
+      <h3 class="h5 fw-bold mb-2">Aucune politique de confidentialité</h3>
+      <p class="mb-2">Ajoutez la politique de confidentialité pour la voir apparaître ici.</p>
+      <%= link_to new_admin_privacy_policy_path, class: "btn-nxr d-inline-flex align-items-center" do %>
+        <i class="fas fa-plus me-2"></i>Créer la politique de confidentialité
+      <% end %>
+    </div>
+  <% end %>
 </section>

@@ -32,8 +32,8 @@ Rails.application.routes.draw do
         get :export
       end
     end
-    resource :legal_notice, only: %i[show edit update]
-    resource :privacy_policy, only: %i[show edit update]
+    resource :legal_notice, only: %i[new show edit update create]
+    resource :privacy_policy, only: %i[new show edit update create]
 
     # Route custom pour pouvoir recupérer la bonne URL pour le status des inscription et le dashboard#
     # Routes custom pour gérer la validation manuelle des inscriptions par l'admin

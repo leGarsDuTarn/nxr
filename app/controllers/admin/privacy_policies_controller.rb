@@ -1,17 +1,39 @@
 module Admin
   class PrivacyPoliciesController < BaseController
-    before_action :set_privacy_policy
+    before_action :set_privacy_policy, only: [:show, :edit, :update]
 
-    def show
-      # @privacy_policy déjà définie par :set_legal_notice
+    def show; end
+    def edit; end
+
+    def new
+      if PrivacyPolicy.exists?
+        redirect_to edit_admin_privacy_policy_path, alert: "La politique de confidentialité existe déjà."
+      else
+        @privacy_policy = PrivacyPolicy.new
+      end
     end
 
-    def edit
-      # @privacy_policy déjà définie par :set_legal_notice
+    def create
+      if PrivacyPolicy.exists?
+        redirect_to edit_admin_privacy_policy_path, alert: "La politique de confidentialité existe déjà."
+        return
+      end
+
+      attrs = doc_params
+      attrs[:published_at] ||= Time.current
+      @privacy_policy = PrivacyPolicy.new(attrs)
+
+      if @privacy_policy.save
+        redirect_to admin_privacy_policy_path, notice: "Politique de confidentialité créée."
+      else
+        render :new, status: :unprocessable_entity
+      end
     end
 
     def update
-      if @privacy_policy.update(doc_params_with_publish_time)
+      attrs = doc_params
+      attrs[:published_at] ||= @privacy_policy.published_at || Time.current
+      if @privacy_policy.update(attrs)
         redirect_to admin_privacy_policy_path, notice: "Politique de confidentialité mise à jour."
       else
         render :edit, status: :unprocessable_entity
@@ -21,17 +43,11 @@ module Admin
     private
 
     def set_privacy_policy
-      @privacy_policy = PrivacyPolicy.first_or_create!(title: "Politique de confidentialité", body: "<p>À compléter…</p>")
+      @privacy_policy = PrivacyPolicy.first!
     end
 
     def doc_params
       params.require(:privacy_policy).permit(:title, :body, :published_at)
-    end
-
-    def doc_params_with_publish_time
-      attrs = doc_params
-      attrs[:published_at] ||= @privacy_policy.published_at || Time.current
-      attrs
     end
   end
 end
