@@ -1,0 +1,47 @@
+<%# app/views/admin/legal_notices/show.html.erb %>
+
+<section class="container my-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0 text-start fs-2 fw-bold text-uppercase">
+      <i class="fa-solid fa-circle-info me-2"></i> Mentions légales
+    </h2>
+
+    <div class="d-flex gap-2">
+      <%= link_to edit_admin_legal_notice_path, class: "btn-nxr d-inline-flex align-items-center" do %>
+        <i class="fas fa-edit me-2"></i> Modifier
+      <% end %>
+    </div>
+  </div>
+
+  <article class="card card-admin shadow-sm rounded-4 overflow-hidden">
+    <%# Bandeau image si présente %>
+    <% if @legal_notice.respond_to?(:image) && @legal_notice.image.attached? %>
+      <div class="ratio ratio-16x9">
+        <%= image_tag @legal_notice.image, class: "w-100 h-100 object-fit-cover" %>
+      </div>
+    <% end %>
+
+    <div class="card-body p-4">
+      <header class="mb-3">
+        <h3 class="h5 fw-bold mb-1"><%= @legal_notice.title.presence || "Mentions légales" %></h3>
+      </header>
+
+      <% if @legal_notice.body.present? %>
+        <div class="prose">
+          <%= simple_format(h(@legal_notice.body)) %>
+        </div>
+        <% if @legal_notice.published_at.present? %>
+          <p class="text-tertiary small mb-0">
+            <i class="far fa-clock me-1"></i>
+            Publié le <%= l(@legal_notice.published_at, format: :long) %>
+          </p>
+        <% end %>
+      <% else %>
+        <div>
+          Aucune mention légale enregistrée pour le moment.
+          <%= link_to "Ajouter un contenu", edit_admin_legal_notice_path, class: "ms-1" %>
+        </div>
+      <% end %>
+    </div>
+  </article>
+</section>

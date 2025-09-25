@@ -32,6 +32,8 @@ Rails.application.routes.draw do
         get :export
       end
     end
+    resource :legal_notice, only: %i[new show edit update create]
+    resource :privacy_policy, only: %i[new show edit update create]
 
     # Route custom pour pouvoir recupérer la bonne URL pour le status des inscription et le dashboard#
     # Routes custom pour gérer la validation manuelle des inscriptions par l'admin
@@ -61,6 +63,9 @@ Rails.application.routes.draw do
     resources :galleries, only: [:index, :show]
     get "dashboard", to: "dashboard#index"
   end
+
+  get "/mentions-legales", to: "legal_notice#show", as: :mentions_legales
+  get "/politique-de-confidentialite", to: "privacy_policy#show", as: :politique_confidentialite
 
   # path: ''  -> supprime le préfixe du namespace dans l’URL
   namespace :public, path: '' do
