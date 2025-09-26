@@ -1,0 +1,60 @@
+<table width="100%" cellpadding="0" cellspacing="0" style="font-family: Arial, sans-serif; background-color: #f8f9fa; padding: 20px;">
+  <tr>
+    <td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="background: #fdfdff; border-radius: 8px; padding: 20px;">
+        <!-- Logo -->
+        <tr>
+          <td align="center" style="padding-bottom: 20px;">
+            <%= image_tag image_url("logo_mcnc_3.png"), alt: "Logo du club MCNC", width: 100 %>
+          </td>
+        </tr>
+
+        <!-- Titre -->
+        <tr>
+          <td>
+            <h1 style="color:#333; font-size: 20px;">📩 Nouveau message reçu</h1>
+            <p style="font-size: 15px; color: #555;">
+              Un membre ou visiteur vous a contacté via le site du <strong>MCNC</strong>.
+            </p>
+          </td>
+        </tr>
+
+        <!-- Infos de l'expéditeur -->
+        <tr>
+          <td style="padding: 15px; background-color: #fefefe; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 15px;">
+            <p style="font-size: 15px; color: #333; margin: 0 0 5px 0;">
+              👤 <strong>Nom :</strong> <%= @message[:name] %>
+            </p>
+            <p style="font-size: 15px; color: #333; margin: 0 0 5px 0;">
+              📧 <strong>Email :</strong> <%= @message[:email] %>
+            </p>
+            <% if @message[:phone].present? %>
+              <p style="font-size: 15px; color: #333; margin: 0;">
+                📞 <strong>Téléphone :</strong> <%= @message[:phone] %>
+              </p>
+            <% end %>
+          </td>
+        </tr>
+
+        <!-- Message -->
+        <tr>
+          <td style="background-color: #f1f1f1; padding: 15px; border-left: 4px solid #ff6600; border-radius: 4px; margin: 20px 0;">
+            <em style="font-size: 15px; color: #333;">
+              "<%= @message[:body] %>"
+            </em>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td>
+            <p style="font-size: 14px; color: #777; text-align: center; margin-top: 20px;">
+              Ce message a été transmis automatiquement via le site du <strong>MCNC</strong>.<br>
+              Merci de répondre directement à l’expéditeur.
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

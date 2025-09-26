@@ -74,5 +74,6 @@ Rails.application.routes.draw do
     resources :races, only: [:index, :show]
     resources :trainings, only: [:index, :show]
     resources :events, only: [:index, :show]
+    resource :contact, only: [:new, :create], controller: "contacts"
   end
 end
