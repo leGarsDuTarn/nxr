@@ -1,16 +1,7 @@
-<%# app/views/admin/privacy_policies/show.html.erb %>
+<%# app/views/admin/legal_notices/show.html.erb %>
 
 <section class="container my-5">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0 text-start fs-2 fw-bold text-uppercase">
-      <i class="fa-solid fa-shield-halved me-2"></i> Politique de confidentialité
-    </h2>
-
-    <div class="d-flex gap-2">
-      <%= link_to edit_admin_privacy_policy_path, class: "btn-nxr d-inline-flex align-items-center" do %>
-        <i class="fas fa-edit me-2"></i> Modifier
-      <% end %>
-    </div>
   </div>
 
   <article class="card card-admin shadow-sm rounded-4 overflow-hidden">
@@ -22,16 +13,16 @@
     <% end %>
 
     <div class="card-body p-4">
-      <header class="mb-3">
-        <h3 class="h5 fw-bold mb-1"><%= @privacy_policy.title.presence || "Politique de confidentialité" %></h3>
+      <header class="mb-3 text-center">
+        <h1 class="fw-bold mb-1"><%= @privacy_policy.title.presence || "Mentions légales" %></h1>
       </header>
 
-      <% if @privacy_policy.body.present? %> <%# remplace par .body si besoin %>
+      <% if @privacy_policy.body.present? %>
         <div class="prose">
           <%= simple_format(h(@privacy_policy.body)) %>
         </div>
         <% if @privacy_policy.created_at.present? %>
-          <p class="text-tertiary small mb-0 mt-3">
+          <p class="text-tertiary small mb-0">
             <i class="far fa-clock me-1"></i>
             Publié le <%= l(@privacy_policy.created_at, format: :long) %>
           </p>
@@ -39,9 +30,15 @@
       <% else %>
         <div>
           Aucune politique de confidentialité enregistrée pour le moment.
-          <%= link_to "Ajouter un contenu", edit_admin_privacy_policy_path, class: "ms-1" %>
         </div>
       <% end %>
+
+      <%# Btn de retour -> voir application_helper.rb%>
+      <div class="d-flex justify-content-end mt-4">
+        <%= link_to safe_back_path, class: "btn-nxr d-inline-flex align-items-center" do %>
+          <i class="fas fa-arrow-left me-2"></i> Retour
+        <% end %>
+      </div>
     </div>
   </article>
 </section>

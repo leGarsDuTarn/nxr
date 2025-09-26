@@ -73,4 +73,10 @@ module ApplicationHelper
       </div>
     HTML
   end
+
+  # Permet d'avoir un chemin de retour sécurisé -> pas de boucle infini avec :back
+  def safe_back_path(default = root_path)
+    referer = request.referer
+    referer == request.original_url ? default : referer
+  end
 end

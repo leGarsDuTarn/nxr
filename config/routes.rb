@@ -64,8 +64,8 @@ Rails.application.routes.draw do
     get "dashboard", to: "dashboard#index"
   end
 
-  get "/mentions-legales", to: "legal_notice#show", as: :mentions_legales
-  get "/politique-de-confidentialite", to: "privacy_policy#show", as: :politique_confidentialite
+  get "/mentions-legales", to: "public/legal_notice#show", as: :mentions_legales
+  get "/politique-de-confidentialite", to: "public/privacy_policy#show", as: :politique_confidentialite
 
   # path: ''  -> supprime le préfixe du namespace dans l’URL
   namespace :public, path: '' do

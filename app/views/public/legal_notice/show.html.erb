@@ -1,0 +1,42 @@
+<%# ancre pour le bouton "Haut de page" %>
+<section class="container my-5">
+
+  <article class="card card-admin shadow-sm rounded-4 overflow-hidden">
+    <%# Bandeau image si présente %>
+    <% if @legal_notice.respond_to?(:image) && @legal_notice.image.attached? %>
+      <div class="ratio ratio-16x9">
+        <%= image_tag @legal_notice.image, class: "w-100 h-100 object-fit-cover" %>
+      </div>
+    <% end %>
+
+    <div class="card-body p-4">
+      <header class="mb-3 text-center">
+        <h1 class="fw-bold mb-1"><%= @legal_notice.title.presence || "Mentions légales" %></h1>
+      </header>
+
+      <% if @legal_notice.body.present? %>
+        <div class="prose">
+          <%= simple_format(h(@legal_notice.body)) %>
+        </div>
+        <% if @legal_notice.created_at.present? %>
+          <p class="text-tertiary small mb-0">
+            <i class="far fa-clock me-1"></i>
+            Publié le <%= l(@legal_notice.created_at, format: :long) %>
+          </p>
+        <% end %>
+      <% else %>
+        <div>
+          Aucune mention légale enregistrée pour le moment.
+        </div>
+      <% end %>
+
+      <%# Btn de retour -> voir application_helper.rb%>
+      <div class="d-flex justify-content-end mt-4">
+        <%= link_to safe_back_path, class: "btn-nxr d-inline-flex align-items-center" do %>
+          <i class="fas fa-arrow-left me-2"></i> Retour
+        <% end %>
+      </div>
+
+    </div>
+  </article>
+</section>
