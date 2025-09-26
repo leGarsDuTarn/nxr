@@ -1,5 +1,5 @@
 module Public
-  class ContactsController < ApplicationController
+  class ContactsController < BaseController
     def new
       @contact = ContactMessage.new
     end
@@ -10,10 +10,17 @@ module Public
       if @contact.valid?
         club = Club.first
 
+        # Le Hash permet d'éviter d'éventuel erreur de serialization
+        message_data = {
+          name: @contact.name,
+          email: @contact.email,
+          body: @contact.body
+        }
+
         # Mail au responsable du club
-        ContactMailer.with(message: @contact, club: club).send_to_admin.deliver_later
+        ContactMailer.with(message: message_data, club: club).send_to_admin.deliver_later
         # Mail de confirmation à l’utilisateur
-        ContactMailer.with(message: @contact, club: club).confirmation_to_user.deliver_later
+        ContactMailer.with(message: message_data, club: club).confirmation_to_user.deliver_later
 
         redirect_to new_public_contact_path, notice: "Votre message a bien été envoyé."
       else
