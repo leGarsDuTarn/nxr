@@ -1,0 +1,43 @@
+<div class="container d-flex justify-content-center align-items-start py-5">
+  <div class="card-signup shadow p-4 p-md-5 rounded-4 w-100">
+    <div class="d-flex justify-content-center mb-4">
+      <h1 class="text-center">
+        <strong>Contactez-nous</strong>
+      </h1>
+    </div>
+
+    <%= simple_form_for @contact, url: public_contact_path do |f| %>
+      <%= f.error_notification %>
+
+      <!-- Identité -->
+      <fieldset class="form-section mb-4">
+        <legend class="section-title">Vos coordonnées</legend>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <%= f.input :name, label: "Votre nom", required: true,
+                        placeholder: "Ex. Jean Dupont" %>
+          </div>
+          <div class="col-md-6">
+            <%= f.input :email, label: "Votre email", required: true,
+                        placeholder: "vous@exemple.fr",
+                        input_html: { autocomplete: "email" } %>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Message -->
+      <fieldset class="form-section mb-4">
+        <legend class="section-title">Votre message</legend>
+        <%= f.text_area :body,
+              rows: 8,
+              class: "form-control",
+              placeholder: "Écrivez votre message ici..." %>
+      </fieldset>
+
+      <!-- Bouton -->
+      <div class="d-grid">
+        <%= f.button :submit, "Envoyer", class: "btn-nxr btn-lg" %>
+      </div>
+    <% end %>
+  </div>
+</div>
