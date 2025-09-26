@@ -1,5 +1,6 @@
 module Public
   class ContactsController < BaseController
+    before_action :set_club
     def new
       @contact = ContactMessage.new
     end
@@ -29,6 +30,10 @@ module Public
     end
 
     private
+
+    def set_club
+      @club = Club.first
+    end
 
     def contact_params
       params.require(:contact_message).permit(:name, :email, :body)

@@ -1,12 +1,102 @@
-<div class="container d-flex justify-content-center align-items-start py-5">
+<!-- ====== Bandeau ====== -->
+<section class="admin-dashboard banner-dashboard">
+  <div class="container py-5 text-center text-white">
+    <h1 class="display-5 fw-bold mb-1">
+      <%= @club&.name %>
+    </h1>
+    <p class="lead mb-0">Informations officielles du club</p>
+  </div>
+</section>
+
+<section class="container my-5">
+  <!-- ====== Fiche du club (publique) ====== -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0 text-start fs-2 fw-bold text-uppercase">
+      <i class="fa-solid fa-circle-info me-2"></i> Toutes informations
+    </h2>
+    <%# Pas de bouton "Modifier" sur la page publique %>
+  </div>
+
+  <article class="card card-admin shadow-sm rounded-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <strong>Nom :</strong> <%= @club&.name || "—" %>
+        </div>
+
+        <% if @club&.address.present? || @club&.post_code.present? || @club&.town.present? %>
+          <div class="col-12">
+            <strong>Adresse :</strong>
+            <%= [@club&.address, @club&.post_code, @club&.town].compact_blank.join(" • ") %>
+          </div>
+        <% end %>
+
+        <% if @club&.phone_number.present? %>
+          <div class="col-md-6">
+            <strong>Téléphone :</strong> <%= @club.phone_number %>
+          </div>
+        <% end %>
+
+        <% if @club&.email.present? %>
+          <div class="col-md-6 ">
+            <strong>Email :</strong> <%= mail_to @club.email, class: "text-decoration-none text-color-primary" %>
+          </div>
+        <% end %>
+
+        <% if @club&.president_name.present? %>
+          <div class="col-md-6">
+            <strong>Président :</strong> <%= @club.president_name %>
+          </div>
+        <% end %>
+
+        <% if @club&.responsable_communication_name.present? %>
+          <div class="col-md-6">
+            <strong>Responsable communication :</strong> <%= @club.responsable_communication_name %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </article>
+
+  <!-- ====== Règlement du club ====== -->
+  <article id="club-regulation" class="card card-admin shadow-sm rounded-4 mt-4">
+    <div class="card-body">
+      <div class="d-flex justify-content-start align-items-center mb-0">
+        <h3 class="h6 fw-bold mb-0 me-4">
+          <i class="fa-regular fa-newspaper me-2"></i>Règlement type du club
+        </h3>
+
+        <% if @club&.participation_terms.present? %>
+          <!-- Bouton d’ouverture de la modal -->
+          <button type="button"
+                  class="btn-nxr-sm-reverse-green d-inline-flex align-items-center"
+                  data-bs-toggle="modal"
+                  data-bs-target="#reglementModal"
+                  aria-controls="reglementModal"
+                  aria-haspopup="dialog">
+            Lire le règlement
+          </button>
+        <% end %>
+      </div>
+    </div>
+  </article>
+
+  <!-- Injection de la modal (helper) -->
+  <%= regulation_modal(id: "reglementModal", title: "Règlement du club") %>
+</section>
+
+<!-- ====== Formulaire de contact (public) ====== -->
+<div class="container d-flex justify-content-center align-items-start">
   <div class="card-signup shadow p-4 p-md-5 rounded-4 w-100">
-    <div class="d-flex justify-content-center mb-4">
-      <h1 class="text-center">
-        <strong>Contactez-nous</strong>
-      </h1>
+    <div class="d-flex justify-content-center">
+      <h2 class="text-center"><strong>Contactez-nous</strong></h2>
+    </div>
+    <div class="h5 text-center mb-2">
+      <p>Un doute ? Envoyez-nous un e-mail et on s’occupe du reste.</p>
     </div>
 
-    <%= simple_form_for @contact, url: public_contact_path do |f| %>
+    <%# Laisse Rails inférer la bonne route (ou utilise public_contacts_path si besoin) %>
+     <%= simple_form_for @contact, url: public_contact_path do |f| %>
       <%= f.error_notification %>
 
       <!-- Identité -->
@@ -14,8 +104,7 @@
         <legend class="section-title">Vos coordonnées</legend>
         <div class="row g-3">
           <div class="col-md-6">
-            <%= f.input :name, label: "Votre nom", required: true,
-                        placeholder: "Ex. Jean Dupont" %>
+            <%= f.input :name, label: "Votre nom", required: true, placeholder: "Ex. Jean Dupont" %>
           </div>
           <div class="col-md-6">
             <%= f.input :email, label: "Votre email", required: true,
@@ -28,10 +117,7 @@
       <!-- Message -->
       <fieldset class="form-section mb-4">
         <legend class="section-title">Votre message</legend>
-        <%= f.text_area :body,
-              rows: 8,
-              class: "form-control",
-              placeholder: "Écrivez votre message ici..." %>
+        <%= f.text_area :body, rows: 8, class: "form-control", placeholder: "Écrivez votre message ici..." %>
       </fieldset>
 
       <!-- Bouton -->
