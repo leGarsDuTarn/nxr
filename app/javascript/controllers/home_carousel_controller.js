@@ -1,30 +1,67 @@
+// app/javascript/controllers/home_carousel_controller.js
 import { Controller } from "@hotwired/stimulus";
 
-// Carrousel "home" avec gestion automatique des flèches et centrage
 export default class extends Controller {
   static targets = ["track", "prevButton", "nextButton"];
   static values = {
     step: { type: String, default: "item" }, // "item" | "page"
     keyboard: { type: Boolean, default: true },
+    proximityPx: { type: Number, default: 96 }, // zone sensible depuis chaque bord
+    holdMs: { type: Number, default: 300 }, // maintien visible après dernier mouvement
   };
 
   connect() {
     this.track = this.trackTarget;
+
+    // bind
     this._resize = this._resize.bind(this);
     this._keydown = this._keydown.bind(this);
-    this._scroll = this._scroll.bind(this);
+    this._scrollByStep = this._scrollByStep.bind(this);
+    this._onDocMouseMove = this._onDocMouseMove.bind(this);
+    this._onDocMouseLeave = this._onDocMouseLeave.bind(this);
+    this._keepVisible = this._keepVisible.bind(this);
+    this._releaseVisible = this._releaseVisible.bind(this);
 
+    // état
+    this.showPrev = false;
+    this.showNext = false;
+    this.hoveringButton = false;
+    this.hideTimer = null;
+
+    // init
     this._measure();
     this._updateNavigation();
 
+    // listeners
     window.addEventListener("resize", this._resize);
     if (this.keyboardValue) document.addEventListener("keydown", this._keydown);
 
-    // Observer les changements de scroll pour mettre à jour les flèches
     this.track.addEventListener("scroll", () => {
       clearTimeout(this.scrollTimeout);
-      this.scrollTimeout = setTimeout(() => this._updateNavigation(), 100);
+      this.scrollTimeout = setTimeout(() => this._updateNavigation(), 80);
     });
+
+    // Desktop uniquement : on écoute sur document pour ne pas perdre l'événement au-dessus des boutons
+    if (!this._isTouch()) {
+      document.addEventListener("mousemove", this._onDocMouseMove);
+      document.addEventListener("mouseleave", this._onDocMouseLeave);
+    }
+
+    // Geler l'affichage pendant le survol des boutons (pour fiabiliser le clic)
+    if (this.hasPrevButtonTarget) {
+      this.prevButtonTarget.addEventListener("mouseenter", this._keepVisible);
+      this.prevButtonTarget.addEventListener(
+        "mouseleave",
+        this._releaseVisible
+      );
+    }
+    if (this.hasNextButtonTarget) {
+      this.nextButtonTarget.addEventListener("mouseenter", this._keepVisible);
+      this.nextButtonTarget.addEventListener(
+        "mouseleave",
+        this._releaseVisible
+      );
+    }
   }
 
   disconnect() {
@@ -32,21 +69,104 @@ export default class extends Controller {
     if (this.keyboardValue)
       document.removeEventListener("keydown", this._keydown);
     if (this.scrollTimeout) clearTimeout(this.scrollTimeout);
+    if (this.hideTimer) clearTimeout(this.hideTimer);
+
+    if (!this._isTouch()) {
+      document.removeEventListener("mousemove", this._onDocMouseMove);
+      document.removeEventListener("mouseleave", this._onDocMouseLeave);
+    }
+
+    if (this.hasPrevButtonTarget) {
+      this.prevButtonTarget.removeEventListener(
+        "mouseenter",
+        this._keepVisible
+      );
+      this.prevButtonTarget.removeEventListener(
+        "mouseleave",
+        this._releaseVisible
+      );
+    }
+    if (this.hasNextButtonTarget) {
+      this.nextButtonTarget.removeEventListener(
+        "mouseenter",
+        this._keepVisible
+      );
+      this.nextButtonTarget.removeEventListener(
+        "mouseleave",
+        this._releaseVisible
+      );
+    }
   }
 
+  // API
   next() {
-    if (this._canScrollNext()) {
-      this._scroll(+1);
-    }
+    if (this._canScrollNext()) this._scrollByStep(+1);
   }
-
   prev() {
-    if (this._canScrollPrev()) {
-      this._scroll(-1);
+    if (this._canScrollPrev()) this._scrollByStep(-1);
+  }
+
+  // ----- Proximité souris (desktop) -----
+  _onDocMouseMove(e) {
+    if (this._isTouch()) return;
+
+    const rect = this.element.getBoundingClientRect();
+    // si la souris est *globalement* en face du carrousel (verticalement), on calcule la proximité horizontale
+    const verticallyAligned = e.clientY >= rect.top && e.clientY <= rect.bottom;
+
+    if (verticallyAligned) {
+      const x = e.clientX - rect.left;
+      const fromLeft = x;
+      const fromRight = rect.width - x;
+
+      this.showPrev = fromLeft <= this.proximityPxValue;
+      this.showNext = fromRight <= this.proximityPxValue;
+
+      this._updateNavigation();
+      this._armHideTimer(); // recachera après inactivité
+    } else {
+      // hors zone verticale : on programme le masquage
+      this._armHideTimer();
     }
   }
 
-  // -- privé --
+  _onDocMouseLeave() {
+    this._armHideTimer(true); // masque immédiatement si on quitte la fenêtre
+  }
+
+  _keepVisible() {
+    this.hoveringButton = true;
+    if (this.hideTimer) clearTimeout(this.hideTimer);
+    this._updateNavigation();
+  }
+
+  _releaseVisible() {
+    this.hoveringButton = false;
+    this._armHideTimer();
+  }
+
+  _armHideTimer(immediate = false) {
+    if (this.hideTimer) clearTimeout(this.hideTimer);
+    if (immediate) {
+      this.showPrev = false;
+      this.showNext = false;
+      this._updateNavigation();
+      return;
+    }
+    this.hideTimer = setTimeout(() => {
+      if (!this.hoveringButton) {
+        this.showPrev = false;
+        this.showNext = false;
+        this._updateNavigation();
+      }
+    }, this.holdMsValue);
+  }
+
+  // ----- Mesures & scroll -----
+  _isTouch() {
+    return window.matchMedia("(pointer: coarse)").matches;
+  }
+
   _measure() {
     const items = this.track.querySelectorAll(".home-carousel__item");
     if (items.length === 0) return;
@@ -58,27 +178,27 @@ export default class extends Controller {
     this.itemWidth = firstItem.offsetWidth + gap;
     this.pageWidth = this.track.clientWidth * 0.9;
     this.totalItems = items.length;
-    this.visibleItems = Math.floor(this.track.clientWidth / this.itemWidth);
-    this.totalWidth = this.totalItems * this.itemWidth - gap; // -gap car pas de gap après le dernier item
+    this.visibleItems = Math.max(
+      1,
+      Math.floor(this.track.clientWidth / this.itemWidth)
+    );
+    this.totalWidth = this.totalItems * this.itemWidth - gap;
     this.trackWidth = this.track.clientWidth;
 
-    // Centrer si pas assez de cartes pour remplir l'espace
     this._centerIfNeeded();
   }
 
   _centerIfNeeded() {
     if (this.totalWidth <= this.trackWidth) {
-      // Les cartes tiennent dans l'espace disponible, on les centre
       this.track.style.justifyContent = "center";
       this.track.style.overflow = "visible";
     } else {
-      // Mode carrousel normal
       this.track.style.justifyContent = "flex-start";
       this.track.style.overflow = "auto";
     }
   }
 
-  _scroll(dir) {
+  _scrollByStep(dir) {
     const amount = this.stepValue === "page" ? this.pageWidth : this.itemWidth;
     this.track.scrollBy({ left: dir * amount, behavior: "smooth" });
   }
@@ -89,27 +209,48 @@ export default class extends Controller {
 
   _canScrollNext() {
     const maxScroll = this.track.scrollWidth - this.track.clientWidth;
-    return this.track.scrollLeft < maxScroll - 1; // -1 pour gérer les arrondis
+    return this.track.scrollLeft < maxScroll - 1;
   }
 
   _needsNavigation() {
-    return this.totalWidth > this.trackWidth;
+    const EPS = 2;
+    const overflow = this.track.scrollWidth - this.track.clientWidth > EPS;
+    const notEnough = this.totalItems <= Math.max(2, this.visibleItems);
+    return overflow && !notEnough;
+  }
+
+  _applyVisibility(el, visible) {
+    if (!el) return;
+    // On garde display:block pour éviter le reflow; on joue sur opacity/pointer-events/z-index
+    el.style.display = "block";
+    el.style.opacity = visible ? "1" : "0";
+    el.style.pointerEvents = visible ? "auto" : "none";
+    el.style.transform = visible
+      ? "translateY(-50%)"
+      : "translateY(-50%) scale(0.98)";
+    el.style.zIndex = visible ? "5" : "1";
   }
 
   _updateNavigation() {
     const needsNav = this._needsNavigation();
+    const hideAll = this._isTouch() || !needsNav;
 
-    // Afficher/cacher les boutons de navigation
+    // gauche
     if (this.hasPrevButtonTarget) {
-      this.prevButtonTarget.style.display = needsNav ? "block" : "none";
-      this.prevButtonTarget.disabled = !this._canScrollPrev();
-      this.prevButtonTarget.style.opacity = this._canScrollPrev() ? "1" : "0.5";
+      const visible =
+        !hideAll &&
+        (this.showPrev || this.hoveringButton) &&
+        this._canScrollPrev();
+      this._applyVisibility(this.prevButtonTarget, visible);
     }
 
+    // droite
     if (this.hasNextButtonTarget) {
-      this.nextButtonTarget.style.display = needsNav ? "block" : "none";
-      this.nextButtonTarget.disabled = !this._canScrollNext();
-      this.nextButtonTarget.style.opacity = this._canScrollNext() ? "1" : "0.5";
+      const visible =
+        !hideAll &&
+        (this.showNext || this.hoveringButton) &&
+        this._canScrollNext();
+      this._applyVisibility(this.nextButtonTarget, visible);
     }
   }
 
@@ -119,7 +260,6 @@ export default class extends Controller {
   }
 
   _keydown(e) {
-    // n'active les flèches clavier que si le carrousel est visible et que la navigation est nécessaire
     if (!this._needsNavigation()) return;
 
     const rect = this.track.getBoundingClientRect();
