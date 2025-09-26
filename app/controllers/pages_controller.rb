@@ -20,9 +20,9 @@ class PagesController < ApplicationController
 
     @upcoming_activities = (races + events + trainings)
                            .sort_by(&:date)
-                           .first(6)
+                           .first(9)
 
-    @articles = Article.order(created_at: :desc).limit(3)
-    @galleries = Gallery.order(created_at: :desc).limit(3)
+    @articles = Article.order(created_at: :desc).limit(6)
+    @galleries = Gallery.order(created_at: :desc).limit(6)
   end
 end

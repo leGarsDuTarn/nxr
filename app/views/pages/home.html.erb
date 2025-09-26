@@ -20,8 +20,10 @@
   <% if @upcoming_activities.present? %>
     <div class="home-carousel" data-controller="home-carousel" data-home-carousel-step-value="item">
       <button type="button" class="home-carousel__nav home-carousel__nav--prev"
+              data-home-carousel-target="prevButton"
               data-action="click->home-carousel#prev" aria-label="Précédent">‹</button>
       <button type="button" class="home-carousel__nav home-carousel__nav--next"
+              data-home-carousel-target="nextButton"
               data-action="click->home-carousel#next" aria-label="Suivant">›</button>
 
       <div class="home-carousel__track" data-home-carousel-target="track">
@@ -113,8 +115,10 @@
   <% if @articles.present? %>
     <div class="home-carousel" data-controller="home-carousel" data-home-carousel-step-value="item">
       <button type="button" class="home-carousel__nav home-carousel__nav--prev"
+              data-home-carousel-target="prevButton"
               data-action="click->home-carousel#prev" aria-label="Précédent">‹</button>
       <button type="button" class="home-carousel__nav home-carousel__nav--next"
+              data-home-carousel-target="nextButton"
               data-action="click->home-carousel#next" aria-label="Suivant">›</button>
 
       <div class="home-carousel__track" data-home-carousel-target="track">
@@ -139,9 +143,9 @@
                 <div class="mt-auto pt-2">
                   <%= link_to public_article_path(article),
                         class: "btn-nxr d-inline-flex align-items-center gap-2 small",
-                        aria: { label: "Lire l’article « #{article.title} »" } do %>
+                        aria: { label: "Lire l'article « #{article.title} »" } do %>
                     <i class="fa-regular fa-newspaper"></i>
-                    <span>Lire l’article</span>
+                    <span>Lire l'article</span>
                   <% end %>
                 </div>
               </div>
@@ -167,8 +171,10 @@
   <% if @galleries.present? %>
     <div class="home-carousel" data-controller="home-carousel" data-home-carousel-step-value="item">
       <button type="button" class="home-carousel__nav home-carousel__nav--prev"
+              data-home-carousel-target="prevButton"
               data-action="click->home-carousel#prev" aria-label="Précédent">‹</button>
       <button type="button" class="home-carousel__nav home-carousel__nav--next"
+              data-home-carousel-target="nextButton"
               data-action="click->home-carousel#next" aria-label="Suivant">›</button>
 
       <div class="home-carousel__track" data-home-carousel-target="track">

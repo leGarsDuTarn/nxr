@@ -17,13 +17,23 @@
   </div>
 
   <% if has_registrations %>
-    <div class="home-carousel" data-controller="carousel" data-carousel-step-value="item">
-      <button type="button" class="home-carousel__nav home-carousel__nav--prev"
-              data-action="click->carousel#prev" aria-label="Précédent">‹</button>
-      <button type="button" class="home-carousel__nav home-carousel__nav--next"
-              data-action="click->carousel#next" aria-label="Suivant">›</button>
+    <div class="home-carousel"
+     data-controller="home-carousel"
+     data-home-carousel-step-value="item">
+  <button type="button"
+          class="home-carousel__nav home-carousel__nav--prev carousel-nav prev"
+          data-action="click->home-carousel#prev"
+          data-home-carousel-target="prevButton"
+          aria-label="Précédent">‹</button>
 
-      <div class="home-carousel__track" data-carousel-target="track">
+  <button type="button"
+          class="home-carousel__nav home-carousel__nav--next carousel-nav next"
+          data-action="click->home-carousel#next"
+          data-home-carousel-target="nextButton"
+          aria-label="Suivant">›</button>
+
+  <div class="home-carousel__track"
+       data-home-carousel-target="track">
         <% @registrations.each do |registration| %>
           <% reg = registration.registerable %>
           <div class="home-carousel__item">
@@ -154,13 +164,23 @@
   </div>
 
   <% if has_races %>
-    <div class="home-carousel" data-controller="carousel" data-carousel-step-value="item">
-      <button type="button" class="home-carousel__nav home-carousel__nav--prev"
-              data-action="click->carousel#prev" aria-label="Précédent">‹</button>
-      <button type="button" class="home-carousel__nav home-carousel__nav--next"
-              data-action="click->carousel#next" aria-label="Suivant">›</button>
+    <div class="home-carousel"
+     data-controller="home-carousel"
+     data-home-carousel-step-value="item">
+  <button type="button"
+          class="home-carousel__nav home-carousel__nav--prev carousel-nav prev"
+          data-action="click->home-carousel#prev"
+          data-home-carousel-target="prevButton"
+          aria-label="Précédent">‹</button>
 
-      <div class="home-carousel__track" data-carousel-target="track">
+  <button type="button"
+          class="home-carousel__nav home-carousel__nav--next carousel-nav next"
+          data-action="click->home-carousel#next"
+          data-home-carousel-target="nextButton"
+          aria-label="Suivant">›</button>
+
+  <div class="home-carousel__track"
+       data-home-carousel-target="track">
         <% @races.each do |race| %>
           <div class="home-carousel__item">
             <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
@@ -210,13 +230,23 @@
   </div>
 
   <% if has_trainings %>
-    <div class="home-carousel" data-controller="carousel" data-carousel-step-value="item">
-      <button type="button" class="home-carousel__nav home-carousel__nav--prev"
-              data-action="click->carousel#prev" aria-label="Précédent">‹</button>
-      <button type="button" class="home-carousel__nav home-carousel__nav--next"
-              data-action="click->carousel#next" aria-label="Suivant">›</button>
+    <div class="home-carousel"
+     data-controller="home-carousel"
+     data-home-carousel-step-value="item">
+  <button type="button"
+          class="home-carousel__nav home-carousel__nav--prev carousel-nav prev"
+          data-action="click->home-carousel#prev"
+          data-home-carousel-target="prevButton"
+          aria-label="Précédent">‹</button>
 
-      <div class="home-carousel__track" data-carousel-target="track">
+  <button type="button"
+          class="home-carousel__nav home-carousel__nav--next carousel-nav next"
+          data-action="click->home-carousel#next"
+          data-home-carousel-target="nextButton"
+          aria-label="Suivant">›</button>
+
+  <div class="home-carousel__track"
+       data-home-carousel-target="track">
         <% @trainings.each do |training| %>
           <div class="home-carousel__item">
             <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
@@ -266,13 +296,23 @@
   </div>
 
   <% if has_events %>
-    <div class="home-carousel" data-controller="carousel" data-carousel-step-value="item">
-      <button type="button" class="home-carousel__nav home-carousel__nav--prev"
-              data-action="click->carousel#prev" aria-label="Précédent">‹</button>
-      <button type="button" class="home-carousel__nav home-carousel__nav--next"
-              data-action="click->carousel#next" aria-label="Suivant">›</button>
+    <div class="home-carousel"
+     data-controller="home-carousel"
+     data-home-carousel-step-value="item">
+  <button type="button"
+          class="home-carousel__nav home-carousel__nav--prev carousel-nav prev"
+          data-action="click->home-carousel#prev"
+          data-home-carousel-target="prevButton"
+          aria-label="Précédent">‹</button>
 
-      <div class="home-carousel__track" data-carousel-target="track">
+  <button type="button"
+          class="home-carousel__nav home-carousel__nav--next carousel-nav next"
+          data-action="click->home-carousel#next"
+          data-home-carousel-target="nextButton"
+          aria-label="Suivant">›</button>
+
+  <div class="home-carousel__track"
+       data-home-carousel-target="track">
         <% @events.each do |event| %>
           <div class="home-carousel__item">
             <article class="card card-admin shadow-sm rounded-4 h-100 overflow-hidden">
